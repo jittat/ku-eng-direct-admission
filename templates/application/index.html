@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Applying{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="front-body">
+  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+  <p id="intro">
+    ทำได้ทั้งสิ้น 3 วิธี คือ
+  </p>
+  <ul id="methods">
+    <li class="tab">
+      <h2>สมัครด้วยตนเอง</h2>
+      <div class="tab-body">
+      <p>
+	รับสมัครที่คณะวิศวกรรมศาสตร์ ระหว่างวันที่ xx พ.ย. ถึงวันที่ xx ธ.ค. 52 เวลา
+	x-x<br/>
+	อ่าน<a href="">รายละเอียดเพิ่มเติม</a>
+      </p>
+      </div>
+      <div class="button">ดาวน์โหลดใบสมัคร</div>
+    </li>
+    <li class="tab">
+      <h2>สมัครทางไปรษณีย์</h2>
+      <div class="tab-body">
+      <p>
+	กรอกใบสมัครและส่งเอกสารและหลักฐานทั้งหมดทางไปรษณีย์<br/>
+	อ่าน<a href="">รายละเอียดเพิ่มเติม</a>
+      </p>
+      </div>
+      <div class="button">ดาวน์โหลดใบสมัคร</div>
+    </li>
+    <li class="tab">
+      <h2>สมัครออนไลน์</h2>
+      <div class="tab-body">
+      <p>
+	สามารถเลือกส่งหลักฐานได้ทั้งทางออนไลน์และทางไปรษณีย์
+      </p>
+      </div>
+      <div class="button">สมัครออนไลน์</div>
+    </li>
+  </ul>
+</div>
+<script>
+  var h = 0;
+  $(".tab-body").each(function (t) {
+    if(this.clientHeight > h)
+      h = this.clientHeight;
+  });
+  $(".tab-body").css("height",h);
+</script>
+{% endblock %}

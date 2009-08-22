@@ -1,0 +1,72 @@
+body {
+    background: white;
+    font-family: "Helvetica Neue",Arial,Helvetica,Geneva,sans-serif;
+}
+
+.front-body p#intro {
+    font-size: 20px;
+    padding-left: 50px;    
+}
+
+.front-body h1 {
+    background: #2f0000;
+    color: white;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.front-body ul#methods {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: disc;
+}
+
+ul#methods li.tab {
+    display: inline;
+    float: left;
+    margin: 10px;
+    padding: 0;
+    background: #b0ffd0;
+    width: 250px;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+ul#methods li.tab h2 {
+    margin: 0;
+    background: #206050;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-radius: 10px;
+
+}
+
+ul#methods li.tab p {
+    color: #206050;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+div.button {
+    background: white;
+    text-align: center;
+    margin: 15px;
+
+    font-size: 120%;
+    font-weight: bold;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}

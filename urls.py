@@ -1,10 +1,19 @@
 from django.conf.urls.defaults import *
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
-urlpatterns = patterns('',
+media_pattern = settings.MEDIA_URL
+if media_pattern[0]=='/':
+    media_pattern = media_pattern[1:]
+
+urlpatterns = patterns(
+    '',
+    (r'^$', 'adm.application.views.index'),
+    (r'^apply/', include('adm.application.urls')),
+
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 
@@ -13,5 +22,9 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # (r'^admin/', include(admin.site.urls)),
+    (r'^admin/', include(admin.site.urls)),
+
+    # Static media (for development)
+    (r'^'+ media_pattern +r'(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': settings.STATIC_DOC_ROOT}),
 )
