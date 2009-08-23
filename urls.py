@@ -11,7 +11,7 @@ if media_pattern[0]=='/':
 
 urlpatterns = patterns(
     '',
-    (r'^$', 'adm.application.views.index'),
+    url(r'^$', 'adm.application.views.index', name='start-page'),
     (r'^apply/', include('adm.application.urls')),
 
     # Example:

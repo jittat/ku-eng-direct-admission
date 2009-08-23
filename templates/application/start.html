@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Applying{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="front-body">
+  <h1>การสมัครออนไลน์</h1>
+  <ul id="methods">
+    <li class="tab">
+      <div class="button">
+	<a href="{% url apply-core %}">เริ่มต้นสมัครใหม่</a>
+      </div>
+    </li>
+    <li class="tab">
+      <div class="button">
+	กรอกใบสมัครที่ค้างไว้
+      </div>
+    </li>
+  </ul>
+</div>
+<script>
+  var h = 0;
+  $(".tab-body").each(function (t) {
+    if(this.clientHeight > h)
+      h = this.clientHeight;
+  });
+  $(".tab-body").css("height",h);
+</script>
+{% endblock %}

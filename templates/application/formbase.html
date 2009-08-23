@@ -1,18 +1,14 @@
 {% extends "base.html" %}
 
+{% load adm_steps %}
+
 {% block extra-head %}
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
 {% endblock %}
 
 {% block body %}
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
-  {% if step_descriptions %}
-    ขั้นตอน:
-    {% for s in step_descriptions %}
-      {{ s }}
-    {% endfor %}
-    <br/>
-  {% endif %}
+  {% form_steps %}
   {% block form-body %}
   {% endblock %}
 {% endblock %}

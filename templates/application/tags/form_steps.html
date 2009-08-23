@@ -1,0 +1,11 @@
+{% if steps %}
+  ขั้นตอน:
+  {% for s in steps %}
+    {% if s.is_current %}
+      <b>{{ s.text }}</b>
+    {% else %}
+      {{ s.text }}
+    {% endif %}
+  {% endfor %}
+  <br/>
+{% endif %}

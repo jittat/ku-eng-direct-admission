@@ -2,7 +2,8 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns(
     'application.views',
-    url(r'^start/$', 'applicant_core_info', name='apply-start'),
+    url(r'^start/$', 'start', name='apply-start'),
+    url(r'^core/$', 'applicant_core_info', name='apply-core'),
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 
