@@ -75,6 +75,7 @@ def applicant_core_info(request):
 
 
 class AddressForm(forms.ModelForm):
+    # TODO: add form validation
     class Meta:
         model = Address
 
@@ -88,6 +89,7 @@ def applicant_address(request):
         old_home_address = applicant.address.home_address
         old_contact_address = applicant.address.contact_address
     else:
+        # still need this for form instances
         old_home_address, old_contact_address = None, None
 
     if request.method == 'POST':
@@ -128,4 +130,4 @@ def applicant_address(request):
                                 'steps': FORM_STEPS, 
                                 'current_step': 1 })
 
-    
+
