@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import re
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django import forms
 from django.core.urlresolvers import reverse
-from models import Applicant
+from models import Applicant, Address, ApplicantAddress
 
 INDEX_PAGE = 'start-page'
 
@@ -14,7 +15,11 @@ def index(request):
 def start(request):
     return render_to_response('application/start.html')
 
-def redirect_to_index():
+def redirect_to_index(request):
+    # clear user session
+    if 'applicant_id' in request.session:
+        del request.session['applicant_id']
+    # go back to front page, will be changed later
     return HttpResponseRedirect(reverse(INDEX_PAGE))
 
 FORM_STEPS = [
@@ -25,8 +30,29 @@ FORM_STEPS = [
     'เลือกวิธีการส่งหลักฐาน',
     ]
 
+def validate_phone_number(phone_number):
+    # TODO: describe ext format in web form
+    return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
+
 class ApplicantCoreForm(forms.ModelForm):
     email_confirmation = forms.EmailField()
+
+    def clean_national_id(self):
+        if re.match(r'^(\d){13}$',self.cleaned_data['national_id']) == None:
+            raise forms.ValidationError("รหัสประจำตัวประชาชนไม่ถูกต้อง")
+        return self.cleaned_data['national_id']
+
+    def clean_phone_number(self):
+        if not validate_phone_number(self.cleaned_data['phone_number']):
+            raise forms.ValidationError("หมายเลขโทรศัพท์ไม่ถูกต้อง")
+        return self.cleaned_data['phone_number']
+
+    def clean_email_confirmation(self):
+        if (self.cleaned_data['email'] !=
+            self.cleaned_data['email_confirmation']):
+            raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
+        return self.cleaned_data['email_confirmation']
+
     class Meta:
         model = Applicant
 
@@ -37,12 +63,9 @@ def applicant_core_info(request):
         
         form = ApplicantCoreForm(request.POST)
         if form.is_valid():
-            if (form.cleaned_data['email'] == 
-                form.cleaned_data['email_confirmation']):
-                applicant = form.save()
-            else:
-                print 'Email error!'
-                pass
+            applicant = form.save()
+            request.session['applicant_id'] = applicant.id
+            return HttpResponseRedirect(reverse('apply-address'))
     else:
         form = ApplicantCoreForm()
     return render_to_response('application/core.html', 
@@ -51,3 +74,62 @@ def applicant_core_info(request):
                                 'current_step': 0 })
 
 
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+
+def applicant_address(request):
+    applicant = Applicant.objects.get(pk=request.session['applicant_id'])
+
+    have_old_address = (applicant.address != None)
+
+    if have_old_address:
+        old_applicant_address = applicant.address
+        old_home_address = applicant.address.home_address
+        old_contact_address = applicant.address.contact_address
+
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect_to_index()
+
+        home_address_form = AddressForm(request.POST, prefix="home")
+        contact_address_form = AddressForm(request.POST, prefix="contact")
+
+        if (home_address_form.is_valid() and
+            contact_address_form.is_valid()):
+            home_address = home_address_form.save(commit=False)
+            contact_address = contact_address_form.save(commit=False)
+
+            if have_old_address:
+                home_address.id = old_home_address.id
+                contact_address.id = old_contact_address.id
+
+            home_address.save()
+            contact_address.save()
+
+            applicant_address = ApplicantAddress(
+                applicant=applicant,
+                home_address=home_address,
+                contact_address=contact_address)
+
+            if have_old_address:
+                applicant_address.id = old_applicant_address.id
+
+            applicant_address.save()
+            
+    else:
+        if have_old_address:
+            home_address_form = AddressForm(instance=old_home_address,
+                                            prefix="home")
+            contact_address_form = AddressForm(instance=old_contact_address,
+                                               prefix="contact")
+        else:
+            home_address_form = AddressForm(prefix="home")
+            contact_address_form = AddressForm(prefix="contact")
+    return render_to_response('application/address.html', 
+                              { 'home_address_form': home_address_form,
+                                'contact_address_form': contact_address_form,
+                                'steps': FORM_STEPS, 
+                                'current_step': 1 })
+
+    

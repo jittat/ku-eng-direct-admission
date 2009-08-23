@@ -4,6 +4,7 @@ urlpatterns = patterns(
     'application.views',
     url(r'^start/$', 'start', name='apply-start'),
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
+    url(r'^address/$', 'applicant_address', name='apply-address'),
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 

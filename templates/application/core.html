@@ -1,9 +1,11 @@
 {% extends "application/formbase.html" %}
 
+{% block title %}Personal information{% endblock %}
+
 {% block form-body %}
   หลังจากกรอกข้อมูลในฟอร์มนี้แล้ว คุณจะได้รับอีเมล์ยืนยัน 
   พร้อมด้วยรหัสผ่านสำหรับการแก้ไขและกรอกข้อมูลเพิ่มเติม
-  <form action="" method="post">
+  <form action="{% url apply-core %}" method="post">
     <table>
       {{ form.as_table }}
       <tr>

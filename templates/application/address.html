@@ -1,0 +1,37 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}Address{% endblock %}
+
+{% block form-body %}
+  <form action="{% url apply-address %}" method="post">
+    <div class="field-group">
+      <h2>ที่อยู่ตามทะเบียนบ้าน</h2>
+      {% with home_address_form as form %}
+        {% include "application/address_form.html" %}
+      {% endwith %}
+    </div>
+    <div class="field-group">
+      <h2>สถานที่ติดต่อได้ทางไปรษณีย์
+	<button id="address-copy">
+	  เหมือนกับที่อยู่ตามทะเบียนบ้าน
+	</button>
+      </h2>
+      {% with contact_address_form as form %}
+        {% include "application/address_form.html" %}
+      {% endwith %}
+    </div>
+    <input type="submit" name="submit" value="เก็บข้อมูล"/>
+    <input type="submit" name="cancel" value="ยกเลิก"/>
+  </form>
+  <script>
+    $("#address-copy").click(function (e) {
+      items = ['number', 'village_number', 'village_name',
+               'road', 'district', 'city', 'province',
+               'postal_code', 'phone_number'];
+      jQuery.each(items, function () {
+        $("#id_contact-" + this).val($("#id_home-" + this).val());
+      });
+      return false;
+    });
+  </script>
+{% endblock %}
