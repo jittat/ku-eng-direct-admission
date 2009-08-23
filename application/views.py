@@ -59,7 +59,7 @@ class ApplicantCoreForm(forms.ModelForm):
 def applicant_core_info(request):
     if request.method == 'POST':
         if 'cancel' in request.POST:
-            return redirect_to_index()
+            return redirect_to_index(request)
         
         form = ApplicantCoreForm(request.POST)
         if form.is_valid():
@@ -81,31 +81,30 @@ class AddressForm(forms.ModelForm):
 def applicant_address(request):
     applicant = Applicant.objects.get(pk=request.session['applicant_id'])
 
-    have_old_address = (applicant.address != None)
+    have_old_address = applicant.has_address()
 
     if have_old_address:
         old_applicant_address = applicant.address
         old_home_address = applicant.address.home_address
         old_contact_address = applicant.address.contact_address
+    else:
+        old_home_address, old_contact_address = None, None
 
     if request.method == 'POST':
         if 'cancel' in request.POST:
-            return redirect_to_index()
+            return redirect_to_index(request)
 
-        home_address_form = AddressForm(request.POST, prefix="home")
-        contact_address_form = AddressForm(request.POST, prefix="contact")
+        home_address_form = AddressForm(request.POST, 
+                                        prefix="home",
+                                        instance=old_home_address)
+        contact_address_form = AddressForm(request.POST, 
+                                           prefix="contact",
+                                           instance=old_contact_address)
 
         if (home_address_form.is_valid() and
             contact_address_form.is_valid()):
-            home_address = home_address_form.save(commit=False)
-            contact_address = contact_address_form.save(commit=False)
-
-            if have_old_address:
-                home_address.id = old_home_address.id
-                contact_address.id = old_contact_address.id
-
-            home_address.save()
-            contact_address.save()
+            home_address = home_address_form.save()
+            contact_address = contact_address_form.save()
 
             applicant_address = ApplicantAddress(
                 applicant=applicant,
@@ -118,14 +117,11 @@ def applicant_address(request):
             applicant_address.save()
             
     else:
-        if have_old_address:
-            home_address_form = AddressForm(instance=old_home_address,
-                                            prefix="home")
-            contact_address_form = AddressForm(instance=old_contact_address,
-                                               prefix="contact")
-        else:
-            home_address_form = AddressForm(prefix="home")
-            contact_address_form = AddressForm(prefix="contact")
+        home_address_form = AddressForm(prefix="home",
+                                        instance=old_home_address)
+        contact_address_form = AddressForm(prefix="contact",
+                                           instance=old_contact_address)
+
     return render_to_response('application/address.html', 
                               { 'home_address_form': home_address_form,
                                 'contact_address_form': contact_address_form,
