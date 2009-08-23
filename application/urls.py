@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    'application.views',
+    url(r'^start/$', 'applicant_core_info', name='apply-start'),
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 
@@ -10,4 +12,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
+               
 )
