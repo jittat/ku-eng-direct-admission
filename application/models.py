@@ -33,6 +33,11 @@ class Applicant(models.Model):
         except Education.DoesNotExist:
             return False            
 
+    def can_choose_major(self):
+        return (self.has_educational_info() and 
+                not self.education.uses_anet_score)
+
+
 class Address(models.Model):
     number = models.CharField(max_length=20,
                               verbose_name="บ้านเลขที่")
@@ -120,3 +125,13 @@ class Education(models.Model):
         else:
             return "กำลังศึกษาอยู่ที่โรงเรียน" + self.school_name
 
+
+class Major(models.Model):
+    number = models.CharField(max_length=5)
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ['number']
+
+    def __unicode__(self):
+        return "%s: %s" % (self.number, self.name)
