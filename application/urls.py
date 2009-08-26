@@ -5,6 +5,9 @@ urlpatterns = patterns(
     url(r'^start/$', 'start', name='apply-start'),
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
     url(r'^address/$', 'applicant_address', name='apply-address'),
+    url(r'^education/$', 'applicant_education', name='apply-edu'),
+
+    url(r'^doc_menu/$', 'applicant_doc_menu', name='apply-doc-menu'),
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 

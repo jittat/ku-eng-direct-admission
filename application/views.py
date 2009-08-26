@@ -5,22 +5,17 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django import forms
 from django.core.urlresolvers import reverse
-from models import Applicant, Address, ApplicantAddress
 
-INDEX_PAGE = 'start-page'
+from decorators import applicant_required
+from models import Applicant, ApplicantAccount
+from models import Address, ApplicantAddress, Education
+from utils import redirect_to_index
 
 def index(request):
     return render_to_response('application/index.html')
 
 def start(request):
     return render_to_response('application/start.html')
-
-def redirect_to_index(request):
-    # clear user session
-    if 'applicant_id' in request.session:
-        del request.session['applicant_id']
-    # go back to front page, will be changed later
-    return HttpResponseRedirect(reverse(INDEX_PAGE))
 
 FORM_STEPS = [
     'ข้อมูลส่วนตัวผู้สมัคร',
@@ -64,6 +59,12 @@ def applicant_core_info(request):
         form = ApplicantCoreForm(request.POST)
         if form.is_valid():
             applicant = form.save()
+
+            account = ApplicantAccount(applicant=applicant)
+            new_pwd = account.random_password()
+            print "PASSWORD:", new_pwd
+            account.save()
+
             request.session['applicant_id'] = applicant.id
             return HttpResponseRedirect(reverse('apply-address'))
     else:
@@ -79,9 +80,9 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
 
+@applicant_required
 def applicant_address(request):
-    applicant = Applicant.objects.get(pk=request.session['applicant_id'])
-
+    applicant = request.applicant
     have_old_address = applicant.has_address()
 
     if have_old_address:
@@ -117,7 +118,7 @@ def applicant_address(request):
                 applicant_address.id = old_applicant_address.id
 
             applicant_address.save()
-            
+            return HttpResponseRedirect(reverse('apply-edu'))
     else:
         home_address_form = AddressForm(prefix="home",
                                         instance=old_home_address)
@@ -130,4 +131,44 @@ def applicant_address(request):
                                 'steps': FORM_STEPS, 
                                 'current_step': 1 })
 
+
+class EducationForm(forms.ModelForm):
+    # TODO: add form validation
+    class Meta:
+        model = Education
+        exclude = ['applicant']
+
+@applicant_required
+def applicant_education(request):
+    applicant = request.applicant
+
+    if applicant.has_educational_info():
+        old_education = applicant.education
+    else:
+        old_education = None
+
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect_to_index(request)
+
+        form = EducationForm(request.POST, 
+                                       instance=old_education)
+
+        if form.is_valid():
+            applicant_education = form.save(commit=False)
+            applicant_education.applicant = applicant
+            applicant_education.save()
+            return HttpResponseRedirect(reverse('apply-doc-menu'))
+            
+    else:
+        form = EducationForm(instance=old_education)
+
+    return render_to_response('application/education.html', 
+                              { 'form': form,
+                                'steps': FORM_STEPS, 
+                                'current_step': 2 })
+
+@applicant_required
+def applicant_doc_menu(request):
+    return render_to_response('application/doc_menu.html')
 

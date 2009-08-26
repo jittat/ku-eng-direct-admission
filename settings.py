@@ -93,3 +93,6 @@ INSTALLED_APPS = (
 # Absolute path to statis media, e.g., css files.  Used in development
 # with django.views.static.serve
 STATIC_DOC_ROOT = MEDIA_ROOT
+
+# used in redirect_to_index
+INDEX_PAGE = 'start-page'

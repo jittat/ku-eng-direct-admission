@@ -38,6 +38,42 @@ class Applicant(models.Model):
                 not self.education.uses_anet_score)
 
 
+class ApplicantAccount(models.Model):
+    applicant = models.ForeignKey(Applicant)
+    hashed_password = models.CharField(max_length=100)
+
+    PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
+
+    def set_password(self, passwd):
+        import random
+        import hashlib
+
+        salt = hashlib.sha1(str(random.random())[2:4]).hexdigest()
+
+        full_password = (salt + '$' +
+                         hashlib.sha1(salt + passwd).hexdigest())
+        
+        self.hashed_password = full_password
+
+
+    def random_password(self):
+        import random
+        password = ''.join(
+            [random.choice(ApplicantAccount.PASSWORD_CHARS) 
+             for t in range(5)])
+
+        self.set_password(password)
+        return password
+
+    def check_password(self):
+        import hashlib
+
+        salt, enc_passwd = self.hashed_password.split('$')
+
+        return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
+    
+
+
 class Address(models.Model):
     number = models.CharField(max_length=20,
                               verbose_name="บ้านเลขที่")
@@ -82,41 +118,55 @@ class ApplicantAddress(models.Model):
         return unicode(self.contact_address)
 
 
+class GPExamDate(models.Model):
+    month_year = models.CharField(max_length=20,
+                                  verbose_name="เดือนและปีของการสอบ")
+
+    def __unicode__(self):
+        return self.month_year
+
 class Education(models.Model):
+
     applicant = models.OneToOneField(Applicant,
                                      related_name="education")
 
-    uses_anet_score = models.BooleanField(
-        verbose_name="สมัครโดยใช้คะแนน A-NET")
+    # school information
     has_graduated = models.BooleanField(
-        verbose_name="จบการศึกษาระดับมัธยมศึกษาปีที่ 6")
+        choices=((True,u"จบการศึกษาระดับมัธยมศึกษาปีที่ 6"),
+                (False,u"กำลังเรียนระดับมัธยมศึกษาปีที่ 6")),
+        verbose_name=u"ระดับการศึกษา")
     school_name = models.CharField(max_length=100,
-                              verbose_name="โรงเรียน")
-    school_district = models.CharField(max_length=50, blank=True,
-                                       verbose_name="ตำบล/แขวง")
+                                   verbose_name=u"โรงเรียน")
     school_city = models.CharField(max_length=50,
-                                   verbose_name="อำเภอ/เขต")
+                                   verbose_name=u"อำเภอ/เขต")
     school_province = models.CharField(max_length=25,
-                                       verbose_name="จังหวัด")
-    school_postal_code = models.CharField(max_length=10, blank=True,
-                                          verbose_name="รหัสไปรษณีย์")
-    school_phone_number = models.CharField(max_length=20, blank=True,
-                                           verbose_name="หมายเลขโทรศัพท์")
-    
+                                       verbose_name=u"จังหวัด")
+
+    # test score
+    uses_gat_score = models.BooleanField(
+        choices=((True,u"GAT/PAT"),
+                (False,u"ANET")),
+        verbose_name=u"คะแนนที่ใช้สมัคร")
     gpax = models.FloatField(verbose_name="GPAX")
-    gat = models.IntegerField(blank=True,
+    gat = models.IntegerField(blank=True, null=True,
                               verbose_name="คะแนน GAT")
-    gat_date = models.DateField(blank=True,
-                                verbose_name="วันสอบ GAT")
-    pat1 = models.IntegerField(blank=True,
+    gat_date = models.ForeignKey(GPExamDate,
+                                 blank=True, null=True,
+                                 verbose_name="วันสอบ GAT",
+                                 related_name="gat_score_set")
+    pat1 = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน PAT 1")
-    pat1_date = models.DateField(blank=True,
-                                 verbose_name="วันสอบ PAT 1")
-    pat3 = models.IntegerField(blank=True,
+    pat1_date = models.ForeignKey(GPExamDate,
+                                  blank=True, null=True,
+                                  verbose_name="วันสอบ PAT 1",
+                                  related_name="pat1_score_set")
+    pat3 = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน PAT 3")
-    pat3_date = models.DateField(blank=True,
-                                 verbose_name="วันสอบ PAT 3")
-    anet = models.IntegerField(blank=True,
+    pat3_date = models.ForeignKey(GPExamDate,
+                                  blank=True, null=True,
+                                  verbose_name="วันสอบ PAT 3",
+                                  related_name="pat3_score_set")
+    anet = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน A-NET")
 
     def __unicode__(self):

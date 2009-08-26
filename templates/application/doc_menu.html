@@ -1,0 +1,40 @@
+{% extends 'application/formbase.html' %}
+
+{% block title %}Supporting documents{% endblock %}
+
+{% block extra-head %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+{% endblock %}
+
+{% block form-body %}
+<div class="front-body">
+  <ul id="methods">
+    <li class="tab">
+      <div class="button">
+	ส่งเอกสารออนไลน์
+      </div>
+      <div class="tab-body">
+	ส่งเอกสารที่สแกนแล้วโดยการอัพโหลด สามารถทยอยอัพโหลดภายหลัง
+	และส่งใบสมัครเมื่ออัพโหลดเอกสารได้ครบ
+      </div>
+    </li>
+    <li class="tab">
+      <div class="button">
+	ส่งเอกสารทางไปรษณีย์
+      </div>
+      <div class="tab-body">
+	ผู้สมัครจะต้องพิมพ์ใบปะหน้าสำหรับส่งเอกสารแนบมากับหลักฐานที่ส่งด้วย
+      </div>
+    </li>
+  </ul>
+</div>
+<script>
+  var h = 0;
+  $(".tab-body").each(function (t) {
+    if(this.clientHeight > h)
+      h = this.clientHeight;
+  });
+  $(".tab-body").css("height",h);
+</script>
+{% endblock %}
