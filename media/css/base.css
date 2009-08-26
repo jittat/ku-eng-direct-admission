@@ -1,0 +1,28 @@
+#step-bar {
+    background: green;
+    color: white;
+    height: 40px;
+    -moz-border-radius: 5px;
+}
+
+#step-bar li {
+    display: block;
+    float: left;
+    list-style-image:none;
+    list-style-position:outside;
+    list-style-type:none;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0;
+    line-height: 40px;
+}
+
+#step-bar li.current {
+    color: black;
+    font-weight: bold;
+    background: lightgreen;
+}
+
+#step-bar li.head {
+    font-weight: bold;
+}

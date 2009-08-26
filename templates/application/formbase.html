@@ -8,10 +8,14 @@
 
 {% block body %}
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
-  {% form_steps %}
-  {% block form-body %}
-  {% endblock %}
+  <div class="main">
+    {% form_steps %}
+    <div class="form-body">
+      {% block form-body %}
+      {% endblock %}
+    </div>
+  </div>
 {% endblock %}
 
-{% block footer %}<div id="footer">Kasetsart University</div>{% endblock %}
+{% block footer %}<div id="footer"></div>{% endblock %}
 

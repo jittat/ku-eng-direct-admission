@@ -1,11 +1,14 @@
 {% if steps %}
-  ขั้นตอน:
-  {% for s in steps %}
-    {% if s.is_current %}
-      <b>{{ s.text }}</b>
-    {% else %}
-      {{ s.text }}
-    {% endif %}
-  {% endfor %}
-  <br/>
+  <div id="step-bar">
+    <ul>
+      <li class="head">ขั้นตอน</li>
+      {% for s in steps %}
+        {% if s.is_current %}
+          <li class="current">{{ s.text }}</li>
+        {% else %}
+          <li>{{ s.text }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
 {% endif %}
