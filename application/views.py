@@ -1,21 +1,55 @@
 # -*- coding: utf-8 -*-
-import re
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django import forms
 from django.core.urlresolvers import reverse
 
 from decorators import applicant_required
+from utils import redirect_to_index
+
 from models import Applicant, ApplicantAccount
 from models import Address, ApplicantAddress, Education
-from utils import redirect_to_index
+
+from forms import ApplicantCoreForm, AddressForm, EducationForm
 
 def index(request):
     return render_to_response('application/index.html')
 
 def start(request):
     return render_to_response('application/start.html')
+
+class LoginForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+def login(request):
+    error_messages = []
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            passwd = form.cleaned_data['password']
+
+            try:
+                applicant = Applicant.objects.filter(email=email).all()[0]
+            except Applicant.DoesNotExist:
+                applicant = None
+
+            if (applicant!=None and 
+                applicant.applicantaccount.check_password(passwd)):
+                # authenticated
+
+                request.session['applicant_id'] = applicant.id
+
+                return HttpResponseRedirect(reverse('apply-address'))
+            
+            error_messages.append(u"รหัสผ่านไม่ถูกต้อง")
+    else:
+        form = LoginForm()
+    return render_to_response('application/login.html',
+                              { 'form': form,
+                                'errors': error_messages })
+    
 
 FORM_STEPS = [
     'ข้อมูลส่วนตัวผู้สมัคร',
@@ -24,32 +58,6 @@ FORM_STEPS = [
     'เลือกอันดับสาขาวิชา',
     'เลือกวิธีการส่งหลักฐาน',
     ]
-
-def validate_phone_number(phone_number):
-    # TODO: describe ext format in web form
-    return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
-
-class ApplicantCoreForm(forms.ModelForm):
-    email_confirmation = forms.EmailField()
-
-    def clean_national_id(self):
-        if re.match(r'^(\d){13}$',self.cleaned_data['national_id']) == None:
-            raise forms.ValidationError("รหัสประจำตัวประชาชนไม่ถูกต้อง")
-        return self.cleaned_data['national_id']
-
-    def clean_phone_number(self):
-        if not validate_phone_number(self.cleaned_data['phone_number']):
-            raise forms.ValidationError("หมายเลขโทรศัพท์ไม่ถูกต้อง")
-        return self.cleaned_data['phone_number']
-
-    def clean_email_confirmation(self):
-        if (self.cleaned_data['email'] !=
-            self.cleaned_data['email_confirmation']):
-            raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
-        return self.cleaned_data['email_confirmation']
-
-    class Meta:
-        model = Applicant
 
 def applicant_core_info(request):
     if request.method == 'POST':
@@ -66,6 +74,7 @@ def applicant_core_info(request):
             account.save()
 
             request.session['applicant_id'] = applicant.id
+
             return HttpResponseRedirect(reverse('apply-address'))
     else:
         form = ApplicantCoreForm()
@@ -74,11 +83,6 @@ def applicant_core_info(request):
                                 'steps': FORM_STEPS, 
                                 'current_step': 0 })
 
-
-class AddressForm(forms.ModelForm):
-    # TODO: add form validation
-    class Meta:
-        model = Address
 
 @applicant_required
 def applicant_address(request):
@@ -131,12 +135,6 @@ def applicant_address(request):
                                 'steps': FORM_STEPS, 
                                 'current_step': 1 })
 
-
-class EducationForm(forms.ModelForm):
-    # TODO: add form validation
-    class Meta:
-        model = Education
-        exclude = ['applicant']
 
 @applicant_required
 def applicant_education(request):

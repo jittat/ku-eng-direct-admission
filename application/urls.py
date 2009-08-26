@@ -3,6 +3,7 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns(
     'application.views',
     url(r'^start/$', 'start', name='apply-start'),
+    url(r'^login/$', 'login', name='apply-login'),
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
     url(r'^address/$', 'applicant_address', name='apply-address'),
     url(r'^education/$', 'applicant_education', name='apply-edu'),

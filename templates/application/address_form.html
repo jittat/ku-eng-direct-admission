@@ -1,9 +1,9 @@
-บ้านเลขที่ {{ form.number }} 
-หมู่ที่ {{ form.village_number }}
-หมู่บ้าน {{ form.village_name }}<br/>
-ถนน {{ form.road }}
-ตำบล/แขวง {{ form.district }}<br/>
-อำเภอ/เขต {{ form.city }}
-จังหวัด {{ form.province }}<br/>
-รหัสไปรษณีย์ {{ form.postal_code }}
-หมายเลขโทรศัพท์ {{ form.phone_number }}
+บ้านเลขที่ {{ form.number }} {{ form.number.errors }}
+หมู่ที่ {{ form.village_number }} {{ form.village_number.errors }}
+หมู่บ้าน {{ form.village_name }} {{ form.village_name.errors }} <br/>
+ถนน {{ form.road }} {{ form.road.errors }}
+ตำบล/แขวง {{ form.district }} {{ form.district.errors }} <br/>
+อำเภอ/เขต {{ form.city }} {{ form.city.errors }}
+จังหวัด {{ form.province }} {{ form.province.errors }} <br/>
+รหัสไปรษณีย์ {{ form.postal_code }} {{ form.postal_code.errors }}
+หมายเลขโทรศัพท์ {{ form.phone_number }} {{ form.phone_number.errors }}

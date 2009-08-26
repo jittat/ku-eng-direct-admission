@@ -39,7 +39,7 @@ class Applicant(models.Model):
 
 
 class ApplicantAccount(models.Model):
-    applicant = models.ForeignKey(Applicant)
+    applicant = models.OneToOneField(Applicant)
     hashed_password = models.CharField(max_length=100)
 
     PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
@@ -65,7 +65,7 @@ class ApplicantAccount(models.Model):
         self.set_password(password)
         return password
 
-    def check_password(self):
+    def check_password(self, password):
         import hashlib
 
         salt, enc_passwd = self.hashed_password.split('$')
@@ -77,7 +77,7 @@ class ApplicantAccount(models.Model):
 class Address(models.Model):
     number = models.CharField(max_length=20,
                               verbose_name="บ้านเลขที่")
-    village_number = models.IntegerField(blank=True,
+    village_number = models.IntegerField(blank=True, null=True,
                                          verbose_name="หมู่ที่")
     village_name = models.CharField(blank=True,
                                     max_length=100,
