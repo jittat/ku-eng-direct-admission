@@ -185,3 +185,12 @@ class Major(models.Model):
 
     def __unicode__(self):
         return "%s: %s" % (self.number, self.name)
+
+    __major_list = None
+
+    @staticmethod
+    def get_all_majors():
+        if Major.__major_list==None:
+            Major.__major_list = list(Major.objects.all())
+        return Major.__major_list
+

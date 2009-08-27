@@ -7,6 +7,7 @@ urlpatterns = patterns(
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
     url(r'^address/$', 'applicant_address', name='apply-address'),
     url(r'^education/$', 'applicant_education', name='apply-edu'),
+    url(r'^majors/$', 'applicant_major', name='apply-majors'),
 
     url(r'^doc_menu/$', 'applicant_doc_menu', name='apply-doc-menu'),
     # Example:

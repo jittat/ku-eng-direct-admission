@@ -3,12 +3,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django import forms
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
-from decorators import applicant_required
+from decorators import applicant_required, init_applicant
 from utils import redirect_to_index
 
 from models import Applicant, ApplicantAccount
 from models import Address, ApplicantAddress, Education
+from models import Major
 
 from forms import ApplicantCoreForm, AddressForm, EducationForm
 
@@ -52,14 +54,21 @@ def login(request):
     
 
 FORM_STEPS = [
-    'ข้อมูลส่วนตัวผู้สมัคร',
-    'ที่อยู่',
-    'ข้อมูลการศึกษา',
-    'เลือกอันดับสาขาวิชา',
-    'เลือกวิธีการส่งหลักฐาน',
+    ('ข้อมูลส่วนตัวผู้สมัคร','apply-core'),
+    ('ที่อยู่','apply-address'),
+    ('ข้อมูลการศึกษา','apply-edu'),
+    ('เลือกอันดับสาขาวิชา','apply-majors'),
+    ('เลือกวิธีการส่งหลักฐาน','apply-doc-menu'),
     ]
 
+@init_applicant
 def applicant_core_info(request):
+    applicant = request.applicant
+    if applicant != None:
+        old_email = applicant.email
+    else:
+        old_email = ''
+
     if request.method == 'POST':
         if 'cancel' in request.POST:
             return redirect_to_index(request)
@@ -77,7 +86,8 @@ def applicant_core_info(request):
 
             return HttpResponseRedirect(reverse('apply-address'))
     else:
-        form = ApplicantCoreForm()
+        form = ApplicantCoreForm(instance=applicant,
+                                 initial={'email_confirmation': old_email})
     return render_to_response('application/core.html', 
                               { 'form': form,
                                 'steps': FORM_STEPS, 
@@ -156,7 +166,7 @@ def applicant_education(request):
             applicant_education = form.save(commit=False)
             applicant_education.applicant = applicant
             applicant_education.save()
-            return HttpResponseRedirect(reverse('apply-doc-menu'))
+            return HttpResponseRedirect(reverse('apply-majors'))
             
     else:
         form = EducationForm(instance=old_education)
@@ -165,6 +175,20 @@ def applicant_education(request):
                               { 'form': form,
                                 'steps': FORM_STEPS, 
                                 'current_step': 2 })
+
+def applicant_major(request):
+    if request.method == 'POST':
+        pass
+
+    majors = Major.get_all_majors()
+    max_major_rank = settings.MAX_MAJOR_RANK
+    ranks = [i+1 for i in range(max_major_rank)]
+    return render_to_response('application/majors.html',
+                              { 'majors': majors,
+                                'ranks': ranks,
+                                'max_major_rank': max_major_rank,
+                                'steps': FORM_STEPS,
+                                'current_step': 3})
 
 @applicant_required
 def applicant_doc_menu(request):

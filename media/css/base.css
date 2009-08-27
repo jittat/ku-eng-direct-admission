@@ -23,6 +23,20 @@
     background: lightgreen;
 }
 
+#step-bar li.current a {
+    color: black;
+}
+
 #step-bar li.head {
     font-weight: bold;
+}
+
+#step-bar a, #step-bar a:visited {
+    color: lightgray;
+    text-decoration: none;
+}
+
+#step-bar a:hover {
+    color: white;
+    text-decoration: none;
 }

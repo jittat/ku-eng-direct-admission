@@ -96,3 +96,6 @@ STATIC_DOC_ROOT = MEDIA_ROOT
 
 # used in redirect_to_index
 INDEX_PAGE = 'start-page'
+
+# maximum number of choices
+MAX_MAJOR_RANK = 6

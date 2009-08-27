@@ -1,4 +1,5 @@
 from django import template
+from django.core.urlresolvers import reverse
 
 register = template.Library()
 
@@ -17,11 +18,13 @@ def form_steps(context, step_list=None, current_step=0):
     steps = []
     i = 0
     for s in step_list:
+        step_info = {
+            'text': s[0],
+            'url': reverse(s[1]),
+            'is_current': False 
+            }
         if i==current_step:
-            steps.append({ 'text': s,
-                           'is_current': True })
-        else:
-            steps.append({ 'text': s,
-                           'is_current': False })
+            step_info['is_current'] = True
+        steps.append(step_info)
         i += 1
     return { 'steps' : steps }
