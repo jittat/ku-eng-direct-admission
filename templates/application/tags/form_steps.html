@@ -4,9 +4,13 @@
       <li class="head">ขั้นตอน</li>
       {% for s in steps %}
         {% if s.is_current %}
-          <li class="current"><a href="{{ s.url }}">{{ s.text }}</a></li>
+          <li class="current">{{ s.text }}</li>
         {% else %}
-          <li><a href="{{ s.url }}">{{ s.text }}</a></li>
+          {% if s.is_clickable %}
+            <li><a href="{{ s.url }}">{{ s.text }}</a></li>
+          {% else %}
+            <li class="future">{{ s.text }}</li>
+          {% endif %}
         {% endif %}
       {% endfor %}
     </ul>

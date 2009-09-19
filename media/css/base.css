@@ -27,6 +27,10 @@
     color: black;
 }
 
+#step-bar li.future {
+    color: darkgray;
+}
+
 #step-bar li.head {
     font-weight: bold;
 }

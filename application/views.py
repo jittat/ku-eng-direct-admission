@@ -13,16 +13,13 @@ from models import Address, ApplicantAddress, Education
 from models import Major, MajorPreference
 
 from forms import ApplicantCoreForm, AddressForm, EducationForm
+from forms import LoginForm
 
 def index(request):
     return render_to_response('application/index.html')
 
 def start(request):
     return render_to_response('application/start.html')
-
-class LoginForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
 
 def login(request):
     error_messages = []
@@ -53,6 +50,15 @@ def login(request):
                                 'errors': error_messages })
     
 
+def build_form_step_dict(form_steps):
+    d = {}
+    s = 0
+    for name,url_name in form_steps:
+        d[url_name] = s
+        s += 1
+    return d
+
+# a list of tuples (form name, url-name).
 FORM_STEPS = [
     ('ข้อมูลส่วนตัวผู้สมัคร','apply-core'),
     ('ที่อยู่','apply-address'),
@@ -60,6 +66,24 @@ FORM_STEPS = [
     ('เลือกอันดับสาขาวิชา','apply-majors'),
     ('เลือกวิธีการส่งหลักฐาน','apply-doc-menu'),
     ]
+
+FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
+
+def get_allowed_form_steps(applicant):
+    if applicant.has_major_preference():
+        return FORM_STEP_DICT['apply-doc-menu']
+    if applicant.has_educational_info():
+        return FORM_STEP_DICT['apply-majors']
+    if applicant.has_address():
+        return FORM_STEP_DICT['apply-edu']
+    if applicant.id != None:
+        return FORM_STEP_DICT['apply-address']
+    return FORM_STEP_DICT['apply-core']
+
+def build_form_step_info(current_step, applicant):
+    return { 'steps': FORM_STEPS,
+             'current_step': current_step,
+             'max_linked_step': get_allowed_form_steps(applicant) }
 
 @init_applicant
 def applicant_core_info(request):
@@ -88,11 +112,11 @@ def applicant_core_info(request):
     else:
         form = ApplicantCoreForm(instance=applicant,
                                  initial={'email_confirmation': old_email})
+
+    form_step_info = build_form_step_info(0,applicant)
     return render_to_response('application/core.html', 
                               { 'form': form,
-                                'steps': FORM_STEPS, 
-                                'current_step': 0 })
-
+                                'form_step_info': form_step_info })
 
 @applicant_required
 def applicant_address(request):
@@ -139,11 +163,11 @@ def applicant_address(request):
         contact_address_form = AddressForm(prefix="contact",
                                            instance=old_contact_address)
 
+    form_step_info = build_form_step_info(1,applicant)
     return render_to_response('application/address.html', 
                               { 'home_address_form': home_address_form,
                                 'contact_address_form': contact_address_form,
-                                'steps': FORM_STEPS, 
-                                'current_step': 1 })
+                                'form_step_info': form_step_info })
 
 
 @applicant_required
@@ -171,10 +195,11 @@ def applicant_education(request):
     else:
         form = EducationForm(instance=old_education)
 
+    form_step_info = build_form_step_info(2,applicant)
     return render_to_response('application/education.html', 
                               { 'form': form,
-                                'steps': FORM_STEPS, 
-                                'current_step': 2 })
+                                'form_step_info': form_step_info })
+
 
 def extract_ranks(post_data, major_list):
     """
@@ -226,16 +251,19 @@ def applicant_major(request):
         preference.applicant = applicant
         preference.save()
 
-        return HttpResponseRedirect(reverse('apply-majors'))
+        return HttpResponseRedirect(reverse('apply-doc-menu'))
 
+    form_step_info = build_form_step_info(3,applicant)
     return render_to_response('application/majors.html',
                               { 'majors_prefs': zip(majors,pref_ranks),
                                 'ranks': ranks,
                                 'max_major_rank': max_major_rank,
-                                'steps': FORM_STEPS,
-                                'current_step': 3})
+                                'form_step_info': form_step_info })
 
 @applicant_required
 def applicant_doc_menu(request):
-    return render_to_response('application/doc_menu.html')
+    applicant = request.applicant
+    form_step_info = build_form_step_info(4,applicant)
+    return render_to_response('application/doc_menu.html',
+                              {'form_step_info': form_step_info })
 

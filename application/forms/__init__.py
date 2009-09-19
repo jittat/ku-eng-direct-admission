@@ -12,6 +12,10 @@ def validate_phone_number(phone_number):
     # TODO: describe ext format in web form
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
+class LoginForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
