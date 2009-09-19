@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 import re
+import datetime
 
 from django import forms
 
-from models import Applicant, ApplicantAccount
-from models import Address, ApplicantAddress, Education
+from application.models import Applicant, ApplicantAccount
+from application.models import Address, ApplicantAddress, Education
+from widgets import ThaiSelectDateWidget
 
 def validate_phone_number(phone_number):
     # TODO: describe ext format in web form
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
+THIS_YEAR = datetime.date.today().year
+APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
+
 class ApplicantCoreForm(forms.ModelForm):
     email_confirmation = forms.EmailField()
+    birth_date = forms.DateField(
+        widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS))
 
     def clean_national_id(self):
         if re.match(r'^(\d){13}$',self.cleaned_data['national_id']) == None:

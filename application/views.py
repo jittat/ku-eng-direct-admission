@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django import forms
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django import forms
 
 from decorators import applicant_required, init_applicant
 from utils import redirect_to_index
