@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from fields import IntegerListField
 
 class Applicant(models.Model):
     first_name = models.CharField(max_length=200,
@@ -32,6 +33,12 @@ class Applicant(models.Model):
             return self.education != None
         except Education.DoesNotExist:
             return False            
+
+    def has_major_preference(self):
+        try:
+            return self.preference != None
+        except MajorPreference.DoesNotExist:
+            return False
 
     def can_choose_major(self):
         return (self.has_educational_info() and 
@@ -126,7 +133,6 @@ class GPExamDate(models.Model):
         return self.month_year
 
 class Education(models.Model):
-
     applicant = models.OneToOneField(Applicant,
                                      related_name="education")
 
@@ -186,6 +192,9 @@ class Major(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.number, self.name)
 
+    def select_id(self):
+        return "major_%d" % (self.id,)
+
     __major_list = None
 
     @staticmethod
@@ -193,4 +202,27 @@ class Major(models.Model):
         if Major.__major_list==None:
             Major.__major_list = list(Major.objects.all())
         return Major.__major_list
+
+
+class MajorPreference(models.Model):
+    applicant = models.OneToOneField(Applicant,
+                                     related_name="preference")
+    majors = IntegerListField()
+
+    def to_major_rank_list(self):
+        all_majors = Major.get_all_majors()
+        major_count = len(all_majors)
+
+        ranks = [None] * major_count
+
+        rev = {}
+        for i in range(major_count):
+            rev[int(all_majors[i].number)] = i
+
+        r = 1
+        for m in self.majors:
+            ranks[rev[m]] = r
+            r += 1
+
+        return ranks
 

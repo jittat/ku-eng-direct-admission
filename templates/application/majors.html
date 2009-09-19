@@ -10,16 +10,11 @@
 {% block form-body %}
   <form action="{% url apply-majors %}" method="post">
     <table>
-      {% for m in majors %}
+      {% for major, selected_rank in majors_prefs %}
         <tr>
-	  <td>{{ m.number }}</td><td>{{ m.name }}</td>
+	  <td>{{ major.number }}</td><td>{{ major.name }}</td>
 	  <td>
-	    <select style="width: 50px" name="majors_{{ m.id }}">
-	      <option>--</option>
-	      {% for i in ranks %}
-    	        <option>{{ i }}</option>
-	      {% endfor %}
-	    </select>
+	    {% include "application/include/major_rank_select.html" %}
 	  </td>
 	</tr>
       {% endfor %}

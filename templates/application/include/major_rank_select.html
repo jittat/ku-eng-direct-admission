@@ -1,0 +1,6 @@
+<select style="width: 50px" name="{{ major.select_id }}">
+  <option {% if not selected_rank %}selected="selected"{% endif %}>--</option>
+  {% for i in ranks %}
+    <option {% ifequal i selected_rank %}selected="selected"{% endifequal %}>{{ i }}</option>
+  {% endfor %}
+</select>

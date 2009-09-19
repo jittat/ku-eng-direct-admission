@@ -10,7 +10,7 @@ from utils import redirect_to_index
 
 from models import Applicant, ApplicantAccount
 from models import Address, ApplicantAddress, Education
-from models import Major
+from models import Major, MajorPreference
 
 from forms import ApplicantCoreForm, AddressForm, EducationForm
 
@@ -176,15 +176,60 @@ def applicant_education(request):
                                 'steps': FORM_STEPS, 
                                 'current_step': 2 })
 
+def extract_ranks(post_data, major_list):
+    """
+    extracts a list of majors from post data.  Each select list has an
+    id of the form 'major_ID'.
+    """
+    
+    rank_dict = {}
+    for m in major_list:
+        sel_id = m.select_id()
+        if sel_id in post_data:
+            r = post_data[sel_id]
+            try:
+                rnum = int(r)
+            except:
+                rnum = -1
+            if (rnum >= 1) and (rnum <= settings.MAX_MAJOR_RANK):
+                rank_dict[rnum] = int(m.number)
+
+    ranks = []
+    for r in sorted(rank_dict.keys()):
+        ranks.append(rank_dict[r])
+    return ranks
+
+@applicant_required
 def applicant_major(request):
-    if request.method == 'POST':
-        pass
+    applicant = request.applicant
 
     majors = Major.get_all_majors()
+
+    if applicant.has_major_preference():
+        old_preference = applicant.preference
+        pref_ranks = old_preference.to_major_rank_list()
+    else:
+        old_preference = None
+        pref_ranks = [None] * len(majors)
+
     max_major_rank = settings.MAX_MAJOR_RANK
     ranks = [i+1 for i in range(max_major_rank)]
+    if request.method == 'POST':
+        print extract_ranks(request.POST, majors)
+
+        if old_preference!=None:
+            preference = old_preference
+        else:
+            preference = MajorPreference()
+
+        preference.majors = extract_ranks(request.POST, majors)
+        preference.applicant = applicant
+        preference.save()
+
+        return HttpResponseRedirect(reverse('apply-majors'))
+
     return render_to_response('application/majors.html',
-                              { 'majors': majors,
+                              { 'majors_prefs': zip(majors,pref_ranks),
                                 'ranks': ranks,
                                 'max_major_rank': max_major_rank,
                                 'steps': FORM_STEPS,
