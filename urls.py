@@ -13,6 +13,7 @@ urlpatterns = patterns(
     '',
     url(r'^$', 'adm.application.views.index', name='start-page'),
     (r'^apply/', include('adm.application.urls')),
+    (r'^doc/', include('adm.upload.urls')),
 
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
