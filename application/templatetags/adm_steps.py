@@ -11,8 +11,6 @@ def form_steps(context, step_list=None, current_step=0, max_linked_step=0):
 
         if 'steps' in form_step_info:
             step_list = form_step_info['steps']
-        if step_list == None:
-            step_list = []
 
         if 'current_step' in form_step_info:
             current_step = form_step_info['current_step']
@@ -20,9 +18,9 @@ def form_steps(context, step_list=None, current_step=0, max_linked_step=0):
         if 'max_linked_step' in form_step_info:
             max_linked_step = form_step_info['max_linked_step']
     
+    if step_list == None:
+        step_list = []
     # build step information
-
-    print max_linked_step
 
     steps = []
     i = 0
