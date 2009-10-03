@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 """
 run project with CherryPy wsgi server taken from
 http://www.eflorenzano.com/blog/post/hosting-django-site-pure-python/
 """
 
-import wsgiserver
+from cherrypy import wsgiserver
 import os
 import sys
 import django.core.handlers.wsgi

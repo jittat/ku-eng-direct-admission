@@ -18,6 +18,9 @@ class TestUploadHandler(FileUploadHandler):
         return None
 
 
+def get_session_key(request,progress_id):
+    return "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
+
 class UploadProgressSessionHandler(FileUploadHandler):
     """
     Tracks progress for file uploads.  The http post request must
@@ -39,12 +42,12 @@ class UploadProgressSessionHandler(FileUploadHandler):
         elif 'X-Progress-ID' in self.request.META:
             self.progress_id = self.request.META['X-Progress-ID']
         if self.progress_id:
-            self.session_key = "%s_%s" % (self.request.META['REMOTE_ADDR'], self.progress_id )
+            self.session_key = get_session_key(self.request, self.progress_id)
             self.request.session[self.session_key] = {
+                'finished': False,
                 'length': self.content_length,
                 'uploaded' : 0
                 }
-            print "added:", self.session_key
 
     def new_file(self, field_name, file_name, content_type, content_length, charset=None):
         pass
@@ -54,7 +57,7 @@ class UploadProgressSessionHandler(FileUploadHandler):
             data = self.request.session[self.session_key]
             data['uploaded'] += self.chunk_size
             self.request.session[self.session_key] = data
-            print data
+            self.request.session.save()
         return raw_data
     
     def file_complete(self, file_size):
@@ -63,10 +66,8 @@ class UploadProgressSessionHandler(FileUploadHandler):
 
     def upload_complete(self):
         if self.session_key:
-            print self.session_key
-            del self.request.session[self.session_key]
-
-
+            self.request.session[self.session_key]['finished'] = True
+            self.request.session.save()
 
 
 def upload_progress(request):
@@ -80,11 +81,13 @@ def upload_progress(request):
         progress_id = request.META['X-Progress-ID']
     if progress_id:
         from django.utils import simplejson
-        session_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
+        session_key = get_session_key(request, progress_id)
+        print 'session_key:', session_key
         try:
             data = request.session[session_key]
         except:
             data = {'length': 1, 'uploaded': 1}
+        print data
         return HttpResponse(simplejson.dumps(data))
     else:
         return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
