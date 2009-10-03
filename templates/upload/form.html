@@ -5,11 +5,16 @@
 {% endblock %}
 
 {% block body %}
-<form id="upload-form" action="{% url upload-form %}" method="post" 
-      enctype="multipart/form-data">
-  {{ form.as_p }}
-  <input type="submit" value="Upload"/>
-</form>
+  {% for f in field_forms %}
+    <form id="upload-form-{{ f.name }}" 
+	  action="{% url upload-form field_name=f.name %}" 
+	  method="post" 
+          enctype="multipart/form-data">
+      {{ f.field.verbose_name }}:
+      {{ f.form.uploaded_file }}
+      <input type="submit" value="Upload"/>
+    </form>
+  {% endfor %}
 
 <script type="text/javascript">
 // Generate 32 char random uuid 

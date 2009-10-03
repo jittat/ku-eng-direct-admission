@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'adm.application',
+    'adm.upload',
 )
 
 
@@ -100,6 +101,9 @@ INDEX_PAGE = 'start-page'
 
 # maximum number of choices
 MAX_MAJOR_RANK = 6
+
+# path for storing uploaded images (for documents)
+UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 
 try:
     from settings_local import *

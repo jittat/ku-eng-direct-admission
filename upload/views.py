@@ -4,22 +4,19 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.files.uploadhandler import FileUploadHandler
 
-class FileUploadForm(forms.Form):
-    title = forms.CharField(max_length=100)
-    uploaded_file = forms.FileField()
+from commons.decorators import applicant_required
 
-class TestUploadHandler(FileUploadHandler):
-    def receive_data_chunk(self, raw_data, start):
-        print "At:", start
-        return raw_data
-    
-    def file_complete(self, file_size):
-        print "Size:", file_size
+from models import AppDocs
+
+def get_session_key(request):
+    if 'X-Progress-ID' in request.GET :
+        progress_id = request.GET['X-Progress-ID']
+    elif 'X-Progress-ID' in self.request.META:
+        progress_id = request.META['X-Progress-ID']
+    if progress_id:
+        return "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
+    else:
         return None
-
-
-def get_session_key(request,progress_id):
-    return "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
 
 class UploadProgressSessionHandler(FileUploadHandler):
     """
@@ -32,17 +29,12 @@ class UploadProgressSessionHandler(FileUploadHandler):
 
     def __init__(self, request=None):
         super(UploadProgressSessionHandler, self).__init__(request)
-        self.progress_id = None
         self.session_key = None
 
     def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
         self.content_length = content_length
-        if 'X-Progress-ID' in self.request.GET :
-            self.progress_id = self.request.GET['X-Progress-ID']
-        elif 'X-Progress-ID' in self.request.META:
-            self.progress_id = self.request.META['X-Progress-ID']
-        if self.progress_id:
-            self.session_key = get_session_key(self.request, self.progress_id)
+        self.session_key = get_session_key(self.request)
+        if self.session_key:
             self.request.session[self.session_key] = {
                 'finished': False,
                 'length': self.content_length,
@@ -74,30 +66,43 @@ def upload_progress(request):
     """
     Return JSON object with information about the progress of an upload.
     """
-    progress_id = ''
-    if 'X-Progress-ID' in request.GET:
-        progress_id = request.GET['X-Progress-ID']
-    elif 'X-Progress-ID' in request.META:
-        progress_id = request.META['X-Progress-ID']
-    if progress_id:
+    session_key = get_session_key(request)
+    if session_key:
         from django.utils import simplejson
-        session_key = get_session_key(request, progress_id)
         print 'session_key:', session_key
         try:
             data = request.session[session_key]
         except:
-            data = {'length': 1, 'uploaded': 1}
+            data = {'length': 1, 'uploaded': 1, 'finished': True}
         print data
         return HttpResponse(simplejson.dumps(data))
     else:
         return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
 
 
+class FileUploadForm(forms.Form):
+    uploaded_file = forms.FileField()
 
+def populate_upload_field_forms(fields):
+    field_forms = []
+    for f in fields:
+        field = AppDocs._meta.get_field_by_name(f)[0]
+        field_forms.append({ 'name': f,
+                             'field': field,
+                             'form': FileUploadForm() })
+    return field_forms
+        
+@applicant_required
 def index(request):
-    return HttpResponseRedirect(reverse('upload-form'))
+    fields = AppDocs.FormMeta.upload_fields
+    field_forms = populate_upload_field_forms(fields)
+    return render_to_response("upload/form.html",
+                              { 'field_forms': field_forms })
 
-def upload(request):
+
+@applicant_required
+def upload(request, field_name):
+    fields = AppDocs.FormMeta.upload_fields
     if request.method=="POST":
         request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
         form = FileUploadForm(request.POST, request.FILES)

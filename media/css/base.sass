@@ -1,0 +1,42 @@
+#step-bar
+  background: green
+  color: white
+  height: 40px
+  -moz-border-radius: 5px
+
+  li
+    display: block
+    float: left
+    list-style-image: none
+    list-style-position: outside
+    list-style-type: none
+    padding-left: 10px
+    padding-right: 10px
+    margin: 0
+    line-height: 40px
+
+    &.current
+      color: black
+      font-weight: bold
+      background: lightgreen
+
+      a
+        color: black
+
+    &.future
+      color: darkgray
+
+    &.head
+      font-weight: bold
+
+  a
+    color: lightgray
+    text-decoration: none
+
+    &:visited
+      color: lightgray
+      text-decoration: none
+
+    &:hover
+      color: white
+      text-decoration: none

@@ -5,8 +5,9 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django import forms
 
-from decorators import applicant_required, init_applicant
-from utils import redirect_to_index
+from commons.decorators import applicant_required
+from commons.utils import redirect_to_index
+from decorators import init_applicant
 
 from models import Applicant, ApplicantAccount
 from models import Address, ApplicantAddress, Education
