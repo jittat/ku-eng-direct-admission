@@ -23,16 +23,68 @@ def get_doc_path_for(new_filename):
 
 class AppDocs(models.Model):
     applicant = models.OneToOneField(Applicant)
-    picture = models.ImageField(upload_to=get_doc_path_for('picture'),
-                                storage=uploaded_storage,
-                                blank=True,
-                                verbose_name='รูปถ่าย')
+    picture = models.ImageField(
+        upload_to=get_doc_path_for('picture'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='รูปถ่าย')
     edu_certificate = models.ImageField(
         upload_to=get_doc_path_for('edu_certificate'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='ใบรับรองการศึกษา')
 
+    abroad_edu_certificate = models.ImageField(
+        upload_to=get_doc_path_for('abroad_edu_certificate'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='หลักฐานการศึกษาต่างประเทศ')
+
+    gat_score = models.ImageField(
+        upload_to=get_doc_path_for('gat_score'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='คะแนน GAT')
+
+    pat1_score = models.ImageField(
+        upload_to=get_doc_path_for('pat1_score'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='คะแนน PAT1')
+
+    pat3_score = models.ImageField(
+        upload_to=get_doc_path_for('pat3_score'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='คะแนน PAT3')
+
+    anet_score = models.ImageField(
+        upload_to=get_doc_path_for('anet_score'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='คะแนน A-NET ความถนัดทางวิศวกรรม')
+
+    nat_id = models.ImageField(
+        upload_to=get_doc_path_for('nat_id'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='สำเนาบัตรประจำตัวประชาชน หรือสำเนาบัตรนักเรียน')
+
+    app_fee_doc = models.ImageField(
+        upload_to=get_doc_path_for('app_fee_doc'),
+        storage=uploaded_storage,
+        blank=True,
+        verbose_name='หลักฐานใบนำฝากเงินค่าสมัคร')
+
     class FormMeta:
-        upload_fields = ['picture', 'edu_certificate']
+        upload_fields = [
+            'picture', 
+            'edu_certificate',
+            'abroad_edu_certificate',
+            'gat_score',
+            'pat1_score',
+            'pat3_score',
+            'anet_score',
+            'nat_id',
+            'app_fee_doc']
 

@@ -9,9 +9,10 @@ from commons.decorators import applicant_required
 from models import AppDocs
 
 def get_session_key(request):
+    progress_id = None
     if 'X-Progress-ID' in request.GET :
         progress_id = request.GET['X-Progress-ID']
-    elif 'X-Progress-ID' in self.request.META:
+    elif 'X-Progress-ID' in request.META:
         progress_id = request.META['X-Progress-ID']
     if progress_id:
         return "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
@@ -50,6 +51,7 @@ class UploadProgressSessionHandler(FileUploadHandler):
             data['uploaded'] += self.chunk_size
             self.request.session[self.session_key] = data
             self.request.session.save()
+            print data
         return raw_data
     
     def file_complete(self, file_size):
@@ -113,7 +115,5 @@ def upload(request, field_name):
                 print f.temporary_file_path()
             except:
                 print 'no path'
-    else:
-        form = FileUploadForm()
-    return render_to_response("upload/form.html",
-                              { 'form': form })
+
+    return HttpResponseRedirect(reverse('upload-index'))
