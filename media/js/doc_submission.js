@@ -16,7 +16,7 @@ var DocSubmission = {
         if (jQuery.data(this_form, 'submitted'))
 	    return false;
 
-        var freq = 1000; // freqency of update in ms
+        var freq = 100; // freqency of update in ms
         var uuid = DocSubmission.genUuid(); // id for this upload so we can fetch progress info.
         
 	var progress_url = '/doc/progress/'; // ajax view serving progress info
@@ -31,7 +31,9 @@ var DocSubmission = {
 				 '<span class="progress-info">' +
 				 'uploading 0%' +
 				 '</span>' +
-				 '<div class="progress-bar"></div>' +
+				 '<div class="progress-bar">' +
+				 '<div class="progress-indicator"></div>' +
+				 '</div>' +
 				 '</div>'));
         // Update progress bar
 	function update_progress_info() {
@@ -45,7 +47,7 @@ var DocSubmission = {
 				  progress = 1;
 			      var width = $progress.find('.progress-container').width()
 			      var progress_width = width * progress;
-			      $progress.find('.progress-bar').width(progress_width);
+			      $progress.find('.progress-indicator').width(progress_width);
 			      $progress.find('.progress-info').text('uploading ' + parseInt(progress*100) + '%');
 			  }
 			  if(!data.finished) 

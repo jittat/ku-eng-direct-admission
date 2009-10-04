@@ -10,71 +10,90 @@ from application.models import Applicant
 
 uploaded_storage = FileSystemStorage(location=settings.UPLOADED_DOC_PATH)
 
-def get_doc_path(instance, filename, new_filename):
-    first, ext = os.path.splitext(filename)    
-    return ('doc/%d/%s%s' % (instance.applicant.id, new_filename, ext))
+def get_doc_path(applicant, filename):
+    return ('doc/%d/%s' % (applicant.id, filename))
 
-def get_doc_path_for(new_filename):
+def get_doc_fullpath(applicant, filename):
+    return os.path.join(settings.UPLOADED_DOC_PATH,
+                        get_doc_path(applicant, filename))
+
+def get_field_filename(org_filename, field_name):
+    first, ext = os.path.splitext(org_filename)    
+    return field_name + ext
+
+def get_field_thumbnail_filename(field_name):
+    return field_name + '.thumbnail.png'
+
+def get_doc_path_function(field_name):
     "returns a function for modifying uploaded filename"
     def f(instance, filename):
-        return get_doc_path(instance, filename, new_filename)
+        field_filename = get_field_filename(filename, field_name)
+        return get_doc_path(instance.applicant, field_filename)
     return f
 
 
 class AppDocs(models.Model):
     applicant = models.OneToOneField(Applicant)
     picture = models.ImageField(
-        upload_to=get_doc_path_for('picture'),
+        upload_to=get_doc_path_function('picture'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='รูปถ่าย')
     edu_certificate = models.ImageField(
-        upload_to=get_doc_path_for('edu_certificate'),
+        upload_to=get_doc_path_function('edu_certificate'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='ใบรับรองการศึกษา')
 
     abroad_edu_certificate = models.ImageField(
-        upload_to=get_doc_path_for('abroad_edu_certificate'),
+        upload_to=get_doc_path_function('abroad_edu_certificate'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='หลักฐานการศึกษาต่างประเทศ')
 
     gat_score = models.ImageField(
-        upload_to=get_doc_path_for('gat_score'),
+        upload_to=get_doc_path_function('gat_score'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='คะแนน GAT')
 
     pat1_score = models.ImageField(
-        upload_to=get_doc_path_for('pat1_score'),
+        upload_to=get_doc_path_function('pat1_score'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='คะแนน PAT1')
 
     pat3_score = models.ImageField(
-        upload_to=get_doc_path_for('pat3_score'),
+        upload_to=get_doc_path_function('pat3_score'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='คะแนน PAT3')
 
     anet_score = models.ImageField(
-        upload_to=get_doc_path_for('anet_score'),
+        upload_to=get_doc_path_function('anet_score'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='คะแนน A-NET ความถนัดทางวิศวกรรม')
 
     nat_id = models.ImageField(
-        upload_to=get_doc_path_for('nat_id'),
+        upload_to=get_doc_path_function('nat_id'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='สำเนาบัตรประจำตัวประชาชน หรือสำเนาบัตรนักเรียน')
 
     app_fee_doc = models.ImageField(
-        upload_to=get_doc_path_for('app_fee_doc'),
+        upload_to=get_doc_path_function('app_fee_doc'),
         storage=uploaded_storage,
         blank=True,
         verbose_name='หลักฐานใบนำฝากเงินค่าสมัคร')
+
+    def thumbnail_path(self, field_name):
+        return get_doc_fullpath(self.applicant, 
+                                get_field_thumbnail_filename(field_name))
+
+    @staticmethod
+    def valid_field_name(field_name):
+        return field_name in AppDocs.FormMeta.upload_fields    
 
     class FormMeta:
         upload_fields = [

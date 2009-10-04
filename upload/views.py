@@ -1,6 +1,7 @@
 import os
 
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django import forms
@@ -9,6 +10,8 @@ from django.core.files.uploadhandler import FileUploadHandler
 from commons.decorators import applicant_required
 
 from models import AppDocs
+from models import get_field_thumbnail_filename, get_doc_fullpath
+
 
 def get_session_key(request):
     progress_id = None
@@ -88,12 +91,20 @@ def upload_progress(request):
 class FileUploadForm(forms.Form):
     uploaded_file = forms.FileField()
 
-def populate_upload_field_forms(fields):
+def populate_upload_field_forms(app_docs, fields):
     field_forms = []
     for f in fields:
         field = AppDocs._meta.get_field_by_name(f)[0]
+
+        has_thumbnail = False
+        if app_docs!=None:
+            field_value = app_docs.__getattribute__(f)
+            if (field_value!=None) and (field_value.name!=''):
+                has_thumbnail = True
+
         field_forms.append({ 'name': f,
                              'field': field,
+                             'has_thumbnail': has_thumbnail,
                              'form': FileUploadForm() })
     return field_forms
      
@@ -107,12 +118,64 @@ def get_applicant_docs_or_none(applicant):
 @applicant_required
 def index(request):
     fields = AppDocs.FormMeta.upload_fields
-    field_forms = populate_upload_field_forms(fields)
-
     docs = get_applicant_docs_or_none(request.applicant)
+
+    field_forms = populate_upload_field_forms(docs, fields)
 
     return render_to_response("upload/form.html",
                               { 'field_forms': field_forms })
+
+def save_as_temp_file(f):
+    data = f.read()
+    name = f.name
+    from tempfile import mkstemp
+    from django.core.files import File
+    fid, temp_filename = mkstemp()
+    print fid, temp_filename
+    new_f = os.fdopen(fid,'wb')
+    new_f.write(data)
+    new_f.close()
+    f = File(open(temp_filename))
+    f.name = name
+    return (f, temp_filename)
+
+
+def create_thumbnail(app_docs, field_name, filename):
+    thumb_filename = get_field_thumbnail_filename(field_name)
+    full_thumb_filename = get_doc_fullpath(app_docs.applicant, 
+                                           thumb_filename)
+    
+    import Image
+    size = 100,100
+    im = Image.open(filename)
+    im.thumbnail(size)
+    im.save(full_thumb_filename,'png')
+
+def serve_file(filename):
+    import mimetypes
+    import stat
+    from django.utils.http import http_date
+
+    statobj = os.stat(filename)
+    mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+    contents = open(filename, 'rb').read()
+    response = HttpResponse(contents, mimetype=mimetype)
+    response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
+    response["Content-Length"] = len(contents)
+    return response
+
+
+@applicant_required
+def doc_thumbnail(request, field_name):
+    if not AppDocs.valid_field_name(field_name):
+        return HttpResponseServerError('Invalid field')
+
+    docs = get_applicant_docs_or_none(request.applicant)
+    filename = docs.thumbnail_path(field_name)
+    if os.path.exists(filename):
+        return serve_file(filename)
+    else:
+        return HttpResponseNotFound()
 
 
 @applicant_required
@@ -122,7 +185,7 @@ def upload(request, field_name):
 
     fields = AppDocs.FormMeta.upload_fields
 
-    if field_name not in fields:
+    if not AppDocs.valid_field_name(field_name):
         return HttpResponseServerError('Invalid field')
 
     docs = get_applicant_docs_or_none(request.applicant)
@@ -131,25 +194,13 @@ def upload(request, field_name):
     if form.is_valid():
         f = request.FILES['uploaded_file']
         used_temp_file = False
+
+        # check if it's a file on disk
         try:
-            # check if it's a file on disk
-            print "File is at:", f.temporary_file_path()
-            pass
+            temp_filename = f.temporary_file_path()
         except:
             # memory file... have to save it
-            print "saving..."
-            data = f.read()
-            name = f.name
-            print 'name:', f.name
-            from tempfile import mkstemp
-            from django.core.files import File
-            fid, temp_filename = mkstemp()
-            print fid, temp_filename
-            new_f = os.fdopen(fid,'wb')
-            new_f.write(data)
-            new_f.close()
-            f = File(open(temp_filename))
-            f.name = name
+            f, temp_filename = save_as_temp_file(f)
             used_temp_file = True
 
         if docs==None:
@@ -159,7 +210,10 @@ def upload(request, field_name):
         docs.__setattr__(field_name, f)
         docs.save()
 
-    if used_temp_file:
+        create_thumbnail(docs, field_name, temp_filename)
+
         f.close()
-        os.remove(temp_filename)
+        if used_temp_file:
+            os.remove(temp_filename)
+
     return HttpResponseRedirect(reverse('upload-index'))
