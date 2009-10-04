@@ -117,48 +117,47 @@ def index(request):
 
 @applicant_required
 def upload(request, field_name):
+    if request.method!="POST":
+        return HttpResponseServerError('Bad request method')
+
     fields = AppDocs.FormMeta.upload_fields
 
+    if field_name not in fields:
+        return HttpResponseServerError('Invalid field')
+
     docs = get_applicant_docs_or_none(request.applicant)
-    if request.method=="POST":
-        request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
-        form = FileUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            f = request.FILES['uploaded_file']
-            used_temp_file = False
-            try:
-                # check if it's a file on disk
-                print "File is at:", f.temporary_file_path()
-                pass
-            except:
-                # memory file... have to save it
-                print "saving..."
-                data = f.read()
-                name = f.name
-                print 'name:', f.name
-                from tempfile import mkstemp
-                from django.core.files import File
-                fid, temp_filename = mkstemp()
-                print fid, temp_filename
-                new_f = os.fdopen(fid,'wb')
-                new_f.write(data)
-                new_f.close()
-                f = File(open(temp_filename))
-                f.name = name
-                used_temp_file = True
+    request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
+    form = FileUploadForm(request.POST, request.FILES)
+    if form.is_valid():
+        f = request.FILES['uploaded_file']
+        used_temp_file = False
+        try:
+            # check if it's a file on disk
+            print "File is at:", f.temporary_file_path()
+            pass
+        except:
+            # memory file... have to save it
+            print "saving..."
+            data = f.read()
+            name = f.name
+            print 'name:', f.name
+            from tempfile import mkstemp
+            from django.core.files import File
+            fid, temp_filename = mkstemp()
+            print fid, temp_filename
+            new_f = os.fdopen(fid,'wb')
+            new_f.write(data)
+            new_f.close()
+            f = File(open(temp_filename))
+            f.name = name
+            used_temp_file = True
 
-            if docs==None:
-                docs = AppDocs()
-                docs.applicant = request.applicant
+        if docs==None:
+            docs = AppDocs()
+            docs.applicant = request.applicant
 
-            if field_name in fields:
-                docs.__setattr__(field_name, f)
-                docs.save()
-            else:
-                if used_temp_file:
-                    f.close()
-                    os.remove(temp_filename)
-                return HttpResponseServerError('Invalid field')
+        docs.__setattr__(field_name, f)
+        docs.save()
 
     if used_temp_file:
         f.close()
