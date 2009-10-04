@@ -19,12 +19,17 @@
       {{ f.field.verbose_name }}:
       {{ f.form.uploaded_file }}
       <input type="submit" value="Upload"/>
+      <div id="upload-progress-{{ f.name }}"></div>
     </form>
   {% endfor %}
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.doc-upload-form').submit(DocSubmission.submitUploadForm);
+  {% for f in field_forms %}
+    $('#upload-form-{{ f.name }}').submit(function() {
+      return DocSubmission.handleFormSubmit(this,"{{ f.name }}");
+    });
+  {% endfor %}
 });
 </script>
 {% endblock %}

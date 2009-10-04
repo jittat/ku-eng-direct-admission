@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
@@ -51,11 +53,11 @@ class UploadProgressSessionHandler(FileUploadHandler):
             data['uploaded'] += self.chunk_size
             self.request.session[self.session_key] = data
             self.request.session.save()
-            print data
+            #print data
         return raw_data
     
     def file_complete(self, file_size):
-        print 'done', file_size
+        #print 'done', file_size
         pass
 
     def upload_complete(self):
@@ -76,10 +78,11 @@ def upload_progress(request):
             data = request.session[session_key]
         except:
             data = {'length': 1, 'uploaded': 1, 'finished': True}
-        print data
+        #print data
         return HttpResponse(simplejson.dumps(data))
     else:
-        return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')
+        return HttpResponseServerError(
+            'Server Error: You must provide X-Progress-ID header or query param.')
 
 
 class FileUploadForm(forms.Form):
@@ -93,11 +96,21 @@ def populate_upload_field_forms(fields):
                              'field': field,
                              'form': FileUploadForm() })
     return field_forms
-        
+     
+def get_applicant_docs_or_none(applicant):
+    try:
+        docs = applicant.appdocs
+    except AppDocs.DoesNotExist:
+        docs = None
+    return docs
+   
 @applicant_required
 def index(request):
     fields = AppDocs.FormMeta.upload_fields
     field_forms = populate_upload_field_forms(fields)
+
+    docs = get_applicant_docs_or_none(request.applicant)
+
     return render_to_response("upload/form.html",
                               { 'field_forms': field_forms })
 
@@ -105,15 +118,49 @@ def index(request):
 @applicant_required
 def upload(request, field_name):
     fields = AppDocs.FormMeta.upload_fields
+
+    docs = get_applicant_docs_or_none(request.applicant)
     if request.method=="POST":
         request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['uploaded_file']
-            print f.content_type
+            used_temp_file = False
             try:
-                print f.temporary_file_path()
+                # check if it's a file on disk
+                print "File is at:", f.temporary_file_path()
+                pass
             except:
-                print 'no path'
+                # memory file... have to save it
+                print "saving..."
+                data = f.read()
+                name = f.name
+                print 'name:', f.name
+                from tempfile import mkstemp
+                from django.core.files import File
+                fid, temp_filename = mkstemp()
+                print fid, temp_filename
+                new_f = os.fdopen(fid,'wb')
+                new_f.write(data)
+                new_f.close()
+                f = File(open(temp_filename))
+                f.name = name
+                used_temp_file = True
 
+            if docs==None:
+                docs = AppDocs()
+                docs.applicant = request.applicant
+
+            if field_name in fields:
+                docs.__setattr__(field_name, f)
+                docs.save()
+            else:
+                if used_temp_file:
+                    f.close()
+                    os.remove(temp_filename)
+                return HttpResponseServerError('Invalid field')
+
+    if used_temp_file:
+        f.close()
+        os.remove(temp_filename)
     return HttpResponseRedirect(reverse('upload-index'))
