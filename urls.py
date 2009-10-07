@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from django.views.generic.simple import direct_to_template
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -11,7 +12,9 @@ if media_pattern[0]=='/':
 
 urlpatterns = patterns(
     '',
-    url(r'^$', 'adm.application.views.index', name='start-page'),
+    url(r'^$', direct_to_template, 
+        { 'template': 'index.html' }, name='start-page'),
+
     (r'^apply/', include('adm.application.urls')),
     (r'^doc/', include('adm.upload.urls')),
 

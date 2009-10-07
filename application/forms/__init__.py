@@ -16,6 +16,23 @@ class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
 
+
+class ForgetPasswordForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        applicants = (Applicant.objects
+                      .filter(email=email))
+        print applicants
+        if len(applicants)==1:
+            applicant = applicants[0]
+            return {'email': email,
+                    'applicant': applicant}
+        else:
+            raise forms.ValidationError(u'ไม่มีผู้ใช้ที่ใช้อีเมล์: ' +
+                                        email)
+        
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 

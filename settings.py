@@ -105,6 +105,8 @@ MAX_MAJOR_RANK = 6
 # path for storing uploaded images (for documents)
 UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 
+EMAIL_HOST = 'anti-spam.ku.ac.th'
+
 try:
     from settings_local import *
 except ImportError:

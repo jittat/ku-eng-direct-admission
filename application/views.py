@@ -14,13 +14,9 @@ from models import Address, ApplicantAddress, Education
 from models import Major, MajorPreference
 
 from forms import ApplicantCoreForm, AddressForm, EducationForm
-from forms import LoginForm
+from forms import LoginForm, ForgetPasswordForm
 
-def index(request):
-    return render_to_response('application/index.html')
-
-def start(request):
-    return render_to_response('application/start.html')
+from email import send_applicant_email
 
 def login(request):
     error_messages = []
@@ -49,7 +45,30 @@ def login(request):
     return render_to_response('application/login.html',
                               { 'form': form,
                                 'errors': error_messages })
-    
+
+
+def logout(request):
+    request.session.flush()
+    return redirect_to_index(request)
+
+
+def forget_password(request):
+    if request.method == 'POST':
+        form = ForgetPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']['email']
+            applicant = form.cleaned_data['email']['applicant']
+            account = applicant.applicantaccount
+            new_pwd = account.random_password()
+            account.save()
+            send_applicant_email(applicant, new_pwd)
+            
+            return HttpResponseRedirect(reverse('apply-login'))
+    else:
+        form = ForgetPasswordForm()
+
+    return render_to_response('application/forget.html', 
+                              { 'form': form })
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -71,6 +90,8 @@ FORM_STEPS = [
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
 
 def get_allowed_form_steps(applicant):
+    if applicant==None:
+        return FORM_STEP_DICT['apply-core']
     if applicant.has_major_preference():
         return FORM_STEP_DICT['apply-doc-menu']
     if applicant.has_educational_info():
@@ -104,8 +125,9 @@ def applicant_core_info(request):
 
             account = ApplicantAccount(applicant=applicant)
             new_pwd = account.random_password()
-            print "PASSWORD:", new_pwd
             account.save()
+
+            send_applicant_email(applicant, new_pwd)
 
             request.session['applicant_id'] = applicant.id
 

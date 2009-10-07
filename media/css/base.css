@@ -23,6 +23,10 @@
       color: darkgray; }
     #step-bar li.head {
       font-weight: bold; }
+  #step-bar #log-out-button {
+    float: right;
+    line-height: 40px;
+    padding-right: 15px; }
   #step-bar a {
     color: lightgray;
     text-decoration: none; }

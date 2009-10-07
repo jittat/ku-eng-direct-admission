@@ -180,9 +180,9 @@ class Education(models.Model):
 
     def __unicode__(self):
         if self.has_graduated:
-            return "จบการศึกษาจากโรงเรียน" + self.school_name
+            return u"จบการศึกษาจากโรงเรียน" + self.school_name
         else:
-            return "กำลังศึกษาอยู่ที่โรงเรียน" + self.school_name
+            return u"กำลังศึกษาอยู่ที่โรงเรียน" + self.school_name
 
 
 class Major(models.Model):
