@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.conf import settings
 from fields import IntegerListField
 
 class Applicant(models.Model):
+    # core applicant information
     first_name = models.CharField(max_length=200,
                                   verbose_name="ชื่อ")
     last_name = models.CharField(max_length=300,
@@ -19,7 +21,24 @@ class Applicant(models.Model):
                                     verbose_name="หมายเลขโทรศัพท์")
     email = models.EmailField()
 
+    # application data
+
+    UNDECIDED_METHOD = 0
+    SUBMITTED_BY_MAIL = 1
+    SUBMITTED_ONLINE = 2
+    SUBMISSION_METHOD_CHOICES = [(UNDECIDED_METHOD,'ยังไม่ได้เลือก'),
+                                 (SUBMITTED_BY_MAIL,'ส่งทางไปรษณีย์'),
+                                 (SUBMITTED_ONLINE,'ส่งออนไลน์')]
+
+    is_submitted = models.BooleanField(default=False)
+    doc_submission_method = models.IntegerField(
+        choices=SUBMISSION_METHOD_CHOICES,
+        default=UNDECIDED_METHOD)
+
     def __unicode__(self):
+        return self.full_name()
+
+    def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
 
     def has_address(self):
@@ -43,6 +62,18 @@ class Applicant(models.Model):
     def can_choose_major(self):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
+
+    def generate_submission_ticket(self):
+        pass
+
+    def ticket_number(self):
+        return ("%(year)d%(method)d%(id)05d" % 
+                { 'year': settings.ADMISSION_YEAR,
+                  'method': self.doc_submission_method,
+                  'id': self.id })
+
+    def verification_number(self):
+        return "12345678901234567890"
 
 
 class ApplicantAccount(models.Model):

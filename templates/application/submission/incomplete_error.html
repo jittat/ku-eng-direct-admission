@@ -1,0 +1,11 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}Submission Error{% endblock %}
+
+{% block form-body %}
+  เอกสารยังไม่เรียบร้อย ยังไม่สามารถส่งได้ สิ่งที่คุณขาดคือ:
+  <ul>
+    <li>รายการ</li>
+  </ul>
+  กลับไป<a href="{% url apply-core %}">ป้อนข้อมูล</a>
+{% endblock %}

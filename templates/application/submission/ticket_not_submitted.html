@@ -1,0 +1,11 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}Ticket Error{% endblock %}
+
+{% block form-body %}
+<h2>คุณยังไม่ได้ส่งใบสมัคร</h2>
+<p>
+  ไม่สามารถแสดงใบนำส่งได้ เนื่องจากคุณยังไม่ได้ส่งใบสมัคร<br/>
+  กลับไป<a href="{% url apply-core %}">ป้อนข้อมูล</a>
+</p>
+{% endblock %}

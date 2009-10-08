@@ -17,6 +17,13 @@ urlpatterns = patterns(
     url(r'^majors/$', 'applicant_major', name='apply-majors'),
 
     url(r'^doc_menu/$', 'applicant_doc_menu', name='apply-doc-menu'),
+    url(r'^confirm/$', 'info_confirm', name='apply-confirm'),
+
+    url(r'^ticket/$', 'submission_ticket', name='apply-ticket'),
+    url(r'^incomplete/$', direct_to_template, 
+        {'template': 'application/submission/incomplete_error.html'},
+        name='apply-incomplete'),
+
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 

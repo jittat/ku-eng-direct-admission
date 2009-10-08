@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <td>
+      <b>ที่อยู่</b><br/>
+      <div class="address">
+	{% with applicant.address.home_address as address %}
+	  {% include "application/include/address.html" %}
+	{% endwith %}
+      </div>
+    </td>
+    <td>
+      <b>ที่ติดต่อ</b><br/>
+      <div class="address">
+	{% with applicant.address.contact_address as address %}
+  	  {% include "application/include/address.html" %}
+	{% endwith %}
+      </div>
+    </td>
+  </tr>
+</table>

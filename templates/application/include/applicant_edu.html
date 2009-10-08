@@ -1,0 +1,11 @@
+{% with applicant.education as education %}
+  <ul>
+    <li>{{ education.get_has_graduated_display }}</li>
+    <li>
+      {{ education.school_name }} 
+      {{ education.school_city }} 
+      {{ education.school_provice }}
+    </li>
+    <li>GPAX: {{ education.gpax }}
+  </ul>
+{% endwith %}

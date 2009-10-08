@@ -91,6 +91,7 @@ INSTALLED_APPS = (
 # ADM settings
 ####################################
 
+ADMISSION_YEAR = 53
 
 # Absolute path to statis media, e.g., css files.  Used in development
 # with django.views.static.serve

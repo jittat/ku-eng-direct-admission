@@ -1,0 +1,9 @@
+{{ address.number }} {{ address.village_name }}
+{% if address.village_number %}หมู่ {{ address.village_number }}{% endif %}
+ถ. {{ address.road }} {{ address.district }} 
+<br/>
+{{ address.city }}
+{{ address.province }} {{ address.postal_code }}
+<br/>
+เบอร์ติดต่อ {{ address.phone_number }}
+
