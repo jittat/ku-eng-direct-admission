@@ -10,23 +10,29 @@
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
 
   <p>อัพโหลดหลักฐาน</p>
-  {% for f in field_forms %}
-    {% if f.has_thumbnail %}
-      <img src="{% url upload-thumbnail f.name %}"/>
-    {% endif %}
-    <form id="upload-form-{{ f.name }}" 
-	  class="doc-upload-form"
-	  action="{% url upload-form field_name=f.name %}" 
-	  method="post" 
-          enctype="multipart/form-data">
-      {{ f.field.verbose_name }}:
-      {{ f.form.uploaded_file }}
-      <input type="submit" value="Upload"/>
-      <div id="upload-progress-{{ f.name }}">
-	<div class="progress-container"></div>
+  <div id="doc-upload-forms">
+    {% for f in field_forms %}
+      <div class="upload-item">
+	{% if f.has_thumbnail %}
+          <div class="thumbnail">
+	    <img src="{% url upload-thumbnail f.name %}"/>
+	  </div>
+	{% endif %}
+        <form id="upload-form-{{ f.name }}" 
+	      class="doc-upload-form"
+	      action="{% url upload-form field_name=f.name %}" 
+	      method="post" 
+              enctype="multipart/form-data">
+	  <b>{{ f.field.verbose_name }}</b><br/>
+	  {{ f.form.uploaded_file }}
+	  <input type="submit" value="Upload"/>
+	  <div id="upload-progress-{{ f.name }}">
+	    <div class="progress-container"></div>
+	  </div>
+	</form>
       </div>
-    </form>
-  {% endfor %}
+    {% endfor %}
+  </div>
 
 <script type="text/javascript">
 $(document).ready(function() {

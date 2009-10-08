@@ -37,6 +37,20 @@
       color: white;
       text-decoration: none; }
 
+#doc-upload-forms .upload-item {
+  margin: 5px;
+  padding: 5px;
+  width: 45%;
+  height: 50px;
+  background: #e0e0e0;
+  border: 1px solid gray;
+  -moz-border-radius: 5px;
+  float: left; }
+#doc-upload-forms .thumbnail {
+  float: left;
+  padding: 5px;
+  padding-right: 10px; }
+
 .progress-container {
   width: 300px;
   text-align: center;
@@ -55,3 +69,5 @@
   -moz-border-radius: 5px; }
   .submission-ticket .info {
     font-size: 150%; }
+  .submission-ticket .verification {
+    font-size: 80%; }

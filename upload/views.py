@@ -146,7 +146,7 @@ def create_thumbnail(app_docs, field_name, filename):
                                            thumb_filename)
     
     import Image
-    size = 100,100
+    size = 50,50
     im = Image.open(filename)
     im.thumbnail(size)
     im.save(full_thumb_filename,'png')
