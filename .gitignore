@@ -3,3 +3,5 @@
 development.db
 uploaded_docs
 media/css/.sass-cache
+settings_local.py
+
