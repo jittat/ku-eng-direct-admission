@@ -47,9 +47,19 @@ def login(request):
                                 'errors': error_messages })
 
 
+ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
+
 def logout(request):
+    next_url = None
+    if 'url' in request.GET:
+        next_url = request.GET['url']
+        if next_url[0]!='/':
+            next_url = 'http://' + next_url
     request.session.flush()
-    return redirect_to_index(request)
+    if next_url and (next_url in ALLOWED_LOGOUT_REDIRECTION):
+        return HttpResponseRedirect(next_url)
+    else:
+        return redirect_to_index(request)
 
 
 def forget_password(request):
