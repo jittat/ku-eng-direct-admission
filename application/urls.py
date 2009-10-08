@@ -7,9 +7,9 @@ urlpatterns = patterns(
     url(r'^start/$', direct_to_template,
         {'template': 'application/start.html'}, 
         name='apply-start'),
-    url(r'^login/$', 'login', name='apply-login'),
-    url(r'^logout/$', 'logout', name='apply-logout'),
-    url(r'^forget/$', 'forget_password', name='apply-forget'),
+    url(r'^login/$', 'account.login', name='apply-login'),
+    url(r'^logout/$', 'account.logout', name='apply-logout'),
+    url(r'^forget/$', 'account.forget_password', name='apply-forget'),
 
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
     url(r'^address/$', 'applicant_address', name='apply-address'),

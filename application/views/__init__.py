@@ -7,78 +7,16 @@ from django import forms
 
 from commons.decorators import applicant_required
 from commons.utils import redirect_to_index
-from decorators import init_applicant
+from application.decorators import init_applicant
 
-from models import Applicant, ApplicantAccount
-from models import Address, ApplicantAddress, Education
-from models import Major, MajorPreference
+from application.models import Applicant, ApplicantAccount
+from application.models import Address, ApplicantAddress, Education
+from application.models import Major, MajorPreference
 
-from forms import ApplicantCoreForm, AddressForm, EducationForm
-from forms import LoginForm, ForgetPasswordForm
+from application.forms import ApplicantCoreForm, AddressForm, EducationForm
 
-from email import send_applicant_email
+from application.email import send_applicant_email
 
-def login(request):
-    error_messages = []
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            passwd = form.cleaned_data['password']
-
-            try:
-                applicant = Applicant.objects.filter(email=email).all()[0]
-            except Applicant.DoesNotExist:
-                applicant = None
-
-            if (applicant!=None and 
-                applicant.applicantaccount.check_password(passwd)):
-                # authenticated
-
-                request.session['applicant_id'] = applicant.id
-
-                return HttpResponseRedirect(reverse('apply-address'))
-            
-            error_messages.append(u"รหัสผ่านไม่ถูกต้อง")
-    else:
-        form = LoginForm()
-    return render_to_response('application/login.html',
-                              { 'form': form,
-                                'errors': error_messages })
-
-
-ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
-
-def logout(request):
-    next_url = None
-    if 'url' in request.GET:
-        next_url = request.GET['url']
-        if next_url[0]!='/':
-            next_url = 'http://' + next_url
-    request.session.flush()
-    if next_url and (next_url in ALLOWED_LOGOUT_REDIRECTION):
-        return HttpResponseRedirect(next_url)
-    else:
-        return redirect_to_index(request)
-
-
-def forget_password(request):
-    if request.method == 'POST':
-        form = ForgetPasswordForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']['email']
-            applicant = form.cleaned_data['email']['applicant']
-            account = applicant.applicantaccount
-            new_pwd = account.random_password()
-            account.save()
-            send_applicant_email(applicant, new_pwd)
-            
-            return HttpResponseRedirect(reverse('apply-login'))
-    else:
-        form = ForgetPasswordForm()
-
-    return render_to_response('application/forget.html', 
-                              { 'form': form })
 
 def build_form_step_dict(form_steps):
     d = {}
