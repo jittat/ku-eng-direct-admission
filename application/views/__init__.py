@@ -31,8 +31,8 @@ FORM_STEPS = [
     ('ข้อมูลส่วนตัวผู้สมัคร','apply-core'),
     ('ที่อยู่','apply-address'),
     ('ข้อมูลการศึกษา','apply-edu'),
-    ('เลือกอันดับสาขาวิชา','apply-majors'),
-    ('เลือกวิธีการส่งหลักฐาน','apply-doc-menu'),
+    ('อันดับสาขาวิชา','apply-majors'),
+    ('หลักฐานการสมัคร','apply-doc-menu'),
     ]
 
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
@@ -147,6 +147,7 @@ def applicant_education(request):
 
     if applicant.has_educational_info():
         old_education = applicant.education
+        old_education.fix_boolean_fields()
     else:
         old_education = None
 
@@ -234,14 +235,18 @@ def applicant_major(request):
 @applicant_required
 def applicant_doc_menu(request):
     applicant = request.applicant
+    chosen = applicant.doc_submission_method != Applicant.UNDECIDED_METHOD
     form_step_info = build_form_step_info(4,applicant)
     return render_to_response('application/doc_menu.html',
-                              {'form_step_info': form_step_info })
+                              {'form_step_info': form_step_info,
+                               'applicant': applicant,
+                               'chosen': chosen })
 
 
 @applicant_required
 def info_confirm(request):
     applicant = request.applicant
+
     if request.method == 'POST':
         if 'submit' in request.POST:
             applicant.doc_submission_method = Applicant.SUBMITTED_BY_MAIL

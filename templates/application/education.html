@@ -70,11 +70,10 @@
 </div>
 <script>
   function allowOnlyGATPAT() {
-    $("#id_uses_gat_score").val('True').attr('disabled',true);
+    $("#id_uses_gat_score").val('True');
     $("#score-type-selection").hide();
   }
   function allowAllScoreType() {
-    $("#id_uses_gat_score").attr('disabled',false);
     $("#score-type-selection").show();
   }
   function showGATPAT() {

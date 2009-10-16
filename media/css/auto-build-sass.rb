@@ -1,4 +1,4 @@
-
+#!/usr/bin/env ruby
 
 CHECK_PERIOD = 5      # in seconds
 

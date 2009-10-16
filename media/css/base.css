@@ -83,3 +83,8 @@
     font-size: 150%; }
   .submission-ticket .verification {
     font-size: 80%; }
+
+#applicant-info-confirmation .section {
+  padding: 5px; }
+#applicant-info-confirmation .address {
+  padding-right: 50px; }

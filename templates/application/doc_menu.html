@@ -9,10 +9,18 @@
 
 {% block form-body %}
 <div class="front-body">
+  {% if not chosen %}
+    <p>เลือกวิธีการส่งเอกสาร</p>
+  {% else %}
+    <p>
+      คุณได้เลือกวิธีการส่งแล้ว 
+      โดยเลือกการ{{ applicant.get_doc_submission_method_display }}
+    </p>
+  {% endif %}
   <ul id="methods">
     <li class="tab">
       <div class="button">
-	ส่งเอกสารออนไลน์
+	เลือกส่งเอกสารออนไลน์
       </div>
       <div class="tab-body">
 	<p>
@@ -23,7 +31,7 @@
     </li>
     <li class="tab">
       <div class="button">
-	<a href="{% url apply-confirm %}">ส่งเอกสารทางไปรษณีย์</a>
+	<a href="{% url apply-confirm %}">เลือกส่งเอกสารทางไปรษณีย์</a>
       </div>
       <div class="tab-body">
 	<p>

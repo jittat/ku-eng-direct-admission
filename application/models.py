@@ -209,6 +209,10 @@ class Education(models.Model):
     anet = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน A-NET")
 
+    def fix_boolean_fields(self):
+        self.has_graduated = bool(self.has_graduated)
+        self.uses_gat_score = bool(self.uses_gat_score)
+
     def __unicode__(self):
         if self.has_graduated:
             return u"จบการศึกษาจากโรงเรียน" + self.school_name
