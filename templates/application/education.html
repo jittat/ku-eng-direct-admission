@@ -3,16 +3,111 @@
 {% block title %}Education information{% endblock %}
 
 {% block form-body %}
+<div id="edu-form" class="app-form">
   <form action="{% url apply-edu %}" method="post">
-    <table>
-      {{ form.as_table }}
-      <tr>
-	<td></td>
-	<td>
-	  <input type="submit" name="submit" value="เก็บข้อมูล"/>
-	  <input type="submit" name="cancel" value="ยกเลิก"/>
-	</td>
-      </tr>
-    </table>
+    <div id="edu-gen-info">
+      <h2>ข้อมูลทั่วไป</h2>
+      <table>
+	<tr>
+	  <th>{{ form.has_graduated.label_tag }}</th>
+	  <td>{{ form.has_graduated }}</td>
+	</tr>
+	<tr>
+	  <th>{{ form.school_name.label_tag }}</th>
+	  <td>{{ form.school_name }}</td>
+	</tr>
+	<tr>
+	  <th>{{ form.school_city.label_tag }}</th>
+	  <td>{{ form.school_city }}</td>
+	</tr>
+	<tr>
+	  <th>{{ form.school_province.label_tag }}</th>
+	  <td>{{ form.school_province }}</td>
+	</tr>
+	<tr>
+	  <th>{{ form.gpax.label_tag }}</th>
+	  <td>{{ form.gpax }}</td>
+	</tr>
+      </table>
+    </div>
+    <div id="edu-score-box">
+      <h2>คะแนนสอบ</h2>
+      <div id="score-type-selection">
+	{{ form.uses_gat_score.label_tag }}
+	{{ form.uses_gat_score }}
+      </div>
+      <div id="gatpat">
+	<table>
+	  <tr>
+	    <th>GAT:</th> 
+	    <td>คะแนน {{ form.gat }}</td>
+	    <td>สอบเมื่อ {{ form.gat_date }}</td>
+	  </tr>
+	  <tr>
+	    <th>PAT1:</th> 
+	    <td>คะแนน {{ form.pat1 }}</td>
+	    <td>สอบเมื่อ {{ form.pat1_date }}</td>
+	  </tr>
+	  <tr>
+	    <th>PAT3:</th> 
+	    <td>คะแนน {{ form.pat3 }}</td>
+	    <td>สอบเมื่อ {{ form.pat3_date }}</td>
+	  </tr>
+	</table>
+      </div>
+      <div id="anet">
+	<table>
+	  <tr>
+	    <th>A-NET:</th> 
+	    <td>คะแนน {{ form.anet }}</td>
+	  </tr>
+	</table>
+      </div>
+    </div>
+    <input type="submit" name="submit" value="เก็บข้อมูล"/>
+    <input type="submit" name="cancel" value="ยกเลิก"/>
   </form>
+</div>
+<script>
+  function allowOnlyGATPAT() {
+    $("#id_uses_gat_score").val('True').attr('disabled',true);
+    $("#score-type-selection").hide();
+  }
+  function allowAllScoreType() {
+    $("#id_uses_gat_score").attr('disabled',false);
+    $("#score-type-selection").show();
+  }
+  function showGATPAT() {
+    $("#edu-score-box #gatpat").show();
+    $("#edu-score-box #anet").hide();
+  }
+  function showANET() {
+    $("#edu-score-box #anet").show();
+    $("#edu-score-box #gatpat").hide();
+  }
+  function updateScoreFields() {
+    if($("#id_uses_gat_score").val()=='True')
+      showGATPAT();
+    else
+      showANET();
+  }
+  function updateScoreSelectionField() {
+    if($("#id_has_graduated").val() == 'True') {
+      allowAllScoreType();
+    } else {
+      allowOnlyGATPAT();
+      showGATPAT();
+    }
+  }
+  $(document).ready(function() {
+    updateScoreSelectionField();
+    updateScoreFields();
+    $("#id_has_graduated").change(function() {
+      updateScoreSelectionField();
+    });
+    $("#id_uses_gat_score").change(function() {
+      updateScoreFields();
+    });
+  });
+</script>
 {% endblock %}

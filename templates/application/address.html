@@ -3,6 +3,7 @@
 {% block title %}Address{% endblock %}
 
 {% block form-body %}
+<div class="app-form">
   <form action="{% url apply-address %}" method="post">
     <div class="field-group">
       <h2>ที่อยู่ตามทะเบียนบ้าน</h2>
@@ -23,15 +24,16 @@
     <input type="submit" name="submit" value="เก็บข้อมูล"/>
     <input type="submit" name="cancel" value="ยกเลิก"/>
   </form>
-  <script>
-    $("#address-copy").click(function (e) {
-      items = ['number', 'village_number', 'village_name',
-               'road', 'district', 'city', 'province',
-               'postal_code', 'phone_number'];
-      jQuery.each(items, function () {
-        $("#id_contact-" + this).val($("#id_home-" + this).val());
-      });
-      return false;
+</div>
+<script>
+  $("#address-copy").click(function (e) {
+    items = ['number', 'village_number', 'village_name',
+             'road', 'district', 'city', 'province',
+             'postal_code', 'phone_number'];
+    jQuery.each(items, function () {
+      $("#id_contact-" + this).val($("#id_home-" + this).val());
     });
-  </script>
+    return false;
+  });
+</script>
 {% endblock %}
