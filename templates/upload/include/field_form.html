@@ -1,0 +1,19 @@
+<div class="upload-item">
+  {% if upload_field.has_thumbnail %}
+  <div class="thumbnail">
+    <img src="{% url upload-thumbnail upload_field.name %}"/>
+  </div>
+  {% endif %}
+  <form id="upload-form-{{ upload_field.name }}" 
+	class="doc-upload-form"
+	action="{% url upload-form field_name=upload_field.name %}" 
+	method="post" 
+        enctype="multipart/form-data">
+    <b>{{ upload_field.field.verbose_name }}</b><br/>
+    {{ upload_field.form.uploaded_file }}
+    <input type="submit" value="Upload"/>
+    <div id="upload-progress-{{ upload_field.name }}">
+      <div class="progress-container"></div>
+    </div>
+  </form>
+</div>

@@ -91,6 +91,17 @@ class AppDocs(models.Model):
         return get_doc_fullpath(self.applicant, 
                                 get_field_thumbnail_filename(field_name))
 
+    def get_upload_fields(self):
+        applicant = self.applicant
+        field_list = list(AppDocs.FormMeta.upload_fields)
+        if self.applicant.education.uses_gat_score:
+            field_list.remove('anet_score')
+        else:
+            field_list.remove('gat_score')
+            field_list.remove('pat1_score')
+            field_list.remove('pat2_score')
+        return field_list
+
     @staticmethod
     def valid_field_name(field_name):
         return field_name in AppDocs.FormMeta.upload_fields    

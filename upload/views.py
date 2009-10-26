@@ -117,21 +117,23 @@ def get_applicant_docs_or_none(applicant):
    
 @applicant_required
 def index(request):
-    fields = AppDocs.FormMeta.upload_fields
     docs = get_applicant_docs_or_none(request.applicant)
-
+    fields = docs.get_upload_fields()
     field_forms = populate_upload_field_forms(docs, fields)
 
     return render_to_response("upload/form.html",
                               { 'field_forms': field_forms })
 
 def save_as_temp_file(f):
+    """
+    takes django memory uploaded file and saves to a temp file.
+    """
     data = f.read()
     name = f.name
     from tempfile import mkstemp
     from django.core.files import File
     fid, temp_filename = mkstemp()
-    print fid, temp_filename
+    #print fid, temp_filename
     new_f = os.fdopen(fid,'wb')
     new_f.write(data)
     new_f.close()
