@@ -1,3 +1,7 @@
-<ul>
-  <li><b>จะทำต่อไป</b></li>
-</ul>
+{% with applicant.preference as preference %}
+  <ol>
+    {% for m in preference.get_major_list %}
+      <li>รหัส {{ m.number }} - {{ m.name }}</li>
+    {% endfor %}
+  </ol>
+{% endwith %}

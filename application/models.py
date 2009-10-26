@@ -248,6 +248,9 @@ class MajorPreference(models.Model):
     majors = IntegerListField()
 
     def to_major_rank_list(self):
+        """
+        return a list of preference ranks for each major
+        """
         all_majors = Major.get_all_majors()
         major_count = len(all_majors)
 
@@ -263,4 +266,20 @@ class MajorPreference(models.Model):
             r += 1
 
         return ranks
+
+    def get_major_list(self):
+        """
+        return a list of majors ordered by preference
+        """
+        all_majors = Major.get_all_majors()
+
+        majors_dict = {}
+        for m in all_majors:
+            majors_dict[int(m.number)] = m
+
+        l = []
+        for number in self.majors:
+            l.append(majors_dict[number])
+
+        return l
 
