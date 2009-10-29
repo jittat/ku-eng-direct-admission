@@ -38,7 +38,7 @@ def login(request):
             error_messages.append(u"รหัสผ่านไม่ถูกต้อง")
     else:
         form = LoginForm()
-    return render_to_response('application/login.html',
+    return render_to_response('application/start.html',
                               { 'form': form,
                                 'errors': error_messages })
 
@@ -55,6 +55,9 @@ def logout(request):
     else:
         return redirect_to_index(request)
 
+
+def register(request):
+    pass
 
 def forget_password(request):
     if request.method == 'POST':

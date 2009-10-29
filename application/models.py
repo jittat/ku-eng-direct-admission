@@ -10,15 +10,6 @@ class Applicant(models.Model):
                                   verbose_name="ชื่อ")
     last_name = models.CharField(max_length=300,
                                  verbose_name="นามสกุล")
-    national_id = models.CharField(max_length=20,
-                                   verbose_name="เลขประจำตัวประชาชน")
-    birth_date = models.DateField(verbose_name="วันเกิด")
-    nationality = models.CharField(max_length=50,
-                                   verbose_name="สัญชาติ")
-    ethnicity = models.CharField(max_length=50,
-                                 verbose_name="เชื้อชาติ")
-    phone_number = models.CharField(max_length=20,
-                                    verbose_name="หมายเลขโทรศัพท์")
     email = models.EmailField()
 
     # application data
@@ -74,6 +65,19 @@ class Applicant(models.Model):
 
     def verification_number(self):
         return "12345678901234567890"
+
+
+class PersonalInfo(models.Model):
+    applicant = models.OneToOneField(Applicant)
+    national_id = models.CharField(max_length=20,
+                                   verbose_name="เลขประจำตัวประชาชน")
+    birth_date = models.DateField(verbose_name="วันเกิด")
+    nationality = models.CharField(max_length=50,
+                                   verbose_name="สัญชาติ")
+    ethnicity = models.CharField(max_length=50,
+                                 verbose_name="เชื้อชาติ")
+    phone_number = models.CharField(max_length=20,
+                                    verbose_name="หมายเลขโทรศัพท์")
 
 
 class ApplicantAccount(models.Model):

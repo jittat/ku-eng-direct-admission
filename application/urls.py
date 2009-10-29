@@ -4,12 +4,11 @@ from django.views.generic.simple import direct_to_template
 urlpatterns = patterns(
     'application.views',
 
-    url(r'^start/$', direct_to_template,
-        {'template': 'application/start.html'}, 
-        name='apply-start'),
+    url(r'^start/$', 'account.login', name='apply-start'),
     url(r'^login/$', 'account.login', name='apply-login'),
     url(r'^logout/$', 'account.logout', name='apply-logout'),
     url(r'^forget/$', 'account.forget_password', name='apply-forget'),
+    url(r'^register/$', 'account.register', name='apply-register'),
 
     url(r'^core/$', 'applicant_core_info', name='apply-core'),
     url(r'^address/$', 'applicant_address', name='apply-address'),

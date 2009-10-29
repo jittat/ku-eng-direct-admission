@@ -33,6 +33,14 @@ class ForgetPasswordForm(forms.Form):
             raise forms.ValidationError(u'ไม่มีผู้ใช้ที่ใช้อีเมล์: ' +
                                         email)
         
+
+class RegistrationForm(forms.ModelForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    email_confirmation = forms.EmailField()
+
+
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
