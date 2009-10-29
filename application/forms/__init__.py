@@ -4,7 +4,7 @@ import datetime
 
 from django import forms
 
-from application.models import Applicant, ApplicantAccount
+from application.models import Applicant
 from application.models import Address, ApplicantAddress, Education
 from widgets import ThaiSelectDateWidget
 

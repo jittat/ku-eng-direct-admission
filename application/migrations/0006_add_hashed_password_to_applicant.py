@@ -6,27 +6,18 @@ from adm.application.models import *
 
 class Migration:
     
-    no_dry_run = True
-
     def forwards(self, orm):
-        """
-        Copies all applicant's core info in Applicant to PersonalInfo
-        """
-        applicants = orm.Applicant.objects.all()
-        for applicant in applicants:
-            personal_info = orm.PersonalInfo(applicant=applicant,
-                                             national_id=applicant.national_id,
-                                             birth_date=applicant.birth_date,
-                                             ethnicity=applicant.ethnicity,
-                                             phone_number=applicant.phone_number)
-            personal_info.save()
+        
+        # Adding field 'Applicant.hashed_password'
+        db.add_column('application_applicant', 'hashed_password', models.CharField(max_length=100))
+        
     
     
     def backwards(self, orm):
-        """
-        TODO: fix this.
-        """
-        pass
+        
+        # Deleting field 'Applicant.hashed_password'
+        db.delete_column('application_applicant', 'hashed_password')
+        
     
     
     models = {
@@ -77,17 +68,13 @@ class Migration:
             'id': ('models.AutoField', [], {'primary_key': 'True'})
         },
         'application.applicant': {
-            'birth_date': ('models.DateField', [], {'verbose_name': '"\xe0\xb8\xa7\xe0\xb8\xb1\xe0\xb8\x99\xe0\xb9\x80\xe0\xb8\x81\xe0\xb8\xb4\xe0\xb8\x94"'}),
             'doc_submission_method': ('models.IntegerField', [], {'default': '0'}),
             'email': ('models.EmailField', [], {}),
-            'ethnicity': ('models.CharField', [], {'max_length': '50', 'verbose_name': '"\xe0\xb9\x80\xe0\xb8\x8a\xe0\xb8\xb7\xe0\xb9\x89\xe0\xb8\xad\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x95\xe0\xb8\xb4"'}),
             'first_name': ('models.CharField', [], {'max_length': '200', 'verbose_name': '"\xe0\xb8\x8a\xe0\xb8\xb7\xe0\xb9\x88\xe0\xb8\xad"'}),
+            'hashed_password': ('models.CharField', [], {'max_length': '100'}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'is_submitted': ('models.BooleanField', [], {'default': 'False'}),
-            'last_name': ('models.CharField', [], {'max_length': '300', 'verbose_name': '"\xe0\xb8\x99\xe0\xb8\xb2\xe0\xb8\xa1\xe0\xb8\xaa\xe0\xb8\x81\xe0\xb8\xb8\xe0\xb8\xa5"'}),
-            'national_id': ('models.CharField', [], {'max_length': '20', 'verbose_name': '"\xe0\xb9\x80\xe0\xb8\xa5\xe0\xb8\x82\xe0\xb8\x9b\xe0\xb8\xa3\xe0\xb8\xb0\xe0\xb8\x88\xe0\xb8\xb3\xe0\xb8\x95\xe0\xb8\xb1\xe0\xb8\xa7\xe0\xb8\x9b\xe0\xb8\xa3\xe0\xb8\xb0\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x8a\xe0\xb8\x99"'}),
-            'nationality': ('models.CharField', [], {'max_length': '50', 'verbose_name': '"\xe0\xb8\xaa\xe0\xb8\xb1\xe0\xb8\x8d\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x95\xe0\xb8\xb4"'}),
-            'phone_number': ('models.CharField', [], {'max_length': '20', 'verbose_name': '"\xe0\xb8\xab\xe0\xb8\xa1\xe0\xb8\xb2\xe0\xb8\xa2\xe0\xb9\x80\xe0\xb8\xa5\xe0\xb8\x82\xe0\xb9\x82\xe0\xb8\x97\xe0\xb8\xa3\xe0\xb8\xa8\xe0\xb8\xb1\xe0\xb8\x9e\xe0\xb8\x97\xe0\xb9\x8c"'})
+            'last_name': ('models.CharField', [], {'max_length': '300', 'verbose_name': '"\xe0\xb8\x99\xe0\xb8\xb2\xe0\xb8\xa1\xe0\xb8\xaa\xe0\xb8\x81\xe0\xb8\xb8\xe0\xb8\xa5"'})
         },
         'application.personalinfo': {
             'applicant': ('models.OneToOneField', ['Applicant'], {}),

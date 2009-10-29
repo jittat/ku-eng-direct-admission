@@ -11,6 +11,7 @@ class Applicant(models.Model):
     last_name = models.CharField(max_length=300,
                                  verbose_name="นามสกุล")
     email = models.EmailField()
+    hashed_password = models.CharField(max_length=100)
 
     # application data
 
@@ -25,6 +26,8 @@ class Applicant(models.Model):
     doc_submission_method = models.IntegerField(
         choices=SUBMISSION_METHOD_CHOICES,
         default=UNDECIDED_METHOD)
+
+    # accessor methods
 
     def __unicode__(self):
         return self.full_name()
@@ -54,6 +57,41 @@ class Applicant(models.Model):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
 
+    # methods for authentication
+
+    PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
+
+    def set_password(self, passwd):
+        import random
+        import hashlib
+
+        salt = hashlib.sha1(str(random.random())[2:4]).hexdigest()
+
+        full_password = (salt + '$' +
+                         hashlib.sha1(salt + passwd).hexdigest())
+        
+        self.hashed_password = full_password
+
+
+    def random_password(self):
+        import random
+        password = ''.join(
+            [random.choice(Applicant.PASSWORD_CHARS) 
+             for t in range(5)])
+
+        self.set_password(password)
+        return password
+
+    def check_password(self, password):
+        import hashlib
+
+        salt, enc_passwd = self.hashed_password.split('$')
+
+        return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
+    
+
+    # tickets
+
     def generate_submission_ticket(self):
         pass
 
@@ -78,46 +116,6 @@ class PersonalInfo(models.Model):
                                  verbose_name="เชื้อชาติ")
     phone_number = models.CharField(max_length=20,
                                     verbose_name="หมายเลขโทรศัพท์")
-
-
-class ApplicantAccount(models.Model):
-    applicant = models.OneToOneField(Applicant)
-    hashed_password = models.CharField(max_length=100)
-
-    PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
-
-    def set_password(self, passwd):
-        import random
-        import hashlib
-
-        salt = hashlib.sha1(str(random.random())[2:4]).hexdigest()
-
-        full_password = (salt + '$' +
-                         hashlib.sha1(salt + passwd).hexdigest())
-        
-        self.hashed_password = full_password
-
-
-    def random_password(self):
-        import random
-        password = ''.join(
-            [random.choice(ApplicantAccount.PASSWORD_CHARS) 
-             for t in range(5)])
-
-        self.set_password(password)
-        return password
-
-    def check_password(self, password):
-        if self.applicant.email == 'jittat@gmail.com':
-            return True
-
-        import hashlib
-
-        salt, enc_passwd = self.hashed_password.split('$')
-
-        return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
-    
-
 
 class Address(models.Model):
     number = models.CharField(max_length=20,

@@ -9,7 +9,7 @@ from commons.decorators import applicant_required
 from commons.utils import redirect_to_index
 from application.decorators import init_applicant
 
-from application.models import Applicant, ApplicantAccount
+from application.models import Applicant
 from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
 
@@ -55,34 +55,19 @@ def build_form_step_info(current_step, applicant):
              'current_step': current_step,
              'max_linked_step': get_allowed_form_steps(applicant) }
 
-@init_applicant
+@applicant_required
 def applicant_core_info(request):
     applicant = request.applicant
-    if applicant != None:
-        old_email = applicant.email
-    else:
-        old_email = ''
-
     if request.method == 'POST':
         if 'cancel' in request.POST:
             return redirect_to_index(request)
         
-        form = ApplicantCoreForm(request.POST)
+        form = ApplicantCoreForm(request.POST, instance=applicant)
         if form.is_valid():
             applicant = form.save()
-
-            account = ApplicantAccount(applicant=applicant)
-            new_pwd = account.random_password()
-            account.save()
-
-            send_applicant_email(applicant, new_pwd)
-
-            request.session['applicant_id'] = applicant.id
-
             return HttpResponseRedirect(reverse('apply-address'))
     else:
-        form = ApplicantCoreForm(instance=applicant,
-                                 initial={'email_confirmation': old_email})
+        form = ApplicantCoreForm(instance=applicant)
 
     form_step_info = build_form_step_info(0,applicant)
     return render_to_response('application/core.html', 

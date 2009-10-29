@@ -7,7 +7,7 @@ from django import forms
 
 from commons.utils import redirect_to_index
 
-from application.models import Applicant, ApplicantAccount
+from application.models import Applicant
 from application.forms import LoginForm, ForgetPasswordForm
 
 from application.email import send_applicant_email
@@ -28,7 +28,7 @@ def login(request):
                 applicant = None
 
             if (applicant!=None and 
-                applicant.applicantaccount.check_password(passwd)):
+                applicant.check_password(passwd)):
                 # authenticated
 
                 request.session['applicant_id'] = applicant.id
@@ -65,9 +65,8 @@ def forget_password(request):
         if form.is_valid():
             email = form.cleaned_data['email']['email']
             applicant = form.cleaned_data['email']['applicant']
-            account = applicant.applicantaccount
-            new_pwd = account.random_password()
-            account.save()
+            new_pwd = applicant.random_password()
+            applicant.save()
             send_applicant_email(applicant, new_pwd)
             
             return HttpResponseRedirect(reverse('apply-login'))

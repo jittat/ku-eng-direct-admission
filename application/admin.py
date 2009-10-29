@@ -1,10 +1,9 @@
 from django.contrib import admin
-from models import Applicant, ApplicantAccount
+from models import Applicant
 from models import Address, ApplicantAddress
 from models import Education, Major, GPExamDate
 
 admin.site.register(Applicant)
-admin.site.register(ApplicantAccount)
 admin.site.register(Address)
 admin.site.register(ApplicantAddress)
 admin.site.register(GPExamDate)

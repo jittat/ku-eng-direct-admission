@@ -6,27 +6,23 @@ from adm.application.models import *
 
 class Migration:
     
-    no_dry_run = True
-
     def forwards(self, orm):
-        """
-        Copies all applicant's core info in Applicant to PersonalInfo
-        """
-        applicants = orm.Applicant.objects.all()
-        for applicant in applicants:
-            personal_info = orm.PersonalInfo(applicant=applicant,
-                                             national_id=applicant.national_id,
-                                             birth_date=applicant.birth_date,
-                                             ethnicity=applicant.ethnicity,
-                                             phone_number=applicant.phone_number)
-            personal_info.save()
+        
+        # Deleting model 'applicantaccount'
+        db.delete_table('application_applicantaccount')
+        
     
     
     def backwards(self, orm):
-        """
-        TODO: fix this.
-        """
-        pass
+        
+        # Adding model 'applicantaccount'
+        db.create_table('application_applicantaccount', (
+            ('hashed_password', models.CharField(max_length=100)),
+            ('applicant', models.OneToOneField(orm.applicant)),
+            ('id', models.AutoField(primary_key=True)),
+        ))
+        db.send_create_signal('application', ['applicantaccount'])
+        
     
     
     models = {
@@ -42,11 +38,11 @@ class Migration:
             'village_name': ('models.CharField', [], {'max_length': '100', 'verbose_name': '"\xe0\xb8\xab\xe0\xb8\xa1\xe0\xb8\xb9\xe0\xb9\x88\xe0\xb8\x9a\xe0\xb9\x89\xe0\xb8\xb2\xe0\xb8\x99"', 'blank': 'True'}),
             'village_number': ('models.IntegerField', [], {'null': 'True', 'verbose_name': '"\xe0\xb8\xab\xe0\xb8\xa1\xe0\xb8\xb9\xe0\xb9\x88\xe0\xb8\x97\xe0\xb8\xb5\xe0\xb9\x88"', 'blank': 'True'})
         },
-        'application.major': {
-            'Meta': {'ordering': "['number']"},
-            'id': ('models.AutoField', [], {'primary_key': 'True'}),
-            'name': ('models.CharField', [], {'max_length': '50'}),
-            'number': ('models.CharField', [], {'max_length': '5'})
+        'application.applicantaddress': {
+            'applicant': ('models.OneToOneField', ['Applicant'], {'related_name': '"address"'}),
+            'contact_address': ('models.OneToOneField', ['Address'], {'related_name': '"contact_owner"'}),
+            'home_address': ('models.OneToOneField', ['Address'], {'related_name': '"home_owner"'}),
+            'id': ('models.AutoField', [], {'primary_key': 'True'})
         },
         'application.education': {
             'anet': ('models.IntegerField', [], {'null': 'True', 'verbose_name': '"\xe0\xb8\x84\xe0\xb8\xb0\xe0\xb9\x81\xe0\xb8\x99\xe0\xb8\x99 A-NET"', 'blank': 'True'}),
@@ -70,24 +66,20 @@ class Migration:
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'majors': ('IntegerListField', [], {})
         },
-        'application.applicantaddress': {
-            'applicant': ('models.OneToOneField', ['Applicant'], {'related_name': '"address"'}),
-            'contact_address': ('models.OneToOneField', ['Address'], {'related_name': '"contact_owner"'}),
-            'home_address': ('models.OneToOneField', ['Address'], {'related_name': '"home_owner"'}),
-            'id': ('models.AutoField', [], {'primary_key': 'True'})
+        'application.major': {
+            'Meta': {'ordering': "['number']"},
+            'id': ('models.AutoField', [], {'primary_key': 'True'}),
+            'name': ('models.CharField', [], {'max_length': '50'}),
+            'number': ('models.CharField', [], {'max_length': '5'})
         },
         'application.applicant': {
-            'birth_date': ('models.DateField', [], {'verbose_name': '"\xe0\xb8\xa7\xe0\xb8\xb1\xe0\xb8\x99\xe0\xb9\x80\xe0\xb8\x81\xe0\xb8\xb4\xe0\xb8\x94"'}),
             'doc_submission_method': ('models.IntegerField', [], {'default': '0'}),
             'email': ('models.EmailField', [], {}),
-            'ethnicity': ('models.CharField', [], {'max_length': '50', 'verbose_name': '"\xe0\xb9\x80\xe0\xb8\x8a\xe0\xb8\xb7\xe0\xb9\x89\xe0\xb8\xad\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x95\xe0\xb8\xb4"'}),
             'first_name': ('models.CharField', [], {'max_length': '200', 'verbose_name': '"\xe0\xb8\x8a\xe0\xb8\xb7\xe0\xb9\x88\xe0\xb8\xad"'}),
+            'hashed_password': ('models.CharField', [], {'max_length': '100'}),
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'is_submitted': ('models.BooleanField', [], {'default': 'False'}),
-            'last_name': ('models.CharField', [], {'max_length': '300', 'verbose_name': '"\xe0\xb8\x99\xe0\xb8\xb2\xe0\xb8\xa1\xe0\xb8\xaa\xe0\xb8\x81\xe0\xb8\xb8\xe0\xb8\xa5"'}),
-            'national_id': ('models.CharField', [], {'max_length': '20', 'verbose_name': '"\xe0\xb9\x80\xe0\xb8\xa5\xe0\xb8\x82\xe0\xb8\x9b\xe0\xb8\xa3\xe0\xb8\xb0\xe0\xb8\x88\xe0\xb8\xb3\xe0\xb8\x95\xe0\xb8\xb1\xe0\xb8\xa7\xe0\xb8\x9b\xe0\xb8\xa3\xe0\xb8\xb0\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x8a\xe0\xb8\x99"'}),
-            'nationality': ('models.CharField', [], {'max_length': '50', 'verbose_name': '"\xe0\xb8\xaa\xe0\xb8\xb1\xe0\xb8\x8d\xe0\xb8\x8a\xe0\xb8\xb2\xe0\xb8\x95\xe0\xb8\xb4"'}),
-            'phone_number': ('models.CharField', [], {'max_length': '20', 'verbose_name': '"\xe0\xb8\xab\xe0\xb8\xa1\xe0\xb8\xb2\xe0\xb8\xa2\xe0\xb9\x80\xe0\xb8\xa5\xe0\xb8\x82\xe0\xb9\x82\xe0\xb8\x97\xe0\xb8\xa3\xe0\xb8\xa8\xe0\xb8\xb1\xe0\xb8\x9e\xe0\xb8\x97\xe0\xb9\x8c"'})
+            'last_name': ('models.CharField', [], {'max_length': '300', 'verbose_name': '"\xe0\xb8\x99\xe0\xb8\xb2\xe0\xb8\xa1\xe0\xb8\xaa\xe0\xb8\x81\xe0\xb8\xb8\xe0\xb8\xa5"'})
         },
         'application.personalinfo': {
             'applicant': ('models.OneToOneField', ['Applicant'], {}),
@@ -101,11 +93,6 @@ class Migration:
         'application.gpexamdate': {
             'id': ('models.AutoField', [], {'primary_key': 'True'}),
             'month_year': ('models.CharField', [], {'max_length': '20', 'verbose_name': '"\xe0\xb9\x80\xe0\xb8\x94\xe0\xb8\xb7\xe0\xb8\xad\xe0\xb8\x99\xe0\xb9\x81\xe0\xb8\xa5\xe0\xb8\xb0\xe0\xb8\x9b\xe0\xb8\xb5\xe0\xb8\x82\xe0\xb8\xad\xe0\xb8\x87\xe0\xb8\x81\xe0\xb8\xb2\xe0\xb8\xa3\xe0\xb8\xaa\xe0\xb8\xad\xe0\xb8\x9a"'})
-        },
-        'application.applicantaccount': {
-            'applicant': ('models.OneToOneField', ['Applicant'], {}),
-            'hashed_password': ('models.CharField', [], {'max_length': '100'}),
-            'id': ('models.AutoField', [], {'primary_key': 'True'})
         }
     }
     
