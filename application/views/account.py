@@ -9,7 +9,7 @@ from commons.utils import redirect_to_index
 
 from application.models import Applicant
 from application.forms import LoginForm, ForgetPasswordForm
-
+from application.forms import RegistrationForm
 from application.email import send_applicant_email
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
@@ -35,7 +35,10 @@ def login(request):
 
                 return HttpResponseRedirect(reverse('apply-core'))
             
-            error_messages.append(u"รหัสผ่านไม่ถูกต้อง")
+            from django.forms.util import ErrorList
+
+            form._errors['password'] = ErrorList(['รหัสผ่านผิดพลาด'])
+            error_messages.append('รหัสผ่านผิดพลาด')
     else:
         form = LoginForm()
     return render_to_response('application/start.html',
@@ -57,7 +60,21 @@ def logout(request):
 
 
 def register(request):
-    pass
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect_to_index(request)
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            applicant = form.save(commit=False)
+            passwd = applicant.random_password()
+            applicant.save()
+            send_applicant_email(applicant, passwd)
+            return render_to_response('application/registration-success.html',
+                                      {'email': form.cleaned_data['email']})
+    else:
+        form = RegistrationForm()
+    return render_to_response('application/registration.html',
+                              { 'form': form })
 
 def forget_password(request):
     if request.method == 'POST':
@@ -67,6 +84,7 @@ def forget_password(request):
             applicant = form.cleaned_data['email']['applicant']
             new_pwd = applicant.random_password()
             applicant.save()
+            print applicant.email
             send_applicant_email(applicant, new_pwd)
             
             return HttpResponseRedirect(reverse('apply-login'))

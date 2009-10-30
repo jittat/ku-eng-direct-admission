@@ -1,0 +1,10 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}ลงทะเบียนเพื่อเข้าใช้ระบบ: สำเร็จ{% endblock %}
+
+{% block form-body %}
+  <p>
+    คุณ{{ first_name }} {{ last_name }}ได้ลงทะเบียนแล้ว
+    กรุณาตรวจสอบจดหมายอิเล็กทรอนิกส์ที่ส่งไปที่ {{ email }} 
+  </p>
+{% endblock %}

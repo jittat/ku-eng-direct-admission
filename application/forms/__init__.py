@@ -35,10 +35,19 @@ class ForgetPasswordForm(forms.Form):
         
 
 class RegistrationForm(forms.ModelForm):
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-    email = forms.EmailField()
     email_confirmation = forms.EmailField()
+
+    def clean_email_confirmation(self):
+        if (self.cleaned_data['email'] !=
+            self.cleaned_data['email_confirmation']):
+            raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
+        return self.cleaned_data['email_confirmation']
+
+    class Meta:
+        model = Applicant
+        exclude = ('hashed_password', 
+                   'is_submitted',
+                   'doc_submission_method')
 
 
 THIS_YEAR = datetime.date.today().year
@@ -58,12 +67,6 @@ class ApplicantCoreForm(forms.ModelForm):
         if not validate_phone_number(self.cleaned_data['phone_number']):
             raise forms.ValidationError("หมายเลขโทรศัพท์ไม่ถูกต้อง")
         return self.cleaned_data['phone_number']
-
-    def clean_email_confirmation(self):
-        if (self.cleaned_data['email'] !=
-            self.cleaned_data['email_confirmation']):
-            raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
-        return self.cleaned_data['email_confirmation']
 
     class Meta:
         model = Applicant

@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
 
-def send_applicant_email(applicant, password):
+def send_applicant_email(applicant, password, force=False):
     subject = 'Your account for applying at KU Engineering'
     message = (
 u"""Dear %(firstname)s %(lastname)s
