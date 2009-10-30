@@ -109,6 +109,8 @@ UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 
 EMAIL_HOST = 'anti-spam.ku.ac.th'
 
+TEST_DATABASE_COLLATION = 'utf8_general_ci'
+
 try:
     from settings_local import *
 except ImportError:
