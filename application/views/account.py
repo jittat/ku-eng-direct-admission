@@ -6,6 +6,7 @@ from django.conf import settings
 from django import forms
 
 from commons.utils import redirect_to_index
+from application.views import redirect_to_first_form
 
 from application.models import Applicant
 from application.forms import LoginForm, ForgetPasswordForm
@@ -33,7 +34,7 @@ def login(request):
 
                 request.session['applicant_id'] = applicant.id
 
-                return HttpResponseRedirect(reverse('apply-personal-info'))
+                return redirect_to_first_form()
             
             from django.forms.util import ErrorList
 

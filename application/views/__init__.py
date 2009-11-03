@@ -38,6 +38,8 @@ FORM_STEPS = [
 
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
 
+def redirect_to_first_form():
+    return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
 
 def get_allowed_form_steps(applicant):
     if applicant==None:
