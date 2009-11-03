@@ -45,6 +45,11 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
         return self.cleaned_data['email_confirmation']
 
+    def get_applicant(self):
+        return Applicant(first_name=self.cleaned_data['first_name'],
+                         last_name=self.cleaned_data['last_name'],
+                         email=self.cleaned_data['email'])
+
 
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)

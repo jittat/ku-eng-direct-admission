@@ -1,0 +1,14 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}ลงทะเบียนเพื่อเข้าใช้ระบบ: สำเร็จ{% endblock %}
+
+{% block form-body %}
+  <p>
+    มีการลงทะเบียนด้วยอีเมล์ {{ email }} หลายครั้ง ดังนี้<br/>
+    <ul>
+      {% for registration in old_registrations %}
+        <li>เมื่อ {{ registration.registered_at|timesince }} ก่อนหน้า</li>
+      {% endfor %}
+    </ul>
+  </p>
+{% endblock %}

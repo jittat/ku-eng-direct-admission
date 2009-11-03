@@ -129,6 +129,8 @@ class Registration(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=300)
 
+    class Meta:
+        ordering = ['-registered_at']
 
 class PersonalInfo(models.Model):
     applicant = models.OneToOneField(Applicant,related_name="personal_info")

@@ -66,7 +66,18 @@ def logout(request):
 
 
 def dupplicate_email_error(applicant, email, first_name, last_name):
-    pass
+    # query set is lazy, so we have to force it, using list().
+    old_registrations = list(applicant.registrations.all())  
+
+    new_registration = Registration(applicant=applicant,
+                                    first_name=first_name,
+                                    last_name=last_name)
+    new_registration.save()
+    return render_to_response('application/registration-dupplicate.html',
+                              { 'applicant': applicant,
+                                'email': email,
+                                'old_registrations': old_registrations,
+                                'new_registration': new_registration })
 
 def register(request):
     if request.method == 'POST':
@@ -82,15 +93,13 @@ def register(request):
 
             if applicant==None:
                 try:
-                    applicant = Applicant(first_name=first_name,
-                                          last_name=last_name,
-                                          email=email)
+                    applicant = form.get_applicant()
                     passwd = applicant.random_password()
                     applicant.save()
                     registration = Registration(
                         applicant=applicant,
-                        first_name=form.cleaned_data['first_name'],
-                        last_name=form.cleaned_data['last_name'])
+                        first_name=first_name,
+                        last_name=last_name)
                     registration.save()
                 
                 except IntegrityError:

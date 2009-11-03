@@ -102,6 +102,10 @@ class RegistrationTestCase(TransactionTestCase):
         """
         tests that, when a user registers a new account and logged in,
         that user cannot register again.
+
+        This is for the case when another person tries to register
+        using the email address of some applicant who has been logged
+        in.
         """
 
         # create user
@@ -121,3 +125,23 @@ class RegistrationTestCase(TransactionTestCase):
         self.assertTemplateUsed(response,'application/registration.html')
         form = response.context['form']
         self.assertEquals(len(form.non_field_errors()),1)
+
+
+    def test_user_gets_warning_when_registering_with_dupplicate_email(self):
+        """
+        tests that, when a user registers a new account using an email
+        which has been registered before, but have not logged in, a
+        user gets a warning and a list of all registrations.
+        """
+
+        # create user
+        password = self.create_user_and_get_password()
+
+        # register again
+        response = self.client.post('/apply/register/',
+                                    self.regis_data)
+
+        self.assertTemplateUsed(response,
+                                'application/registration-dupplicate.html')
+        old_registrations = response.context['old_registrations']
+        self.assertEquals(len(old_registrations),1)
