@@ -1,0 +1,24 @@
+[
+  {
+    "model": "application.gpexamdate",
+    "pk": 1,
+    "fields": {
+      "month_year": "มีนาคม 2552"
+    }
+  },
+  {
+    "model": "application.gpexamdate",
+    "pk": 2,
+    "fields": {
+      "month_year": "กรกฎาคม 2552"
+    }
+  },
+  {
+    "model": "application.gpexamdate",
+    "pk": 3,
+    "fields": {
+      "month_year": "ตุลาคม 2552"
+    }
+  }
+]
+
