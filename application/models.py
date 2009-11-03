@@ -13,6 +13,8 @@ class Applicant(models.Model):
     email = models.EmailField()
     hashed_password = models.CharField(max_length=100)
 
+    has_logged_in = models.BooleanField(default=False)
+
     # application data
 
     UNDECIDED_METHOD = 0
@@ -111,6 +113,18 @@ class Applicant(models.Model):
         return "12345678901234567890"
 
 
+    # registration login
+    @staticmethod
+    def check_if_email_has_been_logged_in(email):
+        applicants = Applicant.objects.filter(email=email).all()
+        if len(applicants)==0:
+            return False
+        for applicant in applicants:
+            if applicant.has_logged_in:
+                return True
+        return False        
+
+
 class PersonalInfo(models.Model):
     applicant = models.OneToOneField(Applicant,related_name="personal_info")
     national_id = models.CharField(max_length=20,
@@ -197,7 +211,7 @@ class Education(models.Model):
         verbose_name=u"คะแนนที่ใช้สมัคร")
     gpax = models.FloatField(verbose_name="GPAX")
     gat = models.FloatField(blank=True, null=True,
-                              verbose_name="คะแนน GAT")
+                            verbose_name="คะแนน GAT")
     gat_date = models.ForeignKey(GPExamDate,
                                  blank=True, null=True,
                                  verbose_name="วันสอบ GAT",

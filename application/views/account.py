@@ -32,6 +32,10 @@ def login(request):
                 applicant.check_password(passwd)):
                 # authenticated
 
+                if not applicant.has_logged_in:
+                    applicant.has_logged_in = True
+                    applicant.save()
+
                 request.session['applicant_id'] = applicant.id
 
                 return redirect_to_first_form()
@@ -65,6 +69,10 @@ def register(request):
             return redirect_to_index(request)
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data['email']
+
+            
+
             applicant = form.save(commit=False)
             passwd = applicant.random_password()
             applicant.save()

@@ -5,17 +5,19 @@ from django.db import models
 from adm.application.models import *
 
 class Migration:
-
+    
     def forwards(self, orm):
-        # Changing field 'Education.gat'
-        # (to signature: django.db.models.fields.FloatField(null=True, blank=True))
-        db.alter_column('application_education', 'gat', orm['application.education:gat'])
-
-
+        
+        # Adding field 'Applicant.has_logged_in'
+        db.add_column('application_applicant', 'has_logged_in', orm['application.applicant:has_logged_in'])
+        
+    
+    
     def backwards(self, orm):
-        # Changing field 'Education.gat'
-        # (to signature: models.IntegerField(null=True, blank=True))
-        db.alter_column('application_education', 'gat', orm['application.education:gat'])
+        
+        # Deleting field 'Applicant.has_logged_in'
+        db.delete_column('application_applicant', 'has_logged_in')
+        
     
     
     models = {
@@ -35,6 +37,7 @@ class Migration:
             'doc_submission_method': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'has_logged_in': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'hashed_password': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_submitted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),

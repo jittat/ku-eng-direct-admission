@@ -63,11 +63,7 @@ class RegistrationTestCase(TransactionTestCase):
         settings.FAKE_SENDING_EMAIL = org_email_setting
 
 
-    def test_user_can_login_from_sent_password(self):
-        """
-        tests that, when a user registers a new account, an email is
-        sent with a password, and that password can be used to login.
-        """
+    def create_user_and_get_password(self):
         org_email_setting = settings.FAKE_SENDING_EMAIL
         settings.FAKE_SENDING_EMAIL = False
 
@@ -85,8 +81,41 @@ class RegistrationTestCase(TransactionTestCase):
         m = re.search('Your password is: (\w+)',body,re.M)
         password = m.group(1)
 
+        return password
+
+
+    def test_user_can_login_from_sent_password(self):
+        """
+        tests that, when a user registers a new account, an email is
+        sent with a password, and that password can be used to login.
+        """
+        password = self.create_user_and_get_password()
+
         response = self.client.post('/apply/login/',
                                     {'email': self.regis_data['email'],
                                      'password': password})
         
-        self.assertRedirects(response,'/apply/core/')
+        self.assertRedirects(response,'/apply/personal/')
+
+
+    def test_user_cannot_register_again_after_logged_in(self):
+        """
+        tests that, when a user registers a new account and logged in,
+        that user cannot register again.
+        """
+
+        # create user
+        password = self.create_user_and_get_password()
+
+        # log in
+        response = self.client.post('/apply/login/',
+                                    {'email': self.regis_data['email'],
+                                     'password': password})
+
+        # register again
+        response = self.client.post('/apply/register/',
+                                    self.regis_data)
+
+        self.assertTemplateUsed(response,'application/registration.html')
+        form = response.context['form']
+        self.assertEquals(len(form.non_field_errors()),1)
