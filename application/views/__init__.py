@@ -10,10 +10,11 @@ from commons.utils import redirect_to_index
 from application.decorators import init_applicant
 
 from application.models import Applicant
+from application.models import PersonalInfo
 from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
 
-from application.forms import ApplicantCoreForm, AddressForm, EducationForm
+from application.forms import PersonalInfoForm, AddressForm, EducationForm
 
 from application.email import send_applicant_email
 
@@ -28,7 +29,7 @@ def build_form_step_dict(form_steps):
 
 # a list of tuples (form name, url-name).
 FORM_STEPS = [
-    ('ข้อมูลส่วนตัวผู้สมัคร','apply-core'),
+    ('ข้อมูลส่วนตัวผู้สมัคร','apply-personal-info'),
     ('ที่อยู่','apply-address'),
     ('ข้อมูลการศึกษา','apply-edu'),
     ('อันดับสาขาวิชา','apply-majors'),
@@ -37,9 +38,10 @@ FORM_STEPS = [
 
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
 
+
 def get_allowed_form_steps(applicant):
     if applicant==None:
-        return FORM_STEP_DICT['apply-core']
+        return FORM_STEP_DICT['apply-personal-info']
     if applicant.has_major_preference():
         return FORM_STEP_DICT['apply-doc-menu']
     if applicant.has_educational_info():
@@ -48,7 +50,7 @@ def get_allowed_form_steps(applicant):
         return FORM_STEP_DICT['apply-edu']
     if applicant.id != None:
         return FORM_STEP_DICT['apply-address']
-    return FORM_STEP_DICT['apply-core']
+    return FORM_STEP_DICT['apply-personal-info']
 
 def build_form_step_info(current_step, applicant):
     return { 'steps': FORM_STEPS,
@@ -56,21 +58,30 @@ def build_form_step_info(current_step, applicant):
              'max_linked_step': get_allowed_form_steps(applicant) }
 
 @applicant_required
-def applicant_core_info(request):
+def applicant_personal_info(request):
     applicant = request.applicant
+
+    if applicant.has_personal_info():
+        old_info = applicant.personal_info
+    else:
+        old_info = None
+
     if request.method == 'POST':
         if 'cancel' in request.POST:
             return redirect_to_index(request)
         
-        form = ApplicantCoreForm(request.POST, instance=applicant)
+        form = PersonalInfoForm(request.POST, instance=old_info)
         if form.is_valid():
-            applicant = form.save()
+            personal_info = form.save(commit=False)
+            personal_info.applicant = applicant
+            personal_info.save()
+
             return HttpResponseRedirect(reverse('apply-address'))
     else:
-        form = ApplicantCoreForm(instance=applicant)
+        form = PersonalInfoForm(instance=old_info)
 
     form_step_info = build_form_step_info(0,applicant)
-    return render_to_response('application/core.html', 
+    return render_to_response('application/personal.html',
                               { 'form': form,
                                 'form_step_info': form_step_info })
 

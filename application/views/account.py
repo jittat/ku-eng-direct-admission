@@ -33,7 +33,7 @@ def login(request):
 
                 request.session['applicant_id'] = applicant.id
 
-                return HttpResponseRedirect(reverse('apply-core'))
+                return HttpResponseRedirect(reverse('apply-personal-info'))
             
             from django.forms.util import ErrorList
 
@@ -44,7 +44,6 @@ def login(request):
     return render_to_response('application/start.html',
                               { 'form': form,
                                 'errors': error_messages })
-
 
 def logout(request):
     next_url = None

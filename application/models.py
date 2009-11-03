@@ -35,6 +35,12 @@ class Applicant(models.Model):
     def full_name(self):
         return "%s %s" % (self.first_name, self.last_name)
 
+    def has_personal_info(self):
+        try:
+            return self.personal_info != None
+        except PersonalInfo.DoesNotExist:
+            return False
+
     def has_address(self):
         try:
             return self.address != None
@@ -106,7 +112,7 @@ class Applicant(models.Model):
 
 
 class PersonalInfo(models.Model):
-    applicant = models.OneToOneField(Applicant)
+    applicant = models.OneToOneField(Applicant,related_name="personal_info")
     national_id = models.CharField(max_length=20,
                                    verbose_name="เลขประจำตัวประชาชน")
     birth_date = models.DateField(verbose_name="วันเกิด")

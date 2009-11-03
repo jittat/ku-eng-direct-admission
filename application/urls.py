@@ -10,7 +10,7 @@ urlpatterns = patterns(
     url(r'^forget/$', 'account.forget_password', name='apply-forget'),
     url(r'^register/$', 'account.register', name='apply-register'),
 
-    url(r'^core/$', 'applicant_core_info', name='apply-core'),
+    url(r'^personal/$', 'applicant_personal_info', name='apply-personal-info'),
     url(r'^address/$', 'applicant_address', name='apply-address'),
     url(r'^education/$', 'applicant_education', name='apply-edu'),
     url(r'^majors/$', 'applicant_major', name='apply-majors'),

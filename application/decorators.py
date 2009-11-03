@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from utils import redirect_to_index
+from commons.utils import redirect_to_index
 from models import Applicant
 
 def applicant_required(view_function):
