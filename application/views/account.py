@@ -5,10 +5,12 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django import forms
 
+from MySQLdb import IntegrityError
+
 from commons.utils import redirect_to_index
 from application.views import redirect_to_first_form
 
-from application.models import Applicant
+from application.models import Applicant, Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm
 from application.email import send_applicant_email
@@ -63,6 +65,9 @@ def logout(request):
         return redirect_to_index(request)
 
 
+def dupplicate_email_error(applicant, email, first_name, last_name):
+    pass
+
 def register(request):
     if request.method == 'POST':
         if 'cancel' in request.POST:
@@ -70,15 +75,50 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
+            first_name=form.cleaned_data['first_name']
+            last_name=form.cleaned_data['last_name']
 
+            applicant = Applicant.get_applicant_by_email(email)
+
+            if applicant==None:
+                try:
+                    applicant = Applicant(first_name=first_name,
+                                          last_name=last_name,
+                                          email=email)
+                    passwd = applicant.random_password()
+                    applicant.save()
+                    registration = Registration(
+                        applicant=applicant,
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name'])
+                    registration.save()
+                
+                except IntegrityError:
+                    # somehow, it gets error
+                    return dupplicate_email_error(applicant,
+                                                  email,
+                                                  first_name,
+                                                  last_name)
             
+                send_applicant_email(applicant, passwd)
+                return render_to_response(
+                    'application/registration-success.html',
+                    {'email': form.cleaned_data['email']})
+            else:
+                if not applicant.has_logged_in:
+                    return dupplicate_email_error(applicant,
+                                                  email,
+                                                  first_name,
+                                                  last_name)
 
-            applicant = form.save(commit=False)
-            passwd = applicant.random_password()
-            applicant.save()
-            send_applicant_email(applicant, passwd)
-            return render_to_response('application/registration-success.html',
-                                      {'email': form.cleaned_data['email']})
+                # e-mail has been registered and logged in
+                from django.forms.util import ErrorList
+                form._errors['__all__'] = ErrorList(["อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว"
+                                                     "ถ้าอีเมล์นี้เป็นของคุณจริง "
+                                                     "และยังไม่เคยลงทะเบียน "
+                                                     "กรุณาติดต่อผู้ดูแลระบบ "
+                                                     "อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้"])
+
     else:
         form = RegistrationForm()
     return render_to_response('application/registration.html',

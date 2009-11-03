@@ -1,0 +1,108 @@
+# -*- coding: utf-8 -*-
+
+from south.db import db
+from django.db import models
+from adm.application.models import *
+
+class Migration:
+    
+    def forwards(self, orm):
+        
+        # Adding model 'Registration'
+        db.create_table('application_registration', (
+            ('id', orm['application.registration:id']),
+            ('applicant', orm['application.registration:applicant']),
+            ('registered_at', orm['application.registration:registered_at']),
+            ('first_name', orm['application.registration:first_name']),
+            ('last_name', orm['application.registration:last_name']),
+        ))
+        db.send_create_signal('application', ['Registration'])
+        
+    
+    
+    def backwards(self, orm):
+        
+        # Deleting model 'Registration'
+        db.delete_table('application_registration')
+        
+    
+    
+    models = {
+        'application.address': {
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'district': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'number': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'postal_code': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'province': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'road': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'village_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'village_number': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
+        },
+        'application.applicant': {
+            'doc_submission_method': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '75'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'has_logged_in': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'hashed_password': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_submitted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '300'})
+        },
+        'application.applicantaddress': {
+            'applicant': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'address'", 'unique': 'True', 'to': "orm['application.Applicant']"}),
+            'contact_address': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'contact_owner'", 'unique': 'True', 'to': "orm['application.Address']"}),
+            'home_address': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'home_owner'", 'unique': 'True', 'to': "orm['application.Address']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
+        'application.education': {
+            'anet': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'applicant': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'education'", 'unique': 'True', 'to': "orm['application.Applicant']"}),
+            'gat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
+            'gat_date': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gat_score_set'", 'null': 'True', 'to': "orm['application.GPExamDate']"}),
+            'gpax': ('django.db.models.fields.FloatField', [], {}),
+            'has_graduated': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'pat1': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'pat1_date': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'pat1_score_set'", 'null': 'True', 'to': "orm['application.GPExamDate']"}),
+            'pat3': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'pat3_date': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'pat3_score_set'", 'null': 'True', 'to': "orm['application.GPExamDate']"}),
+            'school_city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'school_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'school_province': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'uses_gat_score': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'})
+        },
+        'application.gpexamdate': {
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'month_year': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+        },
+        'application.major': {
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'number': ('django.db.models.fields.CharField', [], {'max_length': '5'})
+        },
+        'application.majorpreference': {
+            'applicant': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'preference'", 'unique': 'True', 'to': "orm['application.Applicant']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'majors': ('IntegerListField', [], {})
+        },
+        'application.personalinfo': {
+            'applicant': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'personal_info'", 'unique': 'True', 'to': "orm['application.Applicant']"}),
+            'birth_date': ('django.db.models.fields.DateField', [], {}),
+            'ethnicity': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'national_id': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'nationality': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+        },
+        'application.registration': {
+            'applicant': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'registrations'", 'to': "orm['application.Applicant']"}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
+            'registered_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
+        }
+    }
+    
+    complete_apps = ['application']

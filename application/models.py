@@ -10,7 +10,7 @@ class Applicant(models.Model):
                                   verbose_name="ชื่อ")
     last_name = models.CharField(max_length=300,
                                  verbose_name="นามสกุล")
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     hashed_password = models.CharField(max_length=100)
 
     has_logged_in = models.BooleanField(default=False)
@@ -113,20 +113,21 @@ class Applicant(models.Model):
         return "12345678901234567890"
 
 
-    # registration login
+    # accessor methods
     @staticmethod
-    def get_applicants_by_email(email):
-        return Applicant.objects.filter(email=email).all()
-
-    @staticmethod
-    def check_if_email_has_been_logged_in(email):
-        applicants = Applicant.get_applicants_by_email(email)
+    def get_applicant_by_email(email):
+        applicants = Applicant.objects.filter(email=email).all()
         if len(applicants)==0:
-            return False
-        for applicant in applicants:
-            if applicant.has_logged_in:
-                return True
-        return False        
+            return None
+        else:
+            return applicants[0]
+
+
+class Registration(models.Model):
+    applicant = models.ForeignKey(Applicant,related_name="registrations")
+    registered_at = models.DateTimeField(auto_now_add=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=300)
 
 
 class PersonalInfo(models.Model):

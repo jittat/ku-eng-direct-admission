@@ -33,8 +33,11 @@ class ForgetPasswordForm(forms.Form):
             raise forms.ValidationError(u'ไม่มีผู้ใช้ที่ใช้อีเมล์: ' +
                                         email)
 
-class RegistrationForm(forms.ModelForm):
-    email_confirmation = forms.EmailField()
+class RegistrationForm(forms.Form):
+    first_name = forms.CharField(label=u'ชื่อ')
+    last_name = forms.CharField(label=u'นามสกุล')
+    email = forms.EmailField(label=u'อีเมล์')
+    email_confirmation = forms.EmailField(label=u'ยืนยันอีเมล์')
 
     def clean_email_confirmation(self):
         if (self.cleaned_data['email'] !=
@@ -42,22 +45,6 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
         return self.cleaned_data['email_confirmation']
 
-    # TODO: change message to include e-mails and other info
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        email = cleaned_data.get("email")
-        if Applicant.check_if_email_has_been_logged_in(email):
-            raise forms.ValidationError("อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว"
-                                        "ถ้าอีเมล์นี้เป็นของคุณจริง "
-                                        "และยังไม่เคยลงทะเบียน "
-                                        "กรุณาติดต่อผู้ดูแลระบบ")
-        return cleaned_data
-
-    class Meta:
-        model = Applicant
-        fields = ['first_name',
-                  'last_name',
-                  'email']
 
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)

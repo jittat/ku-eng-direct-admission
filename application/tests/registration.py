@@ -112,6 +112,8 @@ class RegistrationTestCase(TransactionTestCase):
                                     {'email': self.regis_data['email'],
                                      'password': password})
 
+        self.assertRedirects(response,'/apply/personal/')
+
         # register again
         response = self.client.post('/apply/register/',
                                     self.regis_data)
