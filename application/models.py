@@ -196,7 +196,7 @@ class Education(models.Model):
                 (False,u"ANET")),
         verbose_name=u"คะแนนที่ใช้สมัคร")
     gpax = models.FloatField(verbose_name="GPAX")
-    gat = models.IntegerField(blank=True, null=True,
+    gat = models.FloatField(blank=True, null=True,
                               verbose_name="คะแนน GAT")
     gat_date = models.ForeignKey(GPExamDate,
                                  blank=True, null=True,
