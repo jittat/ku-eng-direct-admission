@@ -115,8 +115,12 @@ class Applicant(models.Model):
 
     # registration login
     @staticmethod
+    def get_applicants_by_email(email):
+        return Applicant.objects.filter(email=email).all()
+
+    @staticmethod
     def check_if_email_has_been_logged_in(email):
-        applicants = Applicant.objects.filter(email=email).all()
+        applicants = Applicant.get_applicants_by_email(email)
         if len(applicants)==0:
             return False
         for applicant in applicants:
