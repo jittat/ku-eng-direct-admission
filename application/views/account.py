@@ -31,17 +31,21 @@ def login(request):
             except Applicant.DoesNotExist:
                 applicant = None
 
-            if (applicant!=None and 
-                applicant.check_password(passwd)):
-                # authenticated
+            if applicant!=None:
+                if applicant.activation_required:
+                    return render_to_response(
+                        'application/registration-activation-required.html',
+                        { 'email': email })
+                elif applicant.check_password(passwd):
+                    # authenticated
 
-                if not applicant.has_logged_in:
-                    applicant.has_logged_in = True
-                    applicant.save()
+                    if not applicant.has_logged_in:
+                        applicant.has_logged_in = True
+                        applicant.save()
 
-                request.session['applicant_id'] = applicant.id
-
-                return redirect_to_first_form()
+                    request.session['applicant_id'] = applicant.id
+                    
+                    return redirect_to_first_form()
             
             from django.forms.util import ErrorList
 
@@ -74,6 +78,8 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
                                     first_name=first_name,
                                     last_name=last_name)
     new_registration.save()
+    applicant.activation_required = True
+    applicant.save()
     return render_to_response('application/registration-dupplicate.html',
                               { 'applicant': applicant,
                                 'email': email,

@@ -145,3 +145,29 @@ class RegistrationTestCase(TransactionTestCase):
                                 'application/registration-dupplicate.html')
         old_registrations = response.context['old_registrations']
         self.assertEquals(len(old_registrations),1)
+
+
+    def test_activation_required_for_account_registered_many_times(self):
+        """
+        tests that, for an account with an e-mail that has been
+        registered many time, activation is required.
+        """
+
+        # create user, and get password
+        password = self.create_user_and_get_password()
+
+        # register again
+        response = self.client.post('/apply/register/',
+                                    self.regis_data)
+
+        self.assertTemplateUsed(response,
+                                'application/registration-dupplicate.html')
+
+        # log in with the password from the first e-mail
+        response = self.client.post('/apply/login/',
+                                    {'email': self.regis_data['email'],
+                                     'password': password})
+
+        self.assertTemplateUsed(response,
+                                'application/registration-activation-required.html')
+

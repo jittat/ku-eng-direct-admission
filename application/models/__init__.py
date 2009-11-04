@@ -15,6 +15,7 @@ class Applicant(models.Model):
     hashed_password = models.CharField(max_length=100)
 
     has_logged_in = models.BooleanField(default=False)
+    activation_required = models.BooleanField(default=False)
 
     # application data
 
@@ -313,3 +314,5 @@ class Registration(models.Model):
 
     class Meta:
         ordering = ['-registered_at']
+
+
