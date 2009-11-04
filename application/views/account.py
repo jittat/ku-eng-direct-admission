@@ -10,7 +10,8 @@ from MySQLdb import IntegrityError
 from commons.utils import redirect_to_index
 from application.views import redirect_to_first_form
 
-from application.models import Applicant, Registration
+from application.models import Applicant
+from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm
 from application.email import send_applicant_email

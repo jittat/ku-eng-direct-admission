@@ -2,7 +2,8 @@
 
 from django.db import models
 from django.conf import settings
-from fields import IntegerListField
+from application.fields import IntegerListField
+
 
 class Applicant(models.Model):
     # core applicant information
@@ -122,15 +123,6 @@ class Applicant(models.Model):
         else:
             return applicants[0]
 
-
-class Registration(models.Model):
-    applicant = models.ForeignKey(Applicant,related_name="registrations")
-    registered_at = models.DateTimeField(auto_now_add=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=300)
-
-    class Meta:
-        ordering = ['-registered_at']
 
 class PersonalInfo(models.Model):
     applicant = models.OneToOneField(Applicant,related_name="personal_info")
@@ -312,3 +304,12 @@ class MajorPreference(models.Model):
 
         return l
 
+
+class Registration(models.Model):
+    applicant = models.ForeignKey(Applicant,related_name="registrations")
+    registered_at = models.DateTimeField(auto_now_add=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=300)
+
+    class Meta:
+        ordering = ['-registered_at']
