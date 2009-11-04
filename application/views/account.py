@@ -34,7 +34,7 @@ def login(request):
             if applicant!=None:
                 if applicant.activation_required:
                     return render_to_response(
-                        'application/registration-activation-required.html',
+                        'application/registration/activation-required.html',
                         { 'email': email })
                 elif applicant.check_password(passwd):
                     # authenticated
@@ -80,7 +80,7 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
     new_registration.save()
     applicant.activation_required = True
     applicant.save()
-    return render_to_response('application/registration-dupplicate.html',
+    return render_to_response('application/registration/dupplicate.html',
                               { 'applicant': applicant,
                                 'email': email,
                                 'old_registrations': old_registrations,
@@ -118,7 +118,7 @@ def register(request):
             
                 send_applicant_email(applicant, passwd)
                 return render_to_response(
-                    'application/registration-success.html',
+                    'application/registration/success.html',
                     {'email': form.cleaned_data['email']})
             else:
                 if not applicant.has_logged_in:
@@ -137,7 +137,7 @@ def register(request):
 
     else:
         form = RegistrationForm()
-    return render_to_response('application/registration.html',
+    return render_to_response('application/registration/register.html',
                               { 'form': form })
 
 def forget_password(request):
@@ -146,12 +146,19 @@ def forget_password(request):
         if form.is_valid():
             email = form.cleaned_data['email']['email']
             applicant = form.cleaned_data['email']['applicant']
-            new_pwd = applicant.random_password()
-            applicant.save()
-            print applicant.email
-            send_applicant_email(applicant, new_pwd)
+
+            if applicant.can_request_password():
+                new_pwd = applicant.random_password()
+                applicant.save()
+                send_applicant_email(applicant, new_pwd)
             
-            return HttpResponseRedirect(reverse('apply-login'))
+                return render_to_response(
+                    'application/registration/password-sent.html',
+                    {'email': email})
+            else:
+                return render_to_response(
+                    'application/registration/too-many-requests.html',
+                    {'email': email})                
     else:
         form = ForgetPasswordForm()
 

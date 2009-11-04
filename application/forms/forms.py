@@ -24,7 +24,6 @@ class ForgetPasswordForm(forms.Form):
         email = self.cleaned_data['email']
         applicants = (Applicant.objects
                       .filter(email=email))
-        print applicants
         if len(applicants)==1:
             applicant = applicants[0]
             return {'email': email,

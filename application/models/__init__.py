@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta, datetime
 
 from django.db import models
 from django.conf import settings
 from application.fields import IntegerListField
-
 
 class Applicant(models.Model):
     # core applicant information
@@ -67,6 +67,7 @@ class Applicant(models.Model):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
 
+    ######################
     # methods for authentication
 
     PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
@@ -98,8 +99,45 @@ class Applicant(models.Model):
         salt, enc_passwd = self.hashed_password.split('$')
 
         return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
-    
 
+
+    def can_request_password(self):
+        """
+        checks if a user can request a new password, and saves the
+        request log.  The criteria are:
+
+        - the user hasn't requested the new password within 5 minutes,
+        - the user hasn't requested the new password more than
+        settings.MAX_PASSWORD_REQUST_PER_DAY (set in settings.py)
+        times.
+        """
+        # get the log
+        try:
+            request_log = self.password_request_log
+        except PasswordRequestLog.DoesNotExist:
+            request_log = None
+        
+        if request_log==None:
+            # request for the first time
+            request_log = PasswordRequestLog.create_for(self)
+            request_log.save()
+            return True
+
+        result = True
+        if (request_log.last_request_at >= 
+            datetime.now() - timedelta(minutes=5)):
+            result = False
+
+        if (request_log.requested_today() and
+            request_log.num_requested_today >=
+            settings.MAX_PASSWORD_REQUST_PER_DAY):
+            result = False
+
+        request_log.update()
+        request_log.save()
+        return result
+
+    ######################
     # tickets
 
     def generate_submission_ticket(self):
@@ -314,5 +352,32 @@ class Registration(models.Model):
 
     class Meta:
         ordering = ['-registered_at']
+
+
+class PasswordRequestLog(models.Model):
+    applicant = models.OneToOneField(Applicant,related_name='password_request_log')
+    last_request_at = models.DateTimeField()
+    num_requested_today = models.IntegerField(default=0)
+
+    @staticmethod
+    def create_for(applicant):
+        log = PasswordRequestLog(applicant=applicant,
+                                 last_request_at=datetime.now(),
+                                 num_requested_today=1)
+        return log
+
+    def requested_today(self):
+        return self.last_request_at >= datetime.today()
+
+    def update(self):
+        """
+        updates the number of requests for today, and the requested
+        timestamp.
+        """
+        self.last_request_at = datetime.now()
+        if self.requested_today():
+            self.num_requested_today = self.num_requested_today + 1
+        else:
+            self.num_requested_today = 1
 
 

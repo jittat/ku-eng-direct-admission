@@ -25,14 +25,16 @@ class RegistrationTestCase(TransactionTestCase):
         response = self.client.get('/apply/register/')
         self.assertEquals(response.status_code,200)
 
-    def test_register_account_with_unconfirmed_email(self):
+    def test_register_account_with_unmatched_email(self):
         """
         tests that error would be returned if email and confirmation
         email are different.
         """
+        # register with unmatched email
         self.regis_data['email_confirmation'] = self.regis_data['email'] + 'xx'
         response = self.client.post('/apply/register/',self.regis_data)
-        self.assertTemplateUsed(response,'application/registration.html')
+        self.assertTemplateUsed(response,
+                                'application/registration/register.html')
         form = response.context['form']
         self.assertEquals(len(form._errors['email_confirmation']),1)
 
@@ -50,7 +52,7 @@ class RegistrationTestCase(TransactionTestCase):
                                     self.regis_data)
 
         self.assertTemplateUsed(response,
-                                'application/registration-success.html')
+                                'application/registration/success.html')
 
         apps = Applicant.objects.filter(email=self.regis_data['email']).all()
         self.assertEquals(len(apps),1)
@@ -60,28 +62,8 @@ class RegistrationTestCase(TransactionTestCase):
 
         self.assertEquals(len(mail.outbox),1)
         self.assertEquals(mail.outbox[0].to[0],self.regis_data['email'])
+
         settings.FAKE_SENDING_EMAIL = org_email_setting
-
-
-    def create_user_and_get_password(self):
-        org_email_setting = settings.FAKE_SENDING_EMAIL
-        settings.FAKE_SENDING_EMAIL = False
-
-        response = self.client.post('/apply/register/',
-                                    self.regis_data)
-
-        self.assertTemplateUsed(response,
-                                'application/registration-success.html')
-
-        self.assertEquals(len(mail.outbox),1)
-        body = mail.outbox[0].body
-
-        import re
-
-        m = re.search('Your password is: (\w+)',body,re.M)
-        password = m.group(1)
-
-        return password
 
 
     def test_user_can_login_from_sent_password(self):
@@ -122,7 +104,8 @@ class RegistrationTestCase(TransactionTestCase):
         response = self.client.post('/apply/register/',
                                     self.regis_data)
 
-        self.assertTemplateUsed(response,'application/registration.html')
+        self.assertTemplateUsed(response,
+                                'application/registration/register.html')
         form = response.context['form']
         self.assertEquals(len(form.non_field_errors()),1)
 
@@ -142,7 +125,7 @@ class RegistrationTestCase(TransactionTestCase):
                                     self.regis_data)
 
         self.assertTemplateUsed(response,
-                                'application/registration-dupplicate.html')
+                                'application/registration/dupplicate.html')
         old_registrations = response.context['old_registrations']
         self.assertEquals(len(old_registrations),1)
 
@@ -161,7 +144,7 @@ class RegistrationTestCase(TransactionTestCase):
                                     self.regis_data)
 
         self.assertTemplateUsed(response,
-                                'application/registration-dupplicate.html')
+                                'application/registration/dupplicate.html')
 
         # log in with the password from the first e-mail
         response = self.client.post('/apply/login/',
@@ -169,5 +152,85 @@ class RegistrationTestCase(TransactionTestCase):
                                      'password': password})
 
         self.assertTemplateUsed(response,
-                                'application/registration-activation-required.html')
+                                'application/registration/activation-required.html')
 
+
+    def test_user_can_activate_their_account(self):
+        """
+        TODO later
+        """
+        self.assertEquals(True,False)
+
+
+    def test_user_can_request_password(self):
+        """
+        test that a user can request a new password.
+        """
+        # create a new user
+        self.create_user_and_get_password()
+
+        # request a new password
+        self.perform_password_request(self.regis_data['email'])
+
+        self.assertEquals(len(mail.outbox),2)
+        password = self.take_password_from_email_body(mail.outbox[1].body)
+
+        response = self.client.post('/apply/login/',
+                                    {'email': self.regis_data['email'],
+                                     'password': password})
+        
+        self.assertRedirects(response,'/apply/personal/')
+
+
+    def test_user_get_warnings_when_request_password_twice_within_five_min(self):
+        """
+        test that a user can request a new password.
+        """
+        # create a new user
+        self.create_user_and_get_password()
+
+        # request a new password
+        self.perform_password_request(self.regis_data['email'])
+        self.assertEquals(len(mail.outbox),2)
+
+        # request a new password, again
+        response = self.perform_password_request(self.regis_data['email'])
+        self.assertEquals(len(mail.outbox),2)
+        self.assertTemplateUsed(response,
+                                'application/registration/too-many-requests.html')
+
+
+    ###################################################
+    # helpers methods
+
+    def take_password_from_email_body(self,body):
+        import re
+
+        m = re.search('Your password is: (\w+)',body,re.M)
+        return m.group(1)
+
+
+    def create_user_and_get_password(self):
+        org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
+        response = self.client.post('/apply/register/',
+                                    self.regis_data)
+        self.assertEquals(len(mail.outbox),1)
+        password = self.take_password_from_email_body(mail.outbox[0].body)
+
+        settings.FAKE_SENDING_EMAIL = org_email_setting
+
+        return password
+
+
+    def perform_password_request(self,email):
+        org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
+        response = self.client.post('/apply/forget/',
+                                    {'email': email})
+
+        settings.FAKE_SENDING_EMAIL = org_email_setting
+
+        return response

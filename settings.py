@@ -91,14 +91,19 @@ INSTALLED_APPS = (
 # ADM settings
 ####################################
 
-ADMISSION_YEAR = 53
-
 # Absolute path to statis media, e.g., css files.  Used in development
 # with django.views.static.serve
 STATIC_DOC_ROOT = MEDIA_ROOT
 
 # used in redirect_to_index
 INDEX_PAGE = 'start-page'
+
+MAX_PASSWORD_REQUST_PER_DAY = 10
+
+########################
+# options for admission
+########################
+ADMISSION_YEAR = 53
 
 # maximum number of choices
 MAX_MAJOR_RANK = 6
