@@ -9,3 +9,7 @@ def redirect_to_index(request):
     # go back to front page, will be changed later
     return HttpResponseRedirect(reverse(settings.INDEX_PAGE))
 
+
+def admin_email():
+    admin = settings.ADMINS[0]
+    return admin[1]

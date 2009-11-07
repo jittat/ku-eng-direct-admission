@@ -100,6 +100,8 @@ INDEX_PAGE = 'start-page'
 
 MAX_PASSWORD_REQUST_PER_DAY = 10
 
+FAKE_SENDING_EMAIL = False
+
 ########################
 # options for admission
 ########################

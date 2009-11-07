@@ -129,11 +129,11 @@ def register(request):
 
                 # e-mail has been registered and logged in
                 from django.forms.util import ErrorList
-                form._errors['__all__'] = ErrorList(["อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว"
-                                                     "ถ้าอีเมล์นี้เป็นของคุณจริง "
-                                                     "และยังไม่เคยลงทะเบียน "
-                                                     "กรุณาติดต่อผู้ดูแลระบบ "
-                                                     "อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้"])
+                from commons.utils import admin_email
+                form._errors['__all__'] = ErrorList([
+"""อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว ถ้าอีเมล์นี้เป็นของคุณจริงและยังไม่เคยลงทะเบียน
+กรุณาติดต่อผู้ดูแลระบบทางอีเมล์<a href="mailto:%s">%s</a> หรือทางเว็บบอร์ด
+อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % (admin_email(), admin_email())])
 
     else:
         form = RegistrationForm()
