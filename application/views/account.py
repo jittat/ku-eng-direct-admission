@@ -9,6 +9,7 @@ from MySQLdb import IntegrityError
 
 from commons.utils import redirect_to_index
 from application.views import redirect_to_first_form
+from application.views import redirect_to_applicant_first_page
 
 from application.models import Applicant
 from application.models import Registration
@@ -45,7 +46,7 @@ def login(request):
 
                     request.session['applicant_id'] = applicant.id
                     
-                    return redirect_to_first_form()
+                    return redirect_to_applicant_first_page(applicant)
             
             from django.forms.util import ErrorList
 

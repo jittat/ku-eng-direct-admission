@@ -84,6 +84,8 @@ class Applicant(models.Model):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
 
+    def online_doc_submission(self):
+        return self.doc_submission_method == Applicant.SUBMITTED_ONLINE
 
     ######################
     # methods for authentication

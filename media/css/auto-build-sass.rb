@@ -22,6 +22,7 @@ def build(fname)
   output = css_name(fname)
   puts "Building #{fname}..."
   system("sass #{fname} #{output}")
+  puts "done."
 end
 
 sass_files = find_sass_files

@@ -94,7 +94,16 @@ body {
   .submission-ticket .verification {
     font-size: 80%; }
 
-#applicant-info-confirmation .section {
+.application-info {
+  -moz-border-radius: 3px;
+  border: 1px solid #777777;
   padding: 5px; }
-#applicant-info-confirmation .address {
-  padding-right: 50px; }
+  .application-info h2 {
+    background: green;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px; }
+  .application-info .section {
+    padding: 5px; }
+  .application-info .address {
+    padding-right: 50px; }

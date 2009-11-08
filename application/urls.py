@@ -23,6 +23,9 @@ urlpatterns = patterns(
         {'template': 'application/submission/incomplete_error.html'},
         name='apply-incomplete'),
 
+    url(r'^status/$', 'status.index', name='status-index'),
+    url(r'^status/show$', 'status.show', name='status-show'),
+
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 

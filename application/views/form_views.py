@@ -38,9 +38,6 @@ FORM_STEPS = [
 
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
 
-def redirect_to_first_form():
-    return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
-
 def get_allowed_form_steps(applicant):
     if applicant==None:
         return FORM_STEP_DICT['apply-personal-info']
@@ -58,6 +55,27 @@ def build_form_step_info(current_step, applicant):
     return { 'steps': FORM_STEPS,
              'current_step': current_step,
              'max_linked_step': get_allowed_form_steps(applicant) }
+
+def redirect_to_first_form():
+    return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
+
+
+def redirect_to_applicant_first_page(applicant):
+    """
+    takes the applicant, and depending on the submission status, take
+    the applicant to the right page.  The condition is as follows:
+
+    - if the applicant has not submitted the information form, take
+      the applicant to the first form.
+
+    - if the applicant has already submitted everything, take the
+      applicant to the status page.
+    """
+    if not applicant.is_submitted:
+        return redirect_to_first_form()
+    else:
+        return HttpResponseRedirect(reverse('status-index'))
+
 
 @applicant_required
 def applicant_personal_info(request):

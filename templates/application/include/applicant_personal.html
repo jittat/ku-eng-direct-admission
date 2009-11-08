@@ -1,0 +1,29 @@
+<table width="100%">
+  <tr>
+    <td>
+      <b>ชื่อ:</b> {{ applicant.first_name }} {{ applicant.last_name }}
+    </td>
+    <td>
+      <b>e-mail:</b> {{ applicant.email }}
+    </td>
+  </tr>
+  {% with applicant.personal_info as info %}
+    <tr>
+      <td>
+	<b>เลขประจำตัวประชาชน:</b> {{ info.national_id }}
+      </td>
+      <td>
+	<b>วันเกิด:</b> {{ info.birth_date }}
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<b>สัญชาติ:</b> {{ info.nationality }}&nbsp;&nbsp;&nbsp;
+	<b>เชื้อชาติ:</b> {{ info.ethnicity }}<br/>
+      </td>
+      <td>
+	<b>หมายเลขโทรศัพท์:</b> {{ info.phone_number }}<br/>
+      </td>
+    </tr>
+  {% endwith %}
+</table>
