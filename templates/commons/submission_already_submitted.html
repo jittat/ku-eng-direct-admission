@@ -1,0 +1,16 @@
+{% extends "commons/base.html" %}
+
+{% block title %}การสมัครล้มเหลว{% endblock %}
+
+{% block body %}
+  <h2>การสมัครล้มเหลว: ผู้สมัครได้ส่งใบสมัครก่อนหน้านี้แล้ว</h2>
+  <p>
+    ดังรายละเอียดต่อไปนี้<br/>
+    <span class="info">ชื่อผู้สมัคร: {{ applicant.full_name }}</span><br/>
+    <span class="info">หมายเลขผู้สมัคร: {{ applicant.ticket_number }}</span><br/>
+  </p>
+
+  <p>
+    <a href="{% url apply-logout %}?url=admission.eng.ku.ac.th">ออกจากระบบและกลับไปเว็บรับสมัคร</a>
+  </p>
+{% endblock %}

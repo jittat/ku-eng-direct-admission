@@ -4,79 +4,56 @@
 
 {% block extra-head %}
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
-<script type="text/javascript" src="{% media_url %}/js/doc_submission.js"></script>
 {% endblock %}
 
-{% block title %}อัพโหลดหลักฐาน{% endblock %}
+{% block title %}หลักฐานที่อัพโหลด{% endblock %}
 
 {% block body %}
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
-  {% form_steps %}
 
-  {% if missing_fields %}
-    <div class="doc-error">
-      <b>เกิดข้อผิดพลาด</b> เอกสารไม่ครบ เอกสารที่ขาดไปคือ
-      {% for f in missing_fields %}
-        {% if forloop.last and not forloop.first %}และ{% endif %}{{ f }}
-      {% endfor %}
-    </div>
-  {% endif %}
+  {% form_steps %}
+  <p><b>สถานะ:</b> อยู่ระหว่างการตรวจสอบ</p>
 
   <div id="personal" class="doc-upload-forms">
     <h2>เอกสารข้อมูลส่วนตัว</h2>
     {% with field_forms.nat_id as upload_field %}
-      {% include "upload/include/field_form.html" %}
+      {% include "upload/include/field_show.html" %}
     {% endwith %}
     {% with field_forms.picture as upload_field %}
-      {% include "upload/include/field_form.html" %}
+      {% include "upload/include/field_show.html" %}
     {% endwith %}
   </div>
   <div id="education" class="doc-upload-forms">
     <h2>ข้อมูลการศึกษา</h2>
     {% with field_forms.edu_certificate as upload_field %}
-      {% include "upload/include/field_form.html" %}
+      {% include "upload/include/field_show.html" %}
     {% endwith %}
     {% with field_forms.abroad_edu_certificate as upload_field %}
-      {% include "upload/include/field_form.html" %}
+      {% include "upload/include/field_show.html" %}
     {% endwith %}
   </div>
   <div id="scores" class="doc-upload-forms">
     <h2>คะแนนสอบ</h2>
     {% if applicant.education.uses_gat_score %}
       {% with field_forms.gat_score as upload_field %}
-        {% include "upload/include/field_form.html" %}
+        {% include "upload/include/field_show.html" %}
       {% endwith %}
       {% with field_forms.pat1_score as upload_field %}
-        {% include "upload/include/field_form.html" %}
+        {% include "upload/include/field_show.html" %}
       {% endwith %}
       {% with field_forms.pat3_score as upload_field %}
-        {% include "upload/include/field_form.html" %}
+        {% include "upload/include/field_show.html" %}
       {% endwith %}
     {% else %}
       {% with field_forms.anet_score as upload_field %}
-        {% include "upload/include/field_form.html" %}
+        {% include "upload/include/field_show.html" %}
       {% endwith %}
     {% endif %}
   </div>
   <div id="fee" class="doc-upload-forms">
     <h2>หลักฐานการชำระเงิน</h2>
     {% with field_forms.app_fee_doc as upload_field %}
-      {% include "upload/include/field_form.html" %}
+      {% include "upload/include/field_show.html" %}
     {% endwith %}
   </div>
-
-  <form action="{% url upload-submit %}" method="post">
-    <div class="submission-bar">
-      <input type="submit" name="submit" value="ส่งใบสมัคร"/>
-    </div>
-  </form>
-<script type="text/javascript">
-$(document).ready(function() {
-  {% for f in field_forms.keys %}
-    $('#upload-form-{{ f }}').submit(function() {
-      return DocSubmission.handleFormSubmit(this,"{{ f }}");
-    });
-  {% endfor %}
-});
-</script>
 {% endblock %}

@@ -21,3 +21,4 @@ def applicant_required(view_function):
         return view_function(request, *args, **kwargs)
 
     return decorate
+

@@ -18,7 +18,7 @@ def submitted_applicant_required(view_function):
         if request.applicant.is_submitted:
             return view_function(request, *args, **kwargs)
         else:
-            return redirect_to_applicant_first_page
+            return redirect_to_applicant_first_page(request.applicant)
 
     return decorate
 
@@ -29,8 +29,23 @@ def index(request):
                               { 'applicant': request.applicant })
 
 
+# this is for showing step bar
+SHOW_UPLOAD_FORM_STEPS = [
+    ('ดูข้อมูลที่ใช้สมัคร','status-show'),
+    ('ดูหลักฐานที่อัพโหลดแล้ว','upload-show'),
+    ]
+
 @submitted_applicant_required
 def show(request):
+    if request.applicant.online_doc_submission():
+        form_step_info = { 'steps': SHOW_UPLOAD_FORM_STEPS,
+                           'current_step': 0,
+                           'max_linked_step': 1 }
+    else:
+        form_step_info = { 'steps': [SHOW_UPLOAD_FORM_STEPS[0]],
+                           'current_step': 0,
+                           'max_linked_step': 0 }
     return render_to_response("application/status/show.html",
-                              { 'applicant': request.applicant })
+                              { 'applicant': request.applicant,
+                                'form_step_info': form_step_info })
 

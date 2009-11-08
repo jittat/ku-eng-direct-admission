@@ -54,9 +54,9 @@ def build_form_step_info(current_step, applicant):
              'current_step': current_step,
              'max_linked_step': get_allowed_form_steps(applicant) }
 
+
 def redirect_to_first_form():
     return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
-
 
 def redirect_to_applicant_first_page(applicant):
     """
@@ -68,6 +68,9 @@ def redirect_to_applicant_first_page(applicant):
 
     - if the applicant has already submitted everything, take the
       applicant to the status page.
+
+    TODO: doc_menu for applicant that start submitting docs, but not
+    complete.
     """
     if not applicant.is_submitted:
         return redirect_to_first_form()
@@ -263,7 +266,13 @@ def info_confirm(request):
 
     if request.method == 'POST':
         if 'submit' in request.POST:
-            applicant.submit(Applicant.SUBMITTED_BY_MAIL)
+            try:
+                applicant.submit(Applicant.SUBMITTED_BY_MAIL)
+            except Applicant.DuplicateSubmissionError:
+                return render_to_response(
+                    'commons/submission_already_submitted.html',
+                    { 'applicant': applicant })
+
             return HttpResponseRedirect(reverse('apply-ticket'))
         else:
             return render_to_response('application/submission/not_submitted.html')

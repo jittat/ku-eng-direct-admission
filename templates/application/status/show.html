@@ -1,8 +1,9 @@
 {% extends "application/status/base.html" %}
 
 {% block body %}
+  {% load adm_steps %}{% form_steps %}
   <p>
-    คุณได้ยื่นใบสมัครเรียบร้อย ด้วยเลือกยื่นหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }}
+    คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกยื่นหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }}
   </p>
   <p>
     <b>สถานะใบสมัคร:</b> อยู่ระหว่างการตรวจสอบ
@@ -12,7 +13,7 @@
   </div>
 
   {% if applicant.online_doc_submission %}
-    <p>ดูหลักฐานที่ส่งออนไลน์</p>
+    <p><a href="{% url upload-show %}">ดูหลักฐานที่ส่งออนไลน์</a></p>
   {% endif %}
 
   <p>

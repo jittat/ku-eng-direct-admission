@@ -1,0 +1,10 @@
+<div class="upload-item">
+  {% if upload_field.has_thumbnail %}
+    <div class="thumbnail">
+      <img src="{% url upload-thumbnail upload_field.name %}"/>
+    </div>
+  {% endif %}
+  <div class="doc-upload-form">
+    {{ upload_field.field.verbose_name }}<br/>
+  </div>
+</div>

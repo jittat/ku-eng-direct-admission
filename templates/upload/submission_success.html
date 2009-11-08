@@ -1,0 +1,16 @@
+{% extends "commons/base.html" %}
+
+{% block title %}การสมัครเรียบร้อย{% endblock %}
+
+{% block body %}
+  <h2>การสมัครเรียบร้อย</h2>
+  <p>
+    <span class="info">ชื่อผู้สมัคร: {{ applicant.full_name }}</span><br/>
+    <span class="info">หมายเลขผู้สมัคร: {{ applicant.ticket_number }}</span><br/>
+    <span class="verification">หมายเลขตรวจสอบ: {{ applicant.verification_number }}</span>
+  </p>
+
+  <p>
+    การสมัครเรียบร้อย <a href="{% url apply-logout %}?url=admission.eng.ku.ac.th">ออกจากระบบและกลับไปเว็บรับสมัคร</a>
+  </p>
+{% endblock %}

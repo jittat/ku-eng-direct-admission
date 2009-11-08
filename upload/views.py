@@ -9,7 +9,9 @@ from django import forms
 from django.core.files.uploadhandler import FileUploadHandler
 
 from commons.decorators import applicant_required
+from application.views.status import submitted_applicant_required
 
+from application.models import Applicant
 from models import AppDocs
 from models import get_field_thumbnail_filename, get_doc_fullpath
 
@@ -123,7 +125,7 @@ UPLOAD_FORM_STEPS = [
     ]
 
 @applicant_required
-def index(request):
+def index(request, missing_fields=None):
     docs = get_applicant_docs_or_none(request.applicant)
     if docs==None:
         docs = AppDocs(applicant=request.applicant)
@@ -137,7 +139,9 @@ def index(request):
     return render_to_response("upload/form.html",
                               { 'applicant': request.applicant,
                                 'field_forms': field_forms,
-                                'form_step_info': form_step_info })
+                                'form_step_info': form_step_info,
+                                'missing_fields': missing_fields })
+
 
 def save_as_temp_file(f):
     """
@@ -234,3 +238,49 @@ def upload(request, field_name):
             os.remove(temp_filename)
 
     return HttpResponseRedirect(reverse('upload-index'))
+
+
+@applicant_required
+def submit(request):
+    applicant = request.applicant
+    if request.method!='POST':
+        return HttpResponseRedirect(reverse('upload-index'))
+        
+    if applicant.appdocs.is_complete():
+        try:
+            applicant.submit(Applicant.SUBMITTED_ONLINE)
+        except Applicant.DuplicateSubmissionError:
+            return render_to_response(
+                'commons/submission_already_submitted.html',
+                { 'applicant': applicant })
+        
+        return render_to_response('upload/submission_success.html',
+                                  { 'applicant': applicant })
+    else:
+        missing_fields = applicant.appdocs.get_missing_fields()
+        missing_field_names = [
+            AppDocs._meta.get_field_by_name(f)[0].verbose_name
+            for f in missing_fields
+            ]
+        return index(request, missing_field_names)
+
+
+# this is for showing step bar
+SHOW_UPLOAD_FORM_STEPS = [
+    ('ดูข้อมูลที่ใช้สมัคร','status-show'),
+    ('ดูหลักฐานที่อัพโหลดแล้ว','upload-show'),
+    ]
+
+@submitted_applicant_required
+def show(request):
+    docs = get_applicant_docs_or_none(request.applicant)
+    fields = docs.get_upload_fields()
+    field_forms = populate_upload_field_forms(docs, fields)
+
+    form_step_info = { 'steps': SHOW_UPLOAD_FORM_STEPS,
+                       'current_step': 1,
+                       'max_linked_step': 1 }
+    return render_to_response("upload/show.html",
+                              { 'applicant': request.applicant,
+                                'field_forms': field_forms,
+                                'form_step_info': form_step_info })

@@ -6,11 +6,8 @@ from django.conf import settings
 from application.fields import IntegerListField
 
 
-class DupplicateSubmission(Exception):
-    pass
-
-
 class Applicant(models.Model):
+
     # core applicant information
     first_name = models.CharField(max_length=200,
                                   verbose_name="ชื่อ")
@@ -36,6 +33,9 @@ class Applicant(models.Model):
         choices=SUBMISSION_METHOD_CHOICES,
         default=UNDECIDED_METHOD)
 
+
+    class DuplicateSubmissionError(Exception):
+        pass
 
     ###################
     # class accessor methods
@@ -188,7 +188,7 @@ class Applicant(models.Model):
     
     def submit(self, submission_method):
         if self.is_submitted:
-            raise DupplicateSubmission()
+            raise Applicant.DuplicateSubmissionError()
         submission_info = SubmissionInfo(applicant=self)
         submission_info.random_salt()
         submission_info.save()

@@ -102,11 +102,33 @@ class AppDocs(models.Model):
             field_list.remove('pat2_score')
         return field_list
 
+    def get_required_fields(self):
+        fields = self.get_upload_fields()
+        for f in AppDocs.FormMeta.optional_fields:
+            if f in fields:
+                fields.remove(f)        
+        return fields
+
+    def get_missing_fields(self, find_one=False):
+        required_fields = self.get_required_fields()
+        missing = []
+        for f in required_fields:
+            if self.__getattribute__(f).name == '':
+                missing.append(f)
+        return missing
+
+    def is_complete(self):
+        missing_fields = self.get_missing_fields(find_one=True)
+        return len(missing_fields)==0
+
     @staticmethod
     def valid_field_name(field_name):
         return field_name in AppDocs.FormMeta.upload_fields    
 
     class FormMeta:
+        """
+        lists fields to be uploaded, and also lists optional fields.
+        """
         upload_fields = [
             'picture', 
             'edu_certificate',
@@ -118,3 +140,6 @@ class AppDocs(models.Model):
             'nat_id',
             'app_fee_doc']
 
+        optional_fields = [
+            'abroad_edu_certificate'
+            ]
