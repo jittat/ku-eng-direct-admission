@@ -45,7 +45,7 @@ def get_allowed_form_steps(applicant):
         return FORM_STEP_DICT['apply-majors']
     if applicant.has_address():
         return FORM_STEP_DICT['apply-edu']
-    if applicant.id != None:
+    if applicant.has_personal_info():
         return FORM_STEP_DICT['apply-address']
     return FORM_STEP_DICT['apply-personal-info']
 
