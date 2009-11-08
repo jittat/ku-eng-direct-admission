@@ -1,8 +1,8 @@
-{% extends "application/formbase.html" %}
+{% extends "application/registration/msg-base.html" %}
 
 {% block title %}ลงทะเบียนเพื่อเข้าใช้ระบบ: สำเร็จ{% endblock %}
 
-{% block form-body %}
+{% block msg-body %}
   <p>
     มีการลงทะเบียนด้วยอีเมล์ {{ email }} หลายครั้ง ดังนี้<br/>
     <ul>
@@ -14,9 +14,5 @@
     เราจึงได้ส่งลิงก์เพื่อยืนยันตัวตนกลับไปยังอีเมล์ดังกล่าว
     กรุณาตรวจสอบอีเมล์และกดลิงก์ดังกล่าวด้วย
   </p>
-  <p>
-    ถ้ามีข้อผิดพลาดหรือข้อสงสัยกรุณาติดต่อผู้ดูแลทางอีเมล์ 
-    {% load adm_info %}{% adm_admin_email_link %} 
-    หรือทางเว็บบอร์ด
-  </p>
+  {{ block.super }}
 {% endblock %}

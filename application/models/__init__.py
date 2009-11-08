@@ -5,6 +5,11 @@ from django.db import models
 from django.conf import settings
 from application.fields import IntegerListField
 
+
+class DupplicateSubmission(Exception):
+    pass
+
+
 class Applicant(models.Model):
     # core applicant information
     first_name = models.CharField(max_length=200,
@@ -30,6 +35,18 @@ class Applicant(models.Model):
     doc_submission_method = models.IntegerField(
         choices=SUBMISSION_METHOD_CHOICES,
         default=UNDECIDED_METHOD)
+
+
+    ###################
+    # class accessor methods
+
+    @staticmethod
+    def get_applicant_by_email(email):
+        applicants = Applicant.objects.filter(email=email).all()
+        if len(applicants)==0:
+            return None
+        else:
+            return applicants[0]
 
     # accessor methods
 
@@ -66,6 +83,7 @@ class Applicant(models.Model):
     def can_choose_major(self):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
+
 
     ######################
     # methods for authentication
@@ -137,6 +155,7 @@ class Applicant(models.Model):
         request_log.save()
         return result
 
+
     ######################
     # tickets
 
@@ -144,27 +163,59 @@ class Applicant(models.Model):
         pass
 
     def ticket_number(self):
+        application_id = self.submission_info.applicantion_id
         return ("%(year)d%(method)d%(id)05d" % 
                 { 'year': settings.ADMISSION_YEAR,
                   'method': self.doc_submission_method,
-                  'id': self.id })
+                  'id': application_id })
 
     def verification_number(self):
-        return "12345678901234567890"
+        key = u"%s-%s-%s-%s" % (
+            self.submission_info.salt,
+            self.email,
+            self.first_name,
+            self.last_name)
+        import hashlib
+        h = hashlib.md5()
+        h.update(key.encode('utf-8'))
+        return h.hexdigest()
 
 
-    # accessor methods
-    @staticmethod
-    def get_applicant_by_email(email):
-        applicants = Applicant.objects.filter(email=email).all()
-        if len(applicants)==0:
-            return None
-        else:
-            return applicants[0]
+    #######################
+    # submission
+    
+    def submit(self, submission_method):
+        if self.is_submitted:
+            raise DupplicateSubmission()
+        submission_info = SubmissionInfo(applicant=self)
+        submission_info.random_salt()
+        submission_info.save()
+        self.doc_submission_method = submission_method
+        self.is_submitted = True
+        self.save()
+
+
+class SubmissionInfo(models.Model):
+    """
+    associates Applicant who have submitted the applicaiton with a
+    unique applicantion_id.
+    """
+    applicantion_id = models.AutoField(unique=True, primary_key=True)
+    applicant = models.OneToOneField(Applicant, 
+                                     related_name="submission_info")
+    salt = models.CharField(max_length=30)
+
+    def random_salt(self):
+        from random import choice
+        s = [choice('abcdefghijklmnopqurstuvwxyz') for i in range(10)]
+        self.salt = ''.join(s)
+
+    class Meta:
+        ordering = ['applicantion_id']
 
 
 class PersonalInfo(models.Model):
-    applicant = models.OneToOneField(Applicant,related_name="personal_info")
+    applicant = models.OneToOneField(Applicant, related_name="personal_info")
     national_id = models.CharField(max_length=20,
                                    verbose_name="เลขประจำตัวประชาชน")
     birth_date = models.DateField(verbose_name="วันเกิด")
@@ -344,6 +395,10 @@ class MajorPreference(models.Model):
         return l
 
 
+####################################################
+# models for registration data
+#
+
 class Registration(models.Model):
     applicant = models.ForeignKey(Applicant,related_name="registrations")
     registered_at = models.DateTimeField(auto_now_add=True)
@@ -379,5 +434,4 @@ class PasswordRequestLog(models.Model):
             self.num_requested_today = self.num_requested_today + 1
         else:
             self.num_requested_today = 1
-
 

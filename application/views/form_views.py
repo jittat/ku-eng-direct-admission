@@ -247,9 +247,7 @@ def info_confirm(request):
 
     if request.method == 'POST':
         if 'submit' in request.POST:
-            applicant.doc_submission_method = Applicant.SUBMITTED_BY_MAIL
-            applicant.is_submitted = True
-            applicant.save()
+            applicant.submit(Applicant.SUBMITTED_BY_MAIL)
             return HttpResponseRedirect(reverse('apply-ticket'))
         else:
             return render_to_response('application/submission/not_submitted.html')
@@ -263,9 +261,10 @@ def submission_ticket(request):
     if not request.applicant.is_submitted:
         return render_to_response('application/submission/ticket_not_submitted.html')
     
-    request.applicant.generate_submission_ticket()
+    verification = request.applicant.verification_number()
 
     return render_to_response('application/submission/ticket.html',
-                              {'applicant': request.applicant })
+                              {'applicant': request.applicant,
+                               'verification': verification })
         
     

@@ -1,0 +1,16 @@
+{% extends "application/formbase.html" %}
+
+
+{% block form-body %} 
+  <div class="registration-msg">
+    {% block msg-body %}{% endblock %}
+  </div>
+  <p>
+    กลับไป<a href="{% url apply-start %}">หน้าแรกเพื่อเข้าใช้ระบบ</a></p>
+  </p>
+  <p>
+    ถ้าพบปัญหาในการลงทะเบียนเช่นมีการลงทะเบียนซ้ำ มีการใช้อีเมล์ของคุณในการลงทะเบียน
+    กรุณาแจ้งผู้ดูแลระบบ ที่
+    {% load adm_info %}{% adm_admin_email_link %}
+  </p>
+{% endblock %}
