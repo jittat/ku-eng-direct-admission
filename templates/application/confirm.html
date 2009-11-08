@@ -16,8 +16,10 @@
     ถ้าข้อมูลถูกต้อง กรุณายืนยัน ถ้าไม่ถูกต้องสามารถเลือกกลับไปแก้ไขเพื่อแก้ไขได้
   </p>
   <form action="{% url apply-confirm %}" method="post">
-    <input type="submit" name="submit" value="ยืนยัน"/>
-    <input type="submit" name="cancel" value="กลับไปแก้ไข"/>
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="ยืนยัน"/>
+      <input type="submit" name="cancel" value="กลับไปแก้ไข"/>
+    </div>
   </form>
 </div>
 {% endblock %}

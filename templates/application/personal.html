@@ -6,13 +6,10 @@
   <form action="{% url apply-personal-info %}" method="post">
     <table>
       {{ form.as_table }}
-      <tr>
-	<td></td>
-	<td>
-	  <input type="submit" name="submit" value="เก็บข้อมูล"/>
-	  <input type="submit" name="cancel" value="ยกเลิก"/>
-	</td>
-      </tr>
     </table>
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="เก็บข้อมูล"/>
+      <input type="submit" name="cancel" value="ยกเลิก"/>
+    </div>
   </form>
 {% endblock %}

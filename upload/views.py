@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import os
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -92,7 +93,7 @@ class FileUploadForm(forms.Form):
     uploaded_file = forms.FileField()
 
 def populate_upload_field_forms(app_docs, fields):
-    field_forms = []
+    field_forms = {}
     for f in fields:
         field = AppDocs._meta.get_field_by_name(f)[0]
 
@@ -102,10 +103,10 @@ def populate_upload_field_forms(app_docs, fields):
             if (field_value!=None) and (field_value.name!=''):
                 has_thumbnail = True
 
-        field_forms.append({ 'name': f,
-                             'field': field,
-                             'has_thumbnail': has_thumbnail,
-                             'form': FileUploadForm() })
+        field_forms[f] = { 'name': f,
+                           'field': field,
+                           'has_thumbnail': has_thumbnail,
+                           'form': FileUploadForm() }
     return field_forms
      
 def get_applicant_docs_or_none(applicant):
@@ -115,14 +116,28 @@ def get_applicant_docs_or_none(applicant):
         docs = None
     return docs
    
+# this is for showing step bar
+UPLOAD_FORM_STEPS = [
+    ('อัพโหลดหลักฐาน','upload-index'),
+    ('แก้ข้อมูลการสมัคร','apply-personal-info'),
+    ]
+
 @applicant_required
 def index(request):
     docs = get_applicant_docs_or_none(request.applicant)
+    if docs==None:
+        docs = AppDocs(applicant=request.applicant)
+        docs.save()
     fields = docs.get_upload_fields()
     field_forms = populate_upload_field_forms(docs, fields)
 
+    form_step_info = { 'steps': UPLOAD_FORM_STEPS,
+                       'current_step': 0,
+                       'max_linked_step': 1 }
     return render_to_response("upload/form.html",
-                              { 'field_forms': field_forms })
+                              { 'applicant': request.applicant,
+                                'field_forms': field_forms,
+                                'form_step_info': form_step_info })
 
 def save_as_temp_file(f):
     """
