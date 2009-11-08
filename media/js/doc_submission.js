@@ -11,15 +11,18 @@ var DocSubmission = {
 	return uuid
     },
 
+    // ajax view serving progress info; to be changed later.
+    progress_url: '/doc/progress/',  
+
     handleFormSubmit: function(this_form, field_name) {
         // Prevent multiple submits
         if (jQuery.data(this_form, 'submitted'))
 	    return false;
 
-        var freq = 100; // freqency of update in ms
+        var freq = 2000; // freqency of update in ms
         var uuid = DocSubmission.genUuid(); // id for this upload so we can fetch progress info.
         
-	var progress_url = '/doc/progress/'; // ajax view serving progress info
+	var progress_url = DocSubmission.progress_url;
 
         // Append X-Progress-ID uuid form action
         this_form.action += (
@@ -52,12 +55,15 @@ var DocSubmission = {
 			      $progress.find('.progress-indicator').width(progress_width);
 			      $progress.find('.progress-info').text('uploading ' + parseInt(progress*100) + '%');
 			  }
+			  window.setTimeout(update_progress_info, freq);
+			  /*
 			  if(!data.finished) 
 			      window.setTimeout(update_progress_info, freq);
 			  else {
 			      $progress.hide();
 			      $input_control.show();
 			  }
+			  */
 		      });
         };
         window.setTimeout(update_progress_info, freq);

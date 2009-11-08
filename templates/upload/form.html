@@ -72,6 +72,7 @@
   </form>
 <script type="text/javascript">
 $(document).ready(function() {
+  DocSubmission.progress_url = "{% url upload-progress %}";
   {% for f in field_forms.keys %}
     $('#upload-form-{{ f }}').submit(function() {
       return DocSubmission.handleFormSubmit(this,"{{ f }}");

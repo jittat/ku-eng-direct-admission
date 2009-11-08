@@ -83,7 +83,7 @@ def upload_progress(request):
         try:
             data = request.session[session_key]
         except:
-            data = {'length': 1, 'uploaded': 1, 'finished': True}
+            data = {'length': 1, 'uploaded': 0, 'finished': False}
         #print data
         return HttpResponse(simplejson.dumps(data))
     else:

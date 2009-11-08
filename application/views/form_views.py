@@ -229,7 +229,7 @@ def applicant_major(request):
     max_major_rank = settings.MAX_MAJOR_RANK
     ranks = [i+1 for i in range(max_major_rank)]
     if request.method == 'POST':
-        print extract_ranks(request.POST, majors)
+        #print extract_ranks(request.POST, majors)
 
         if old_preference!=None:
             preference = old_preference
