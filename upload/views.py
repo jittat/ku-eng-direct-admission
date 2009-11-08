@@ -125,7 +125,7 @@ UPLOAD_FORM_STEPS = [
     ]
 
 @applicant_required
-def index(request, missing_fields=None):
+def index(request, missing_fields=None, uploaded_field_error=None):
     docs = get_applicant_docs_or_none(request.applicant)
     if docs==None:
         docs = AppDocs(applicant=request.applicant)
@@ -140,7 +140,8 @@ def index(request, missing_fields=None):
                               { 'applicant': request.applicant,
                                 'field_forms': field_forms,
                                 'form_step_info': form_step_info,
-                                'missing_fields': missing_fields })
+                                'missing_fields': missing_fields,
+                                'uploaded_field_error': uploaded_field_error })
 
 
 def save_as_temp_file(f):
@@ -212,6 +213,7 @@ def upload(request, field_name):
     docs = get_applicant_docs_or_none(request.applicant)
     request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
     form = FileUploadForm(request.POST, request.FILES)
+    uploaded_field_error = None
     if form.is_valid():
         f = request.FILES['uploaded_file']
         used_temp_file = False
@@ -231,14 +233,22 @@ def upload(request, field_name):
         docs.__setattr__(field_name, f)
         docs.save()
 
-        create_thumbnail(docs, field_name, temp_filename)
+        try:
+            create_thumbnail(docs, field_name, temp_filename)
+        except Exception:
+            # bad uploaded file
+            uploaded_field_error = AppDocs.get_verbose_name_from_field_name(field_name)
+            docs.__setattr__(field_name,None)
+            docs.save()
 
         f.close()
         if used_temp_file:
             os.remove(temp_filename)
 
-    return HttpResponseRedirect(reverse('upload-index'))
-
+    if uploaded_field_error==None:
+        return HttpResponseRedirect(reverse('upload-index'))
+    else:
+        return index(request,uploaded_field_error=uploaded_field_error)
 
 @applicant_required
 def submit(request):
@@ -259,7 +269,7 @@ def submit(request):
     else:
         missing_fields = applicant.appdocs.get_missing_fields()
         missing_field_names = [
-            AppDocs._meta.get_field_by_name(f)[0].verbose_name
+            AppDocs.get_verbose_name_from_field_name(f)
             for f in missing_fields
             ]
         return index(request, missing_field_names)

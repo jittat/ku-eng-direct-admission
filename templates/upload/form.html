@@ -21,6 +21,11 @@
       {% endfor %}
     </div>
   {% endif %}
+  {% if uploaded_field_error %}
+    <div class="doc-error">
+      <b>เกิดข้อผิดพลาด</b> ไฟล์ที่อัพโหลดผิดรูปแบบ ปัญหาเกิดกับไฟล์ของ{{ uploaded_field_error }}
+    </div>
+  {% endif %}
 
   <div id="personal" class="doc-upload-forms">
     <h2>เอกสารข้อมูลส่วนตัว</h2>

@@ -121,9 +121,19 @@ class AppDocs(models.Model):
         missing_fields = self.get_missing_fields(find_one=True)
         return len(missing_fields)==0
 
+
     @staticmethod
     def valid_field_name(field_name):
         return field_name in AppDocs.FormMeta.upload_fields    
+
+
+    @staticmethod
+    def get_verbose_name_from_field_name(field_name):
+        field = AppDocs._meta.get_field_by_name(field_name)
+        if field==None:
+            return ''
+        else:
+            return field[0].verbose_name
 
     class FormMeta:
         """
