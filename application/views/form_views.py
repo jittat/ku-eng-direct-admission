@@ -16,8 +16,6 @@ from application.models import Major, MajorPreference
 
 from application.forms import PersonalInfoForm, AddressForm, EducationForm
 
-from application.email import send_applicant_email
-
 
 def build_form_step_dict(form_steps):
     d = {}

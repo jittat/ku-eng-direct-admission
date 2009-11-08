@@ -15,7 +15,7 @@ from application.models import Applicant
 from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm
-from application.email import send_applicant_email
+from application.email import send_password_by_email
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 
@@ -117,7 +117,7 @@ def register(request):
                                                   first_name,
                                                   last_name)
             
-                send_applicant_email(applicant, passwd)
+                send_password_by_email(applicant, passwd)
                 return render_to_response(
                     'application/registration/success.html',
                     {'email': form.cleaned_data['email']})
@@ -151,7 +151,7 @@ def forget_password(request):
             if applicant.can_request_password():
                 new_pwd = applicant.random_password()
                 applicant.save()
-                send_applicant_email(applicant, new_pwd)
+                send_password_by_email(applicant, new_pwd)
             
                 return render_to_response(
                     'application/registration/password-sent.html',
