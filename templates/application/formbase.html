@@ -1,13 +1,8 @@
-{% extends "base.html" %}
+{% extends "application/base.html" %}
 
 {% load adm_steps %}
 
-{% block extra-head %}
-<script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
-{% endblock %}
-
 {% block body %}
-  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
   <div class="main">
     {% form_steps %}
     <div class="form-body">
@@ -16,6 +11,4 @@
     </div>
   </div>
 {% endblock %}
-
-{% block footer %}<div id="footer"></div>{% endblock %}
 
