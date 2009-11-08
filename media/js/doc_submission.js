@@ -35,7 +35,7 @@ var DocSubmission = {
 				 '<div class="progress-indicator"></div>' +
 				 '</div>' +
 				 '</div>'));
-	var $input_control = $("#upload-form-" + field_name + " input");
+	var $input_control = $(".upload-item input");
 	$input_control.hide();
         // Update progress bar
 	function update_progress_info() {

@@ -69,9 +69,9 @@ body {
 #edu-form #edu-score-box input {
   width: 50px; }
 
-.doc-upload-form {
+.doc-upload-forms {
   clear: both; }
-  .doc-upload-form .upload-item {
+  .doc-upload-forms .upload-item {
     margin: 5px;
     padding: 5px;
     width: 45%;
@@ -80,11 +80,11 @@ body {
     border: 1px solid gray;
     -moz-border-radius: 5px;
     float: left; }
-  .doc-upload-form .thumbnail {
+  .doc-upload-forms .thumbnail {
     float: left;
     padding: 5px;
     padding-right: 10px; }
-  .doc-upload-form h2 {
+  .doc-upload-forms h2 {
     background: #bef56e;
     color: black;
     padding-left: 10px;

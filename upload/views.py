@@ -77,7 +77,7 @@ def upload_progress(request):
     session_key = get_session_key(request)
     if session_key:
         from django.utils import simplejson
-        print 'session_key:', session_key
+        #print 'session_key:', session_key
         try:
             data = request.session[session_key]
         except:
