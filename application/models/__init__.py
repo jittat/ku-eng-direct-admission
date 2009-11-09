@@ -236,7 +236,8 @@ class Address(models.Model):
     village_name = models.CharField(blank=True,
                                     max_length=100,
                                     verbose_name="หมู่บ้าน")
-    road = models.CharField(max_length=50,
+    road = models.CharField(blank=True, null=True, 
+                            max_length=50,
                             verbose_name="ถนน")
     district = models.CharField(max_length=50,
                                 verbose_name="ตำบล/แขวง")
