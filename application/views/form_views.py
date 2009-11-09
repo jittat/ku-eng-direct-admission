@@ -173,7 +173,7 @@ def applicant_education(request):
             return redirect_to_index(request)
 
         form = EducationForm(request.POST, 
-                                       instance=old_education)
+                             instance=old_education)
 
         if form.is_valid():
             applicant_education = form.save(commit=False)

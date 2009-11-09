@@ -80,6 +80,31 @@ class AddressForm(forms.ModelForm):
 
 class EducationForm(forms.ModelForm):
     # TODO: add form validation
+
+    def clean_gpax(self):
+        gpax = self.cleaned_data['gpax']
+        if gpax < 0 or gpax > 4:
+            raise forms.ValidationError("เกรดเฉลี่ยไม่ถูกต้อง")
+        return self.cleaned_data['gpax']
+
+    def clean_gat(self):
+        gat = self.cleaned_data['gat']
+        if gat < 0 or gat > 300:
+            raise forms.ValidationError("คะแนน GAT ไม่ถูกต้อง")
+        return self.cleaned_data['gat']
+
+    def clean_pat1(self):
+        pat1 = self.cleaned_data['pat1']
+        if pat1 < 0 or pat1 > 300:
+            raise forms.ValidationError("คะแนน PAT1 ไม่ถูกต้อง")
+        return self.cleaned_data['pat1']
+
+    def clean_pat3(self):
+        pat3 = self.cleaned_data['pat3']
+        if pat3 < 0 or pat3 > 300:
+            raise forms.ValidationError("คะแนน PAT3 ไม่ถูกต้อง")
+        return self.cleaned_data['pat3']
+
     class Meta:
         model = Education
         exclude = ['applicant']
