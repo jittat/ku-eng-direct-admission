@@ -1,8 +1,15 @@
 {% if applicant.is_submitted %}
   <h2>ข้อมูลการสมัคร</h2>
   <div class="section">
-    <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }}&nbsp;&nbsp;&nbsp;
-    <b>รหัสเพื่อตรวจสอบ:</b> {{ applicant.verification_number }}<br/>
+    <table width="100%">
+      <tr>
+	<td>
+	  <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }}
+	</td><td>
+	  <b>รหัสเพื่อตรวจสอบ:</b> <small>{{ applicant.verification_number }}</small>
+	</td>
+      </tr>
+    </table>
   </div>
 {% endif %}
 
