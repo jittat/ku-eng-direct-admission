@@ -3,13 +3,23 @@
 {% block title %}การสมัครเรียบร้อย{% endblock %}
 
 {% block body %}
-  <h2>การสมัครเรียบร้อย</h2>
-  <p>
-    <span class="info">ชื่อผู้สมัคร: {{ applicant.full_name }}</span><br/>
-    <span class="info">หมายเลขผู้สมัคร: {{ applicant.ticket_number }}</span><br/>
-    <span class="verification">หมายเลขตรวจสอบ: {{ applicant.verification_number }}</span>
-  </p>
+  <div class="normal-msg">
+    <h2>การสมัครเรียบร้อย</h2>
+    <p>
+      คณะวิศวกรรมศาสตร์ได้รับใบสมัครของคุณแล้ว
+      พร้อมทั้งส่งจดหมายอิเล็กทรอนิกส์เพื่อยืนยันไปให้กับคุณแล้ว</b>
+      คุณได้อัพโหลดหลักฐานทั้งหมดทางออนไลน์
+      อย่างไรก็ตามหลักฐานทั้งหมดจะต้องผ่านการตรวจสอบความถูกต้องเสียก่อน
+      การสมัครจึงเสร็จสิ้นสมบูรณ์<br/>
+      คุณสามารถเข้าสู่ระบบรับสมัครนี้เพื่อตรวจสอบสถานะของใบสมัครคุณได้
+    </p>
 
+    <p>
+      <span class="info">ชื่อผู้สมัคร: {{ applicant.full_name }}</span><br/>
+      <span class="info">หมายเลขผู้สมัคร: {{ applicant.ticket_number }}</span><br/>
+      <span class="verification">หมายเลขตรวจสอบ: {{ applicant.verification_number }}</span>
+    </p>
+  </div>
   <p>
     การสมัครเรียบร้อย <a href="{% url apply-logout %}?url=admission.eng.ku.ac.th">ออกจากระบบและกลับไปเว็บรับสมัคร</a>
   </p>

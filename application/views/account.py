@@ -15,7 +15,7 @@ from application.models import Applicant
 from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm, ActivationNameForm
-from application.email import send_password_by_email, send_activation_by_email
+from commons.email import send_password_by_email, send_activation_by_email
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 

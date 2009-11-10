@@ -7,6 +7,8 @@ from django import forms
 
 from commons.decorators import applicant_required
 from commons.utils import redirect_to_index
+from commons.email import send_submission_confirmation_by_email
+
 from application.decorators import init_applicant
 
 from application.models import Applicant
@@ -15,7 +17,6 @@ from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
 
 from application.forms import PersonalInfoForm, AddressForm, EducationForm
-
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -267,6 +268,7 @@ def info_confirm(request):
                     'commons/submission_already_submitted.html',
                     { 'applicant': applicant })
 
+            send_submission_confirmation_by_email(applicant)
             return HttpResponseRedirect(reverse('apply-ticket'))
         else:
             return render_to_response('application/submission/not_submitted.html')
@@ -279,10 +281,9 @@ def info_confirm(request):
 def submission_ticket(request):
     if not request.applicant.is_submitted:
         return render_to_response('application/submission/ticket_not_submitted.html')
-    
-    verification = request.applicant.verification_number()
 
-    return render_to_response('application/submission/ticket.html',
+    verification = request.applicant.verification_number()
+    return render_to_response('application/submission/success.html',
                               {'applicant': request.applicant,
                                'verification': verification })
         

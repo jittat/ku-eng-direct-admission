@@ -1,0 +1,21 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}Submission Ticket{% endblock %}
+
+{% block form-body %}
+  <div class="normal-msg">
+    คุณได้ส่งข้อมูลพื้นฐานในการสมัครให้กับทางคณะ
+    และคณะได้ส่งจดหมายอิเล็กทรอนิกส์เพื่อยืนยันไปให้คุณแล้ว
+    เนื่องจากคุณเลือกส่งหลักฐานทางไปรษณีย์
+    <b>การสมัครของคุณยังไม่เรียบร้อยจนกว่าทางคณะจะได้รับเอกสารแล้ว</b><br/>
+    ในการส่งหลักฐานให้พิมพ์ใบนำส่งด้านล่าง แนบมากับหลักฐานเพื่อใช้อ้างอิงด้วย
+    ไม่ต้องพิมพ์ใบสมัครส่งมาด้วย
+  </div>
+  <br/>
+
+  {% include "application/include/ticket.html" %}
+
+  <p>
+    <a href="{% url apply-logout %}?url=admission.eng.ku.ac.th">ออกจากระบบและกลับไปเว็บรับสมัคร</a>
+  </p>
+{% endblock %}

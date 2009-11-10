@@ -227,7 +227,7 @@ class RegistrationTestCase(TransactionTestCase):
     def take_password_from_email_body(self,body):
         import re
 
-        m = re.search('Your password is: (\w+)',body,re.M)
+        m = re.search(u'รหัสผ่านของคุณคือ (\\w+)',body,re.M)
         return m.group(1)
 
 

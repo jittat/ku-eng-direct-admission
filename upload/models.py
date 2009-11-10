@@ -99,7 +99,7 @@ class AppDocs(models.Model):
         else:
             field_list.remove('gat_score')
             field_list.remove('pat1_score')
-            field_list.remove('pat2_score')
+            field_list.remove('pat3_score')
         return field_list
 
     def get_required_fields(self):

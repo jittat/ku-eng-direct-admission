@@ -9,6 +9,7 @@ from django import forms
 from django.core.files.uploadhandler import FileUploadHandler
 
 from commons.decorators import applicant_required
+from commons.email import send_submission_confirmation_by_email
 from application.views.status import submitted_applicant_required
 
 from application.models import Applicant
@@ -263,7 +264,8 @@ def submit(request):
             return render_to_response(
                 'commons/submission_already_submitted.html',
                 { 'applicant': applicant })
-        
+
+        send_submission_confirmation_by_email(applicant)
         return render_to_response('upload/submission_success.html',
                                   { 'applicant': applicant })
     else:
