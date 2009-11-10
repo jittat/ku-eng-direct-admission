@@ -87,10 +87,7 @@ def applicant_personal_info(request):
     else:
         old_info = None
 
-    if request.method == 'POST':
-        if 'cancel' in request.POST:
-            return redirect_to_index(request)
-        
+    if (request.method == 'POST') and ('cancel' not in request.POST):
         form = PersonalInfoForm(request.POST, instance=old_info)
         if form.is_valid():
             personal_info = form.save(commit=False)
@@ -119,9 +116,7 @@ def applicant_address(request):
         # still need this for form instances
         old_home_address, old_contact_address = None, None
 
-    if request.method == 'POST':
-        if 'cancel' in request.POST:
-            return redirect_to_index(request)
+    if (request.method == 'POST') and ('cancel' not in request.POST):
 
         home_address_form = AddressForm(request.POST, 
                                         prefix="home",
@@ -168,9 +163,7 @@ def applicant_education(request):
     else:
         old_education = None
 
-    if request.method == 'POST':
-        if 'cancel' in request.POST:
-            return redirect_to_index(request)
+    if (request.method == 'POST') and ('cancel' not in request.POST):
 
         form = EducationForm(request.POST, 
                              instance=old_education)
@@ -228,7 +221,8 @@ def applicant_major(request):
 
     max_major_rank = settings.MAX_MAJOR_RANK
     ranks = [i+1 for i in range(max_major_rank)]
-    if request.method == 'POST':
+    if (request.method == 'POST') and ('cancel' not in request.POST):
+
         #print extract_ranks(request.POST, majors)
 
         if old_preference!=None:
