@@ -1,5 +1,7 @@
 .front-body {
-  width: 920px; }
+  width: 920px;
+  margin-left: auto;
+  margin-right: auto; }
   .front-body p#intro {
     font-size: 20px;
     padding-left: 50px; }
