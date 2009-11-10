@@ -10,5 +10,19 @@
       {% endblock %}
     </div>
   </div>
+  <script type="text/javascript">
+    var dirty = false;
+    $(".form-body input").change(function() {
+      dirty = true;
+    });
+    $(".form-body select").change(function() {
+      dirty = true;
+    });
+    $("#step-bar a").click(function() {
+      if(dirty) {
+        return confirm("คุณมีการแก้ไขข้อมูลในส่วนนี้ซึ่งยังไม่ถูกจัดเก็บ ถ้าคุณเปลี่ยนไปยังหน้าอื่นข้อมูลจะสูญหาย คุณแน่ใจที่จะเปลี่ยนไปหน้าอื่นหรือไม่?")
+      }
+      return true;
+    });
+  </script>
 {% endblock %}
-
