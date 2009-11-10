@@ -5,7 +5,9 @@ from django.db import models
 from django.conf import settings
 
 from commons.utils import random_string
+from commons.utils import PROVINCE_CHOICES
 from application.fields import IntegerListField
+
 
 class Applicant(models.Model):
 
@@ -243,6 +245,7 @@ class Address(models.Model):
     city = models.CharField(max_length=50,
                             verbose_name="อำเภอ/เขต")
     province = models.CharField(max_length=25,
+                                choices=PROVINCE_CHOICES,
                                 verbose_name="จังหวัด")
     postal_code = models.CharField(max_length=10,
                                    verbose_name="รหัสไปรษณีย์")
@@ -293,6 +296,7 @@ class Education(models.Model):
     school_city = models.CharField(max_length=50,
                                    verbose_name=u"อำเภอ/เขต")
     school_province = models.CharField(max_length=25,
+                                       choices=PROVINCE_CHOICES,
                                        verbose_name=u"จังหวัด")
 
     # test score
