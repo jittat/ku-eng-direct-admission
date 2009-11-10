@@ -3,8 +3,9 @@ from datetime import timedelta, datetime
 
 from django.db import models
 from django.conf import settings
-from application.fields import IntegerListField
 
+from commons.utils import random_string
+from application.fields import IntegerListField
 
 class Applicant(models.Model):
 
@@ -90,8 +91,6 @@ class Applicant(models.Model):
     ######################
     # methods for authentication
 
-    PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
-
     def set_password(self, passwd):
         import random
         import hashlib
@@ -106,10 +105,7 @@ class Applicant(models.Model):
 
     def random_password(self):
         import random
-        password = ''.join(
-            [random.choice(Applicant.PASSWORD_CHARS) 
-             for t in range(5)])
-
+        password = random_string(5)
         self.set_password(password)
         return password
 
@@ -157,6 +153,11 @@ class Applicant(models.Model):
         request_log.save()
         return result
 
+    def verify_activation_key(self, key):
+        for reg in self.registrations.all():
+            if key==reg.activation_key:
+                return True
+        return False
 
     ######################
     # tickets
@@ -208,9 +209,7 @@ class SubmissionInfo(models.Model):
     salt = models.CharField(max_length=30)
 
     def random_salt(self):
-        from random import choice
-        s = [choice('abcdefghijklmnopqurstuvwxyz') for i in range(10)]
-        self.salt = ''.join(s)
+        self.salt = random_string(10)
 
     class Meta:
         ordering = ['applicantion_id']
@@ -407,12 +406,20 @@ class Registration(models.Model):
     registered_at = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=300)
+    activation_key = models.CharField(max_length=10, blank=True)
+
+    def random_activation_key(self):
+        self.activation_key = random_string(10)
 
     class Meta:
         ordering = ['-registered_at']
 
 
 class PasswordRequestLog(models.Model):
+    """
+    keeps track of password requests.  It is used when calling to
+    Applicant.can_request_password()
+    """
     applicant = models.OneToOneField(Applicant,related_name='password_request_log')
     last_request_at = models.DateTimeField()
     num_requested_today = models.IntegerField(default=0)

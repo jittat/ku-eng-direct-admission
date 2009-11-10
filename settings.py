@@ -86,6 +86,7 @@ INSTALLED_APPS = (
     'adm.upload',
 )
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ####################################
 # ADM settings

@@ -5,7 +5,7 @@ from django.test import TestCase, TransactionTestCase
 
 from django.conf import settings
 
-from application.models import Applicant
+from application.models import Applicant, Registration
 
 class RegistrationTestCase(TransactionTestCase):
 
@@ -154,6 +154,27 @@ class RegistrationTestCase(TransactionTestCase):
         self.assertTemplateUsed(response,
                                 'application/registration/activation-required.html')
 
+    def test_activation_key_verification(self):
+        applicant = Applicant(first_name='สมชาย',
+                              last_name='ใจดี',
+                              email='som@chai.com')
+        applicant.save()
+        keys = []
+        # try with 3 registrations
+        for i in range(3):
+            registration = Registration(applicant=applicant,
+                                        first_name='s',
+                                        last_name='c')
+            registration.random_activation_key()
+            registration.save()
+            keys.append(registration.activation_key)
+
+        for k in keys:
+            self.assertTrue(applicant.verify_activation_key(k))
+        self.assertFalse(applicant.verify_activation_key('1234567'))
+        for k in keys:
+            self.assertFalse(applicant.verify_activation_key('1'+k))
+        
 
     def test_user_can_activate_their_account(self):
         """

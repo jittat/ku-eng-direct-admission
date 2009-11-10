@@ -1,0 +1,15 @@
+{% extends "application/registration/msg-base.html" %}
+
+{% block title %}การยืนยันอีเมล์: ยืนยันชื่อ{% endblock %}
+
+{% block msg-body %}
+  <h2>การยืนยันอีเมล์: รหัสสำหรับยืนยันถูกต้อง</h2>
+  <p>
+    กรุณายืนยันชื่อและนามสกุล ถ้าชื่อและนามสกุลไม่ถูกต้องสามารถแก้ในช่องด้านล่างก่อนกดยืนยัน
+    <form action="{% url apply-activate applicant.id activation_key %}" 
+	  method="post">
+      {{ form.as_p }}
+      <input type="submit" value="ยืนยันชื่อและนามสกุล">
+    </form>
+  </p>
+{% endblock %}

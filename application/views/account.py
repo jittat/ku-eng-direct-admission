@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django import forms
@@ -14,8 +14,8 @@ from application.views import redirect_to_applicant_first_page
 from application.models import Applicant
 from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
-from application.forms import RegistrationForm
-from application.email import send_password_by_email
+from application.forms import RegistrationForm, ActivationNameForm
+from application.email import send_password_by_email, send_activation_by_email
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 
@@ -78,7 +78,9 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
     new_registration = Registration(applicant=applicant,
                                     first_name=first_name,
                                     last_name=last_name)
+    new_registration.random_activation_key()
     new_registration.save()
+    send_activation_by_email(applicant, new_registration.activation_key)
     applicant.activation_required = True
     applicant.save()
     return render_to_response('application/registration/dupplicate.html',
@@ -104,19 +106,18 @@ def register(request):
                     applicant = form.get_applicant()
                     passwd = applicant.random_password()
                     applicant.save()
-                    registration = Registration(
-                        applicant=applicant,
-                        first_name=first_name,
-                        last_name=last_name)
-                    registration.save()
-                
                 except IntegrityError:
                     # somehow, it gets error
                     return dupplicate_email_error(applicant,
                                                   email,
                                                   first_name,
                                                   last_name)
-            
+                
+                registration = Registration(
+                    applicant=applicant,
+                    first_name=first_name,
+                    last_name=last_name)
+                registration.save()
                 send_password_by_email(applicant, passwd)
                 return render_to_response(
                     'application/registration/success.html',
@@ -133,13 +134,56 @@ def register(request):
                 from commons.utils import admin_email
                 form._errors['__all__'] = ErrorList([
 """อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว ถ้าอีเมล์นี้เป็นของคุณจริงและยังไม่เคยลงทะเบียน
-กรุณาติดต่อผู้ดูแลระบบทางอีเมล์<a href="mailto:%s">%s</a> หรือทางเว็บบอร์ด
-อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % (admin_email(), admin_email())])
+กรุณาติดต่อผู้ดูแลระบบทางอีเมล์<a href="mailto:%(email)s">%(email)s</a> หรือทางเว็บบอร์ด
+อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % {'email': admin_email()}])
 
     else:
         form = RegistrationForm()
     return render_to_response('application/registration/register.html',
                               { 'form': form })
+
+
+def activate(request, applicant_id, activation_key):
+    applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if not applicant.activation_required:
+        return render_to_response(
+            'application/registration/activation-not-required.html',
+            {'applicant': applicant })
+    if not applicant.verify_activation_key(activation_key):
+        return render_to_response(
+            'application/registration/incorrect-activation-key.html',
+            {'applicant': applicant })
+
+    if request.method == 'GET':
+        # get a click from e-mail
+        name_form = ActivationNameForm(initial={
+                'first_name': applicant.first_name,
+                'last_name': applicant.last_name})
+    else:
+        name_form = ActivationNameForm(request.POST)
+        if name_form.is_valid():
+            applicant.activation_required = False
+            applicant.first_name = name_form.cleaned_data['first_name']
+            applicant.last_name = name_form.cleaned_data['last_name']
+            passwd = applicant.random_password()
+            applicant.save()
+            registration = Registration(
+                applicant=applicant,
+                first_name=applicant.first_name,
+                last_name=applicant.last_name)
+            registration.save()
+            send_password_by_email(applicant, passwd)           
+            return render_to_response(
+                'application/registration/activation-successful.html',
+                {'applicant': applicant})
+
+    return render_to_response(
+        'application/registration/activation-name-confirmation.html',
+        {'applicant': applicant,
+         'form': name_form,
+         'activation_key': activation_key,
+         'no_first_page_link': True })
+
 
 def forget_password(request):
     if request.method == 'POST':
@@ -165,6 +209,4 @@ def forget_password(request):
 
     return render_to_response('application/forget.html', 
                               { 'form': form })
-
-
     

@@ -9,6 +9,7 @@ urlpatterns = patterns(
     url(r'^logout/$', 'account.logout', name='apply-logout'),
     url(r'^forget/$', 'account.forget_password', name='apply-forget'),
     url(r'^register/$', 'account.register', name='apply-register'),
+    url(r'^activate/(\d+)/(\w+)/$', 'account.activate', name='apply-activate'),
 
     url(r'^personal/$', 'applicant_personal_info', name='apply-personal-info'),
     url(r'^address/$', 'applicant_address', name='apply-address'),

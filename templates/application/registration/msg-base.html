@@ -5,9 +5,11 @@
   <div class="registration-msg">
     {% block msg-body %}{% endblock %}
   </div>
-  <p>
-    กลับไป<a href="{% url apply-start %}">หน้าแรกเพื่อเข้าใช้ระบบ</a></p>
-  </p>
+  {% if not no_first_page_link %}
+    <p>
+      กลับไป<a href="{% url apply-start %}">หน้าแรกเพื่อเข้าใช้ระบบ</a></p>
+    </p>
+  {% endif %}
   <p>
     ถ้าพบปัญหาในการลงทะเบียนเช่นมีการลงทะเบียนซ้ำ มีการใช้อีเมล์ของคุณในการลงทะเบียน
     กรุณาแจ้งผู้ดูแลระบบ ที่

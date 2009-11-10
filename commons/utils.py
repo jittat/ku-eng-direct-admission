@@ -13,3 +13,11 @@ def redirect_to_index(request):
 def admin_email():
     admin = settings.ADMINS[0]
     return admin[1]
+
+
+PASSWORD_CHARS = 'abcdefghjkmnopqrstuvwxyz'
+
+def random_string(length=10):
+    from random import choice
+    s = [choice(PASSWORD_CHARS) for i in range(length)]
+    return ''.join(s)       

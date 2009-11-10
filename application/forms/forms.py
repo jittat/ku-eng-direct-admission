@@ -50,6 +50,11 @@ class RegistrationForm(forms.Form):
                          email=self.cleaned_data['email'])
 
 
+class ActivationNameForm(forms.Form):
+    first_name = forms.CharField(label=u'ชื่อ')
+    last_name = forms.CharField(label=u'นามสกุล')
+
+
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
