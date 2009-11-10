@@ -1,67 +1,72 @@
-.front-body p#intro {
+.front-body {
+  width: 920px; }
+  .front-body p#intro {
     font-size: 20px;
-    padding-left: 50px;    
-}
-
-.front-body h1 {
+    padding-left: 50px; }
+  .front-body h1 {
     background: #2f0000;
     color: white;
     text-align: center;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    border-radius: 5px;
-}
-
-.front-body ul#methods {
+    border-radius: 5px; }
+  .front-body h2 {
+    font-size: 120%; }
+  .front-body ul#methods {
     list-style-image: none;
     list-style-position: outside;
-    list-style-type: disc;
-}
+    list-style-type: disc; }
+
+table.schedule {
+  font-size: 90%; }
+
+.login-box {
+  margin-left: 20px;
+  width: 40%;
+  float: right;
+  padding: 10px;
+  border: 1px solid gray;
+  -moz-border-radius: 5px;
+  background: #e0ffe0; }
 
 ul#methods li.tab {
-    display: inline;
-    float: left;
-    margin: 10px;
-    padding: 0;
-    background: #b0ffd0;
-    width: 250px;
-
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
-
-ul#methods li.tab h2 {
+  display: inline;
+  float: left;
+  margin: 10px;
+  padding: 0;
+  background: #b0ffd0;
+  width: 250px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px; }
+  ul#methods li.tab h2 {
     margin: 0;
     background: #206050;
     color: white;
     padding: 5px;
     text-align: center;
     font-weight: bold;
-
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
     -moz-border-radius-topright: 10px;
-    border-radius: 10px;
-
-}
-
-ul#methods li.tab p {
+    border-radius: 10px; }
+  ul#methods li.tab p {
     color: #206050;
     padding-left: 10px;
-    padding-right: 10px;
-}
+    padding-right: 10px; }
 
 div.button {
-    background: white;
-    text-align: center;
-    margin: 15px;
-
-    font-size: 120%;
-    font-weight: bold;
-
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-}
+  background: green;
+  color: white;
+  text-align: center;
+  margin: 2px;
+  font-size: 120%;
+  font-weight: bold;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid gray; }
+  div.button a {
+    color: white;
+    text-decoration: none; }

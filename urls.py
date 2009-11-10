@@ -12,8 +12,8 @@ if media_pattern[0]=='/':
 
 urlpatterns = patterns(
     '',
-    url(r'^$', direct_to_template, 
-        { 'template': 'index.html' }, name='start-page'),
+    url(r'^$', 'application.views.account.login', 
+        name='start-page'),
 
     (r'^apply/', include('adm.application.urls')),
     (r'^doc/', include('adm.upload.urls')),

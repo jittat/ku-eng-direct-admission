@@ -9,37 +9,92 @@
 
 {% block body %}
 <div class="front-body">
-  <h1>การสมัครออนไลน์</h1>
-  <ul id="methods">
-    <li class="tab">
-      <div class="button">
-	<a href="{% url apply-register %}">ลงทะเบียนเข้าใช้ระบบ</a>
-      </div>
-    </li>
-    <li class="tab">
-      <div class="button">
-	เริ่มกรอกใบสมัคร/กรอกใบสมัครที่ค้างไว้
-	<form action="{% url apply-login %}" method="post">
-	  <table>
-	    {{ form.as_table }}
-	    <tr>
-	      <td></td>
-	      <td>
-		<input type="submit" name="submit" value="เข้าใช้ระบบ"/>
-	      </td>
-	    </tr>
-	  </table>
-	</form>
-	
-	<p>
-	  <a href="{% url apply-forget %}">ลืมรหัสผ่าน</a>
-	</p>
-      </div>
-    </li>
-  </ul>
-<p>
-  ถ้าพบปัญหาในการสมัครกรุณาสอบถามที่เว็บบอร์ด หรือส่งอีเมล์มาที่ xxx@xxxx.xxx
-</p>
+  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+
+  <div class="login-box">
+    <center>
+      เริ่มกรอกใบสมัคร/กรอกใบสมัครที่ค้างไว้
+      <form action="{% url apply-login %}" method="post">
+	<table>
+	  {{ form.as_table }}
+	  <tr>
+	    <td></td>
+	    <td>
+	      <input type="submit" name="submit" value="เข้าใช้ระบบ"/>
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </center>
+    
+    <center>
+      <a href="{% url apply-forget %}">ลืมรหัสผ่านหรือขอรหัสผ่านใหม่</a>
+    </center>
+
+    <br/>
+    <center>
+      เริ่มต้นสมัครโดยการ
+    </center>
+    <div class="button">
+      <a href="{% url apply-register %}">ลงทะเบียนเข้าใช้ระบบ</a>
+    </div>
+  </div>
+
+  <p>
+    <h2>กำหนดการรับสมัคร</h2>
+    <table class="schedule">
+      <tr>
+	<td width="30%">
+	  16 พ.ย. - 15 ธ.ค. 52
+	  </td>
+	<td>
+	  กำหนดรับสมัครเข้าศึกษาต่อแบบรับตรง
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  22 ธ.ค. 52
+	</td><td>
+	  ประกาศรายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือกเข้าศึกษาต่อแบบรับตรง
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  8 ม.ค. 53	
+	</td><td>	
+	  ประกาศรายชื่อผู้มีสิทธ์สอบสัมภาษณ์เข้าศึกษาต่อแบบรับตรง
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  22 ม.ค. 53
+	</td><td>
+	  สอบสัมภาษณ์
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  27 ม.ค. 53
+	</td><td>
+	  ประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อแบบรับตรง
+	</td>
+      </tr>
+      <tr>
+	<td>
+	  27 ม.ค. - 3 ก.พ. 53
+	</td><td>
+	  รายงานตัวและยืนยันสิทธิ์การเข้าศึกษาสำหรับผู้สมัครเข้าศึกษาต่อแบบรับตรง
+	</td>
+      </tr>
+    </table>
+
+    อ่าน<a href="http://admission.eng.ku.ac.th/information/2553/direct">ข้อมูลเพิ่มเติมเกี่ยวกับการรับตรงปีการศึกษา 2553</a>
+  </p>
+  <p>
+    ถ้าพบปัญหาในการสมัครกรุณาสอบถามที่เว็บบอร์ด หรือส่งอีเมล์มาที่ 
+    {% load adm_info %}{% adm_admin_email_link %}
+  </p>
+
 </div>
 <script>
   $(document).ready(function() {
