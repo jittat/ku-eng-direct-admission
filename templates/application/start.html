@@ -13,6 +13,18 @@
 
   <div class="login-box">
     <center>
+      เริ่มต้นสมัครโดยการ
+    </center>
+    <a href="{% url apply-register %}">
+      <div id="reg-button" class="button">
+	ลงทะเบียนเข้าใช้ระบบ
+      </div>
+    </a>
+
+    <br/>
+
+    <center>
+      หลังจากลงทะเบียนแล้ว<br/>
       เริ่มกรอกใบสมัคร/กรอกใบสมัครที่ค้างไว้
       <form action="{% url apply-login %}" method="post">
 	<table>
@@ -30,14 +42,6 @@
     <center>
       <a href="{% url apply-forget %}">ลืมรหัสผ่านหรือขอรหัสผ่านใหม่</a>
     </center>
-
-    <br/>
-    <center>
-      เริ่มต้นสมัครโดยการ
-    </center>
-    <div class="button">
-      <a href="{% url apply-register %}">ลงทะเบียนเข้าใช้ระบบ</a>
-    </div>
   </div>
 
   <p>
@@ -104,6 +108,15 @@
         h = this.clientHeight;
     });
     $(".tab-body").css("height",h);
+
+    $("#reg-button").hover(
+      function() {
+        $(this).addClass("selected");
+      },
+      function() {
+        $(this).removeClass("selected");
+      }
+    );
   });
 </script>
 {% endblock %}
