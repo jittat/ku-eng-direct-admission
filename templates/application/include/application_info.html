@@ -1,3 +1,11 @@
+{% if applicant.is_submitted %}
+  <h2>ข้อมูลการสมัคร</h2>
+  <div class="section">
+    <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }}&nbsp;&nbsp;&nbsp;
+    <b>รหัสเพื่อตรวจสอบ:</b> {{ applicant.verification_number }}<br/>
+  </div>
+{% endif %}
+
 <h2>ข้อมูลส่วนตัว</h2>
 <div class="section">
   {% include "application/include/applicant_personal.html" %}

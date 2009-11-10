@@ -12,10 +12,6 @@
     {% include "application/include/application_info.html" %}
   </div>
 
-  {% if applicant.online_doc_submission %}
-    <p><a href="{% url upload-show %}">ดูหลักฐานที่ส่งออนไลน์</a></p>
-  {% endif %}
-
   <p>
     เนื่องจากใบสมัครนี้ถูกส่งเข้าสู่ระบบเรียบร้อยแล้ว จึงไม่สามารถแก้ไขข้อมูลได้อีก
     ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ 

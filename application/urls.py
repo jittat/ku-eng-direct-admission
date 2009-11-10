@@ -26,6 +26,7 @@ urlpatterns = patterns(
 
     url(r'^status/$', 'status.index', name='status-index'),
     url(r'^status/show$', 'status.show', name='status-show'),
+    url(r'^status/ticket$', 'status.show_ticket', name='status-show-ticket'),
 
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
