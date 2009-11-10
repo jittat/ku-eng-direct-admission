@@ -134,7 +134,7 @@ def register(request):
                 from commons.utils import admin_email
                 form._errors['__all__'] = ErrorList([
 """อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว ถ้าอีเมล์นี้เป็นของคุณจริงและยังไม่เคยลงทะเบียน
-กรุณาติดต่อผู้ดูแลระบบทางอีเมล์<a href="mailto:%(email)s">%(email)s</a> หรือทางเว็บบอร์ด
+กรุณาติดต่อผู้ดูแลระบบทางอีเมล์ <a href="mailto:%(email)s">%(email)s</a> หรือทางเว็บบอร์ด
 อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % {'email': admin_email()}])
 
     else:

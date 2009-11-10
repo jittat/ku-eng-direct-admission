@@ -8,9 +8,22 @@
     พร้อมด้วยรหัสผ่านสำหรับการเข้าใช้ระบบรับสมัคร
     กรุณาเข้าไปตรวจสอบเพื่อเข้าใช้ระบบต่อไป ถ้ามีปัญหาในการใช้งานสามารถสอบถามได้ที่เว็บบอร์ด
   </p>
+  {% if form.non_field_errors %}
+    <ul class="errorlist">
+      {% for error in form.non_field_errors %}
+        <li>{{ error|safe }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   <form action="{% url apply-register %}" method="post">
     <table>
-      {{ form.as_table }}
+      {% for field in form %}
+        <tr>
+	  <th>{{ field.label_tag }}:</th>
+	  <td>{{ field }}</td>
+	  <td>{{ field.errors }}</td>
+	</tr>
+      {% endfor %}
       <tr>
 	<td></td>
 	<td>
