@@ -45,19 +45,19 @@
 	<table>
 	  <tr>
 	    <th>GAT:</th> 
-	    <td>คะแนน {{ form.gat }}</td>
+	    <td>คะแนน (X<sub>i</sub>) {{ form.gat }}</td>
 	    <td>สอบเมื่อ {{ form.gat_date }}</td>
 	    <td>{{ form.gat.errors }}</td>
 	  </tr>
 	  <tr>
 	    <th>PAT1:</th> 
-	    <td>คะแนน {{ form.pat1 }}</td>
+	    <td>คะแนน (X<sub>i</sub>)  {{ form.pat1 }}</td>
 	    <td>สอบเมื่อ {{ form.pat1_date }}</td>
 	    <td>{{ form.pat1.errors }}</td>
 	  </tr>
 	  <tr>
 	    <th>PAT3:</th> 
-	    <td>คะแนน {{ form.pat3 }}</td>
+	    <td>คะแนน (X<sub>i</sub>)  {{ form.pat3 }}</td>
 	    <td>สอบเมื่อ {{ form.pat3_date }}</td>
 	    <td>{{ form.pat3.errors }}</td>
 	  </tr>
@@ -67,7 +67,8 @@
  	<table>
 	  <tr>
 	    <th>A-NET:</th> 
-	    <td>คะแนน {{ form.anet }}</td>
+	    <td>คะแนนวิชาความถนัดทางวิศวกรรม {{ form.anet }}</td>
+	    <td>{{ form.anet.errors }}</td>
 	  </tr>
 	</table>
       </div>

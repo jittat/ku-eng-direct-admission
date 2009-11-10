@@ -92,23 +92,32 @@ class EducationForm(forms.ModelForm):
             raise forms.ValidationError("เกรดเฉลี่ยไม่ถูกต้อง")
         return self.cleaned_data['gpax']
 
+    def validate_score_in_range(self, name, display_name, 
+                                score_min, score_max):
+        score = self.cleaned_data[name]
+        if (score == None) or (score < score_min) or (score > score_max):
+            raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
+        return score
+
     def clean_gat(self):
-        gat = self.cleaned_data['gat']
-        if gat < 0 or gat > 300:
-            raise forms.ValidationError("คะแนน GAT ไม่ถูกต้อง")
-        return self.cleaned_data['gat']
+        if not self.cleaned_data['uses_gat_score']:
+            return self.cleaned_data['gat']
+        return self.validate_score_in_range('gat', 'GAT', 0, 300)
 
     def clean_pat1(self):
-        pat1 = self.cleaned_data['pat1']
-        if pat1 < 0 or pat1 > 300:
-            raise forms.ValidationError("คะแนน PAT1 ไม่ถูกต้อง")
-        return self.cleaned_data['pat1']
+        if not self.cleaned_data['uses_gat_score']:
+            return self.cleaned_data['pat1']
+        return self.validate_score_in_range('pat1', 'PAT1', 0, 300)
 
     def clean_pat3(self):
-        pat3 = self.cleaned_data['pat3']
-        if pat3 < 0 or pat3 > 300:
-            raise forms.ValidationError("คะแนน PAT3 ไม่ถูกต้อง")
-        return self.cleaned_data['pat3']
+        if not self.cleaned_data['uses_gat_score']:
+            return self.cleaned_data['pat3']
+        return self.validate_score_in_range('pat3', 'PAT3', 0, 300)
+
+    def clean_anet(self):
+        if self.cleaned_data['uses_gat_score']:
+            return self.cleaned_data['anet']
+        return self.validate_score_in_range('anet', 'A-NET', 0, 100)
 
     class Meta:
         model = Education
