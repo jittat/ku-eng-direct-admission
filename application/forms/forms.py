@@ -59,6 +59,7 @@ THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
 class PersonalInfoForm(forms.ModelForm):
+    national_id = forms.CharField(max_length=13)
     birth_date = forms.DateField(
         widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS))
 
