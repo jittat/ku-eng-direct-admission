@@ -59,9 +59,11 @@ THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
 class PersonalInfoForm(forms.ModelForm):
-    national_id = forms.CharField(max_length=13)
+    national_id = forms.CharField(max_length=13,
+                                  label=u"รหัสประจำตัวประชาชน")
     birth_date = forms.DateField(
-        widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS))
+        widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS),
+        label=u"วันเกิด")
 
     def clean_national_id(self):
         if re.match(r'^(\d){13}$',self.cleaned_data['national_id']) == None:
