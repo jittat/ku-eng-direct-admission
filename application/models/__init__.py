@@ -5,13 +5,16 @@ from django.db import models
 from django.conf import settings
 
 from commons.utils import random_string
-from commons.utils import PROVINCE_CHOICES
+from commons.local import PROVINCE_CHOICES, APP_TITLE_CHOICES
 from application.fields import IntegerListField
 
 
 class Applicant(models.Model):
 
     # core applicant information
+    title = models.CharField(max_length=10,
+                             choices=APP_TITLE_CHOICES,
+                             verbose_name="คำนำหน้า")
     first_name = models.CharField(max_length=200,
                                   verbose_name="ชื่อ")
     last_name = models.CharField(max_length=300,
@@ -57,7 +60,7 @@ class Applicant(models.Model):
         return self.full_name()
 
     def full_name(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        return "%s %s %s" % (self.title, self.first_name, self.last_name)
 
     def has_personal_info(self):
         try:

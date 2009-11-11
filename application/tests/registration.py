@@ -10,6 +10,7 @@ from application.models import Applicant, Registration
 class RegistrationTestCase(TransactionTestCase):
 
     REGIS_DATA = {
+        'title': u'นาย',
         'first_name': u'สมชาย',
         'last_name': u'ใจดี',
         #'first_name': 'somchai',

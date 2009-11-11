@@ -144,11 +144,14 @@ def register(request):
 
 
 def activate(request, applicant_id, activation_key):
-    applicant = get_object_or_404(Applicant,pk=applicant_id)
+    try:
+        applicant = Applicant.objects.get(pk=applicant_id)
+    except Applicant.DoesNotExist:
+        return render_to_response(
+            'application/registration/activation-not-required.html')
     if not applicant.activation_required:
         return render_to_response(
-            'application/registration/activation-not-required.html',
-            {'applicant': applicant })
+            'application/registration/activation-not-required.html')
     if not applicant.verify_activation_key(activation_key):
         return render_to_response(
             'application/registration/incorrect-activation-key.html',

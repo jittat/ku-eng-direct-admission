@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 import re
 import datetime
 
@@ -7,6 +7,7 @@ from django import forms
 from application.models import Applicant, PersonalInfo
 from application.models import Address, ApplicantAddress, Education
 from widgets import ThaiSelectDateWidget
+from commons.local import APP_TITLE_FORM_CHOICES
 
 def validate_phone_number(phone_number):
     # TODO: describe ext format in web form
@@ -33,6 +34,7 @@ class ForgetPasswordForm(forms.Form):
                                         email)
 
 class RegistrationForm(forms.Form):
+    title = forms.ChoiceField(choices=APP_TITLE_FORM_CHOICES)
     first_name = forms.CharField(label=u'ชื่อ')
     last_name = forms.CharField(label=u'นามสกุล')
     email = forms.EmailField(label=u'อีเมล์')
@@ -51,6 +53,7 @@ class RegistrationForm(forms.Form):
 
 
 class ActivationNameForm(forms.Form):
+    title = forms.ChoiceField(choices=APP_TITLE_FORM_CHOICES)
     first_name = forms.CharField(label=u'ชื่อ')
     last_name = forms.CharField(label=u'นามสกุล')
 
