@@ -22,3 +22,32 @@ def applicant_required(view_function):
 
     return decorate
 
+
+def active_applicant_required(view_function):
+    """
+    returns a view function that checks if the applicant has submitted
+    the application, otherwise redirect to the applicant first page.
+    """
+    @applicant_required
+    def decorate(request, *args, **kwargs):
+        if not request.applicant.is_submitted:
+            return view_function(request, *args, **kwargs)
+        else:
+            return redirect_to_index(request)
+
+    return decorate
+
+
+def submitted_applicant_required(view_function):
+    """
+    returns a view function that checks if the applicant has submitted
+    the application, otherwise redirect to the applicant first page.
+    """
+    @applicant_required
+    def decorate(request, *args, **kwargs):
+        if request.applicant.is_submitted:
+            return view_function(request, *args, **kwargs)
+        else:
+            return redirect_to_index(request)
+
+    return decorate

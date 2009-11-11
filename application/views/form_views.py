@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django import forms
 
-from commons.decorators import applicant_required
+from commons.decorators import applicant_required, active_applicant_required
 from commons.utils import redirect_to_index
 from commons.email import send_submission_confirmation_by_email
 
@@ -79,7 +79,7 @@ def redirect_to_applicant_first_page(applicant):
         return HttpResponseRedirect(reverse('status-index'))
 
 
-@applicant_required
+@active_applicant_required
 def applicant_personal_info(request):
     applicant = request.applicant
 
@@ -104,7 +104,7 @@ def applicant_personal_info(request):
                               { 'form': form,
                                 'form_step_info': form_step_info })
 
-@applicant_required
+@active_applicant_required
 def applicant_address(request):
     applicant = request.applicant
     have_old_address = applicant.has_address()
@@ -154,7 +154,7 @@ def applicant_address(request):
                                 'form_step_info': form_step_info })
 
 
-@applicant_required
+@active_applicant_required
 def applicant_education(request):
     applicant = request.applicant
 
@@ -207,7 +207,7 @@ def extract_ranks(post_data, major_list):
         ranks.append(rank_dict[r])
     return ranks
 
-@applicant_required
+@active_applicant_required
 def applicant_major(request):
     applicant = request.applicant
 
@@ -244,7 +244,7 @@ def applicant_major(request):
                                 'max_major_rank': max_major_rank,
                                 'form_step_info': form_step_info })
 
-@applicant_required
+@active_applicant_required
 def applicant_doc_menu(request):
     applicant = request.applicant
     chosen = applicant.doc_submission_method != Applicant.UNDECIDED_METHOD
@@ -255,7 +255,7 @@ def applicant_doc_menu(request):
                                'chosen': chosen })
 
 
-@applicant_required
+@active_applicant_required
 def info_confirm(request):
     applicant = request.applicant
 
@@ -277,7 +277,7 @@ def info_confirm(request):
                               {'applicant': applicant })
     
 
-@applicant_required
+@active_applicant_required
 def submission_ticket(request):
     if not request.applicant.is_submitted:
         return render_to_response('application/submission/ticket_not_submitted.html')
