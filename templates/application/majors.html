@@ -28,8 +28,8 @@
     $(document).ready(function() {
       MajorSelection.maxRank = {{ max_major_rank }};
       $("select").change(function() {
-        if(this.value!="--")
-          MajorSelection.shiftSelection(Number(this.value), this);
+        if($(this).val()!="--")
+          MajorSelection.shiftSelection(Number($(this).val()), this);
       });
     });
   </script>
