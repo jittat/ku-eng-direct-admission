@@ -29,7 +29,7 @@ def login(request):
 
             try:
                 applicant = Applicant.objects.filter(email=email).all()[0]
-            except Applicant.DoesNotExist:
+            except Exception:
                 applicant = None
 
             if applicant!=None:
