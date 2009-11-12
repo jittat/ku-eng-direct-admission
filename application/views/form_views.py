@@ -277,7 +277,7 @@ def info_confirm(request):
                               {'applicant': applicant })
     
 
-@active_applicant_required
+@applicant_required
 def submission_ticket(request):
     if not request.applicant.is_submitted:
         return render_to_response('application/submission/ticket_not_submitted.html')
