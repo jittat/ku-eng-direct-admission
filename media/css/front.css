@@ -45,6 +45,7 @@ div.button {
   border-radius: 5px;
   border: 1px double gray; }
   div.button a {
+    color: white;
     text-decoration: none; }
 
 div.selected {

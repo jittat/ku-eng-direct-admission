@@ -8,7 +8,6 @@ from commons.utils import random_string
 from commons.local import PROVINCE_CHOICES, APP_TITLE_CHOICES
 from application.fields import IntegerListField
 
-
 class Applicant(models.Model):
 
     # core applicant information
@@ -85,6 +84,16 @@ class Applicant(models.Model):
             return self.preference != None
         except MajorPreference.DoesNotExist:
             return False
+
+    def get_applicant_docs_or_none(self):
+        try:
+            docs = self.appdocs
+        except Exception:
+            docs = None
+        return docs
+
+    def has_online_docs(self):
+        return self.get_applicant_docs_or_none()!=None
 
     def can_choose_major(self):
         return (self.has_educational_info() and 

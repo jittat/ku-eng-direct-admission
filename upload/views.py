@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -112,12 +112,6 @@ def populate_upload_field_forms(app_docs, fields):
                            'form': FileUploadForm() }
     return field_forms
      
-def get_applicant_docs_or_none(applicant):
-    try:
-        docs = applicant.appdocs
-    except AppDocs.DoesNotExist:
-        docs = None
-    return docs
    
 # this is for showing step bar
 UPLOAD_FORM_STEPS = [
@@ -127,7 +121,8 @@ UPLOAD_FORM_STEPS = [
 
 @applicant_required
 def index(request, missing_fields=None, uploaded_field_error=None):
-    docs = get_applicant_docs_or_none(request.applicant)
+    
+    docs = request.applicant.get_applicant_docs_or_none()
     if docs==None:
         docs = AppDocs(applicant=request.applicant)
         docs.save()
@@ -193,10 +188,13 @@ def doc_thumbnail(request, field_name):
     if not AppDocs.valid_field_name(field_name):
         return HttpResponseServerError('Invalid field')
 
-    docs = get_applicant_docs_or_none(request.applicant)
-    filename = docs.thumbnail_path(field_name)
-    if os.path.exists(filename):
-        return serve_file(filename)
+    docs = request.applicant.get_applicant_docs_or_none()
+    if docs!=None:
+        filename = docs.thumbnail_path(field_name)
+        if os.path.exists(filename):
+            return serve_file(filename)
+        else:
+            return HttpResponseNotFound()
     else:
         return HttpResponseNotFound()
 
