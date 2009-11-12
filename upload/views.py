@@ -209,7 +209,7 @@ def upload(request, field_name):
     if not AppDocs.valid_field_name(field_name):
         return HttpResponseServerError('Invalid field')
 
-    docs = get_applicant_docs_or_none(request.applicant)
+    docs = request.applicant.get_applicant_docs_or_none()
     request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
     form = FileUploadForm(request.POST, request.FILES)
     uploaded_field_error = None
@@ -283,7 +283,7 @@ SHOW_UPLOAD_FORM_STEPS = [
 
 @submitted_applicant_required
 def show(request):
-    docs = get_applicant_docs_or_none(request.applicant)
+    docs = request.applicant.get_applicant_docs_or_none()
     fields = docs.get_upload_fields()
     field_forms = populate_upload_field_forms(docs, fields)
 
