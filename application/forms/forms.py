@@ -88,7 +88,12 @@ class AddressForm(forms.ModelForm):
             attrs={'size':6}))
 
     village_number = forms.IntegerField(widget=forms.TextInput(
-            attrs={'size':5}))
+            attrs={'size':6}))
+
+    def clean_postal_code(self):
+        if re.match(r'^(\d){5}$',self.cleaned_data['postal_code']) == None:
+            raise forms.ValidationError("รหัสไปรษณีย์ไม่ถูกต้อง")
+        return self.cleaned_data['postal_code']        
 
     def clean_phone_number(self):
         if not validate_phone_number(self.cleaned_data['phone_number']):

@@ -7,29 +7,29 @@
   <form action="{% url apply-edu %}" method="post">
     <div id="edu-gen-info">
       <h2>ข้อมูลทั่วไป</h2>
-      <table>
+      <table class="header-left">
 	<tr>
-	  <th>{{ form.has_graduated.label_tag }}</th>
+	  <th>{{ form.has_graduated.label_tag }}:</th>
 	  <td>{{ form.has_graduated }}</td>
 	  <td>{{ form.has_graduated.errors }}</td>
 	</tr>
 	<tr>
-	  <th>{{ form.school_name.label_tag }}</th>
+	  <th>{{ form.school_name.label_tag }}:</th>
 	  <td>{{ form.school_name }}</td>
 	  <td>{{ form.school_name.errors }}</td>
 	</tr>
 	<tr>
-	  <th>{{ form.school_city.label_tag }}</th>
+	  <th>{{ form.school_city.label_tag }}:</th>
 	  <td>{{ form.school_city }}</td>
 	  <td>{{ form.school_city.errors }}</td>
 	</tr>
 	<tr>
-	  <th>{{ form.school_province.label_tag }}</th>
+	  <th>{{ form.school_province.label_tag }}:</th>
 	  <td>{{ form.school_province }}</td>
 	  <td>{{ form.school_province.errors }}</td>
 	</tr>
 	<tr>
-	  <th>{{ form.gpax.label_tag }}</th>
+	  <th>{{ form.gpax.label_tag }}:</th>
 	  <td>{{ form.gpax }}</td>
 	  <td>{{ form.gpax.errors }}</td>
 	</tr>
@@ -62,6 +62,9 @@
 	    <td>{{ form.pat3.errors }}</td>
 	  </tr>
 	</table>
+	<span class="hint">
+	  <b>หมายเหตุ:</b> สำหรับคะแนนสอบเดือน ก.ค. 52 ให้ใช้คะแนนที่ประกาศเมื่อวันที่ 1 ต.ค. 52 หรือใช้คะแนนล่าสุดที่ประกาศในเว็บของ สทศ.
+	</span>
       </div>
       <div id="anet">
  	<table>

@@ -14,6 +14,10 @@
 	<td>{{ form.national_id }} {{ form.national_id.errors }}</td>
       </tr>
       <tr>
+	<td></td>
+	<td class="hint">เขียนติดกัน ตัวอย่างเช่น 1234567890123</td>
+      </tr>
+      <tr>
 	<th>วันเกิด:</th>
 	<td>{{ form.birth_date }} {{ form.birth_date.errors }} </td>
       </tr>
@@ -31,7 +35,7 @@
       </tr>
       <tr>
 	<td></td>
-	<td class="hint">ตัวอย่าง: 02-234-5442 ต่อ 1234</td>
+	<td class="hint" colspan="2">ใส่ขีดได้ ตัวอย่างเช่น 08-1234-5678  ในการระบุหมายเลขภายใน ใช้ 'ต่อ' หรือ '#' เช่น 02-234-5442 ต่อ 1234 หรือ 023-456-7890 # 111</td>
       </tr>
     </table>
     <div class="submission-bar">
