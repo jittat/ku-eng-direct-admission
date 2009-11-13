@@ -103,6 +103,8 @@ MAX_PASSWORD_REQUST_PER_DAY = 10
 
 FAKE_SENDING_EMAIL = False
 
+HTTP_BASE_PATH = ''
+
 ########################
 # options for admission
 ########################
@@ -122,3 +124,11 @@ try:
     from settings_local import *
 except ImportError:
     pass 
+
+# this is for checking if some crucial option has been left off
+
+class IncompleteSettingsException(Exception):
+    pass
+
+if HTTP_BASE_PATH=='':
+    raise IncompleteSettingsException("HTTP_BASE_PATH")

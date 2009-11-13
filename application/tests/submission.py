@@ -1,4 +1,4 @@
-# _*_ encoding: utf-8 _*_
+# -*- coding: utf-8 -*-
 
 from django.core import mail
 from django.test import TestCase, TransactionTestCase
