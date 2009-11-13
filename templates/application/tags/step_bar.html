@@ -1,0 +1,10 @@
+<div id="step-bar">
+  <ul>
+    <li class="head">{{ step_name }}</li>
+  </ul>
+  {% if can_log_out %}
+    <div id="log-out-button">
+      <a href="{% url apply-logout %}">ออกจากระบบ</a>
+    </div>
+  {% endif %}
+</div>

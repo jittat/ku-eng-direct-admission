@@ -40,3 +40,14 @@ def form_steps(context, step_list=None, current_step=0, max_linked_step=0):
         steps.append(step_info)
         i += 1
     return { 'steps' : steps }
+
+@register.inclusion_tag('application/tags/step_bar.html',
+                        takes_context=True)
+def step_bar(context, step_name):
+    if 'can_log_out' in context:
+        can_log_out = context['can_log_out']
+    else:
+        can_log_out = False
+
+    return { 'step_name': step_name,
+             'can_log_out': can_log_out }

@@ -3,6 +3,11 @@
 {% block title %}Not submitted{% endblock %}
 
 {% block form-body %}
-  <h2>คุณยังไม่ได้ส่งใบสมัคร</h2>
+  {% load adm_steps %}{% step_bar "ไม่ยืนยันการส่งข้อมูล" %}
+  <br/>
+  <div class="normal-msg">
+    คุณไม่ยืนยันการส่งข้อมูลใบสมัครให้กับทางคณะ คุณสามารถกลับไปแก้ไขข้อมูล
+    หรือเลือกวิธีการส่งหลักฐานแบบอื่นได้
+  </div>
   กลับไป<a href="{% url apply-personal-info %}">ป้อนข้อมูลต่อ</a>
 {% endblock %}
