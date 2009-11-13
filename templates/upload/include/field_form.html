@@ -1,4 +1,4 @@
-<div class="upload-item">
+<div class="upload-item{% if not upload_field.required %} optional{% endif %}">
   {% if upload_field.has_thumbnail %}
     <div class="thumbnail">
       <img src="{% url upload-thumbnail upload_field.name %}"/>
@@ -9,7 +9,7 @@
 	action="{% url upload-form field_name=upload_field.name %}" 
 	method="post" 
         enctype="multipart/form-data">
-    {{ upload_field.field.verbose_name }}<br/>
+    {{ upload_field.field.verbose_name }}{% if not upload_field.required %}<small> (หลักฐานเพิ่มเติม ไม่จำเป็นต้องยื่น)</small>{% endif %}<br/>
     {{ upload_field.form.uploaded_file }}
     <input type="submit" value="Upload"/>
     <div id="upload-progress-{{ upload_field.name }}">

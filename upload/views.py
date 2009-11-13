@@ -95,7 +95,7 @@ def upload_progress(request):
 class FileUploadForm(forms.Form):
     uploaded_file = forms.FileField()
 
-def populate_upload_field_forms(app_docs, fields):
+def populate_upload_field_forms(app_docs, fields, required_fields=None):
     field_forms = {}
     for f in fields:
         field = AppDocs._meta.get_field_by_name(f)[0]
@@ -106,8 +106,14 @@ def populate_upload_field_forms(app_docs, fields):
             if (field_value!=None) and (field_value.name!=''):
                 has_thumbnail = True
 
+        if (required_fields == None) or (f in required_fields):
+            required = True
+        else:
+            required = False
+
         field_forms[f] = { 'name': f,
                            'field': field,
+                           'required' :required,
                            'has_thumbnail': has_thumbnail,
                            'form': FileUploadForm() }
     return field_forms
@@ -127,7 +133,9 @@ def index(request, missing_fields=None, uploaded_field_error=None):
         docs = AppDocs(applicant=request.applicant)
         docs.save()
     fields = docs.get_upload_fields()
-    field_forms = populate_upload_field_forms(docs, fields)
+    field_forms = populate_upload_field_forms(docs, 
+                                              fields,
+                                              docs.get_required_fields())
 
     form_step_info = { 'steps': UPLOAD_FORM_STEPS,
                        'current_step': 0,

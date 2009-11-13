@@ -95,6 +95,10 @@ ul.errorlist {
     border: 1px solid gray;
     -moz-border-radius: 5px;
     float: left; }
+  .doc-upload-forms .optional {
+    background: white; }
+  .doc-upload-forms small {
+    font-size: 70%; }
   .doc-upload-forms .thumbnail {
     float: left;
     padding: 5px;
