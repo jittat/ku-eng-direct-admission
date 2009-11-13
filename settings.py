@@ -108,6 +108,8 @@ HTTP_BASE_PATH = ''
 
 MAX_UPLOADED_DOC_FILE_SIZE = 2000000
 
+SEND_MAILS_THROUGH_DJANGO_MAILER = True
+
 ########################
 # options for admission
 ########################
