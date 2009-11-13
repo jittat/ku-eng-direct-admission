@@ -4,7 +4,11 @@
 
 {% block form-body %}
   <form action="{% url apply-personal-info %}" method="post">
-    <table>
+    <table class="header-left">
+      <tr>
+	<th><label>ผู้สมัคร:</label></th>
+	<td>{{ applicant.full_name }}</td>
+      </tr>
       {{ form.as_table }}
     </table>
     <div class="submission-bar">

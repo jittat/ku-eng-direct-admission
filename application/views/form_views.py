@@ -101,7 +101,8 @@ def applicant_personal_info(request):
 
     form_step_info = build_form_step_info(0,applicant)
     return render_to_response('application/personal.html',
-                              { 'form': form,
+                              { 'applicant': applicant,
+                                'form': form,
                                 'form_step_info': form_step_info })
 
 @active_applicant_required
