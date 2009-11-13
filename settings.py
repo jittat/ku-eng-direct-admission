@@ -105,6 +105,8 @@ FAKE_SENDING_EMAIL = False
 
 HTTP_BASE_PATH = ''
 
+MAX_UPLOADED_DOC_FILE_SIZE = 2000000
+
 ########################
 # options for admission
 ########################

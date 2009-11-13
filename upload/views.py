@@ -6,7 +6,8 @@ from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django import forms
-from django.core.files.uploadhandler import FileUploadHandler
+from django.core.files.uploadhandler import FileUploadHandler, StopUpload
+from django.conf import settings
 
 from commons.decorators import applicant_required
 from commons.email import send_submission_confirmation_by_email
@@ -16,6 +17,8 @@ from application.models import Applicant
 from models import AppDocs
 from models import get_field_thumbnail_filename, get_doc_fullpath
 
+
+MAX_UPLOADED_DOC_FILE_SIZE = settings.MAX_UPLOADED_DOC_FILE_SIZE
 
 def get_session_key(request):
     progress_id = None
@@ -72,7 +75,7 @@ class UploadProgressSessionHandler(FileUploadHandler):
             self.request.session[self.session_key]['finished'] = True
             self.request.session.save()
 
-
+@applicant_required
 def upload_progress(request):
     """
     Return JSON object with information about the progress of an upload.
@@ -126,8 +129,8 @@ UPLOAD_FORM_STEPS = [
     ]
 
 @applicant_required
-def index(request, missing_fields=None, uploaded_field_error=None):
-    
+def index(request, missing_fields=None):
+
     docs = request.applicant.get_applicant_docs_or_none()
     if docs==None:
         docs = AppDocs(applicant=request.applicant)
@@ -136,6 +139,15 @@ def index(request, missing_fields=None, uploaded_field_error=None):
     field_forms = populate_upload_field_forms(docs, 
                                               fields,
                                               docs.get_required_fields())
+
+    if 'errors' in request.session:
+        try:
+            uploaded_field_error = request.session['errors']
+            del request.session['errors']
+        except KeyError:
+            uploaded_field_error = None
+    else:
+        uploaded_field_error = None
 
     form_step_info = { 'steps': UPLOAD_FORM_STEPS,
                        'current_step': 0,
@@ -172,7 +184,7 @@ def create_thumbnail(applicant, field_name, filename):
                                            thumb_filename)
     
     import Image
-    size = 50,50
+    size = 50,40
     im = Image.open(filename)
     im.thumbnail(size)
     im.save(full_thumb_filename,'png')
@@ -207,6 +219,11 @@ def doc_thumbnail(request, field_name):
         return HttpResponseNotFound()
 
 
+def upload_error(request, msg):
+    request.session['errors'] = msg
+    return HttpResponseRedirect(reverse('upload-index'))
+
+
 @applicant_required
 def upload(request, field_name):
     if request.method!="POST":
@@ -225,6 +242,14 @@ def upload(request, field_name):
     uploaded_field_error = None
     if form.is_valid():
         f = request.FILES['uploaded_file']
+
+        if f.size > MAX_UPLOADED_DOC_FILE_SIZE:
+            uploaded_field_error = (
+                "แฟ้มของ%s มีขนาดใหญ่เกินไป" % 
+                (AppDocs.get_verbose_name_from_field_name(field_name),)
+                )
+            return upload_error(request, uploaded_field_error)
+
         used_temp_file = False
 
         # check if it's a file on disk
@@ -250,7 +275,11 @@ def upload(request, field_name):
 
         except Exception:
             # bad uploaded file
-            uploaded_field_error = AppDocs.get_verbose_name_from_field_name(field_name)
+
+            uploaded_field_error = (
+                "แฟ้มรูปของ%s ที่อัพโหลดผิดรูปแบบ" %
+                (AppDocs.get_verbose_name_from_field_name(field_name),)
+                )
             if docs.__getattribute__(field_name):
                 # clean the file
                 docs.__getattribute__(field_name).delete(save=False)
@@ -264,7 +293,7 @@ def upload(request, field_name):
     if uploaded_field_error==None:
         return HttpResponseRedirect(reverse('upload-index'))
     else:
-        return index(request,uploaded_field_error=uploaded_field_error)
+        return upload_error(request, uploaded_field_error)
 
 @applicant_required
 def submit(request):
