@@ -160,12 +160,14 @@ def activate(request, applicant_id, activation_key):
     if request.method == 'GET':
         # get a click from e-mail
         name_form = ActivationNameForm(initial={
+                'title': applicant.title,
                 'first_name': applicant.first_name,
                 'last_name': applicant.last_name})
     else:
         name_form = ActivationNameForm(request.POST)
         if name_form.is_valid():
             applicant.activation_required = False
+            applicant.title = name_form.cleaned_data['title']
             applicant.first_name = name_form.cleaned_data['first_name']
             applicant.last_name = name_form.cleaned_data['last_name']
             passwd = applicant.random_password()

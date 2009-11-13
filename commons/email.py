@@ -57,6 +57,8 @@ def send_activation_by_email(applicant, activation_key, force=False):
     """
     sends activation key to an email.
     """
+
+    base_path = settings.HTTP_BASE_PATH
     subject = 'รหัสสำหรับเปิดใช้งานบัญชีผู้ใช้สำหรับการสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มก.บางเขน'
     message = (
 u"""Dear %(firstname)s %(lastname)s
@@ -73,8 +75,8 @@ Thank you.
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
     'email': applicant.email, 
-    'link': reverse('apply-activate', 
-                    args=[applicant.id, activation_key]) }
+    'link': base_path + reverse('apply-activate', 
+                                args=[applicant.id, activation_key]) }
 )
     adm_send_mail(applicant.email, subject, message, force)
 
