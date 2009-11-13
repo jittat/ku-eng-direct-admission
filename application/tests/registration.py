@@ -6,6 +6,7 @@ from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 
 from application.models import Applicant, Registration
+from commons import email
 
 class RegistrationTestCase(TransactionTestCase):
 
@@ -21,6 +22,12 @@ class RegistrationTestCase(TransactionTestCase):
 
     def setUp(self):
         self.regis_data = dict(RegistrationTestCase.REGIS_DATA)
+
+        # make sure the when testing, the app is using django's email
+        # system.
+        from django.core.mail import send_mail
+
+        email.send_mail = send_mail 
 
     def test_load_register_page(self):
         response = self.client.get('/apply/register/')

@@ -82,6 +82,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'south',
+    'mailer',
     'adm.application',
     'adm.upload',
 )

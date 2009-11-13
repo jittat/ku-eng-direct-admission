@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-from django.core.mail import send_mail
 from django.conf import settings
 from commons.utils import admin_email
 from django.core.urlresolvers import reverse
+
+# favour django-mailer but fall back to django.core.mail
+if "mailer" in settings.INSTALLED_APPS:
+    from mailer import send_mail
+else:
+    from django.core.mail import send_mail
 
 def adm_send_mail(to_email, subject, message, force=False):
     sender = admin_email()
