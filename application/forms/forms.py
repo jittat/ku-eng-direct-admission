@@ -10,7 +10,6 @@ from widgets import ThaiSelectDateWidget
 from commons.local import APP_TITLE_FORM_CHOICES
 
 def validate_phone_number(phone_number):
-    # TODO: describe ext format in web form
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
 class LoginForm(forms.Form):
@@ -85,7 +84,17 @@ class PersonalInfoForm(forms.ModelForm):
 
 
 class AddressForm(forms.ModelForm):
-    # TODO: add form validation
+    number = forms.CharField(widget=forms.TextInput(
+            attrs={'size':6}))
+
+    village_number = forms.IntegerField(widget=forms.TextInput(
+            attrs={'size':5}))
+
+    def clean_phone_number(self):
+        if not validate_phone_number(self.cleaned_data['phone_number']):
+            raise forms.ValidationError("หมายเลขโทรศัพท์ไม่ถูกต้อง")
+        return self.cleaned_data['phone_number']
+
     class Meta:
         model = Address
 

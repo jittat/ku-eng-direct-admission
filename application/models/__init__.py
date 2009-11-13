@@ -238,13 +238,14 @@ class PersonalInfo(models.Model):
                                    verbose_name="สัญชาติ")
     ethnicity = models.CharField(max_length=50,
                                  verbose_name="เชื้อชาติ")
-    phone_number = models.CharField(max_length=20,
+    phone_number = models.CharField(max_length=35,
                                     verbose_name="หมายเลขโทรศัพท์")
 
 class Address(models.Model):
     number = models.CharField(max_length=20,
                               verbose_name="บ้านเลขที่")
-    village_number = models.IntegerField(blank=True, null=True,
+    village_number = models.IntegerField(blank=True, 
+                                         null=True,
                                          verbose_name="หมู่ที่")
     village_name = models.CharField(blank=True,
                                     max_length=100,
@@ -261,7 +262,7 @@ class Address(models.Model):
                                 verbose_name="จังหวัด")
     postal_code = models.CharField(max_length=10,
                                    verbose_name="รหัสไปรษณีย์")
-    phone_number = models.CharField(max_length=20,
+    phone_number = models.CharField(max_length=35,
                                     verbose_name="หมายเลขโทรศัพท์")
 
     def __unicode__(self):

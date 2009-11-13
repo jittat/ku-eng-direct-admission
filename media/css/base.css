@@ -12,7 +12,19 @@ body {
   text-align: center; }
 
 table.header-left th {
-  text-align: right; }
+  text-align: right;
+  vertical-align: top; }
+table.header-left td {
+  vertical-align: top; }
+
+table.two-columns {
+  width: 100%; }
+  table.two-columns td {
+    width: 50%;
+    vertical-align: top; }
+
+td.hint {
+  font-size: 80%; }
 
 ul.errorlist {
   margin-top: 1px;

@@ -1,9 +1,42 @@
-บ้านเลขที่ {{ form.number }} {{ form.number.errors }}
-หมู่ที่ {{ form.village_number }} {{ form.village_number.errors }}
-หมู่บ้าน {{ form.village_name }} {{ form.village_name.errors }} <br/>
-ถนน {{ form.road }} {{ form.road.errors }}
-ตำบล/แขวง {{ form.district }} {{ form.district.errors }} <br/>
-อำเภอ/เขต {{ form.city }} {{ form.city.errors }}
-จังหวัด {{ form.province }} {{ form.province.errors }} <br/>
-รหัสไปรษณีย์ {{ form.postal_code }} {{ form.postal_code.errors }}
-หมายเลขโทรศัพท์ {{ form.phone_number }} {{ form.phone_number.errors }}
+<table class="header-left">
+  <tr>
+    <th>บ้านเลขที่</th>
+    <td>{{ form.number }} {{ form.number.errors }}</td>
+  </tr>
+  <tr>
+    <th>หมู่ที่</th>
+    <td>{{ form.village_number }} {{ form.village_number.errors }}</td>
+  </tr>
+  <tr>
+    <th>หมู่บ้าน</th>
+    <td>{{ form.village_name }} {{ form.village_name.errors }}</td>
+  </tr>
+  <tr>
+    <th>ถนน</th>
+    <td>{{ form.road }} {{ form.road.errors }}</td>
+  </tr>
+  <tr>
+    <th>ตำบล/แขวง</th>
+    <td>{{ form.district }} {{ form.district.errors }}</td>
+  </tr>
+  <tr>
+    <th>อำเภอ/เขต</th>
+    <td>{{ form.city }} {{ form.city.errors }}</td>
+  </tr>
+  <tr>
+    <th>จังหวัด</th>
+    <td>{{ form.province }} {{ form.province.errors }}</td>
+  </tr>
+  <tr>
+    <th>รหัสไปรษณีย์</th>
+    <td>{{ form.postal_code }} {{ form.postal_code.errors }}</td>
+  </tr>
+  <tr>
+    <th>หมายเลขโทรศัพท์</th>
+    <td>{{ form.phone_number }} {{ form.phone_number.errors }}</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td class="hint">ตัวอย่าง: 02-234-5442 ต่อ 1234</td>
+  </tr>
+</table>
