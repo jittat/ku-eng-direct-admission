@@ -422,7 +422,7 @@ class Registration(models.Model):
     registered_at = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=300)
-    activation_key = models.CharField(max_length=10, blank=True)
+    activation_key = models.CharField(max_length=10, blank=True, unique=True)
 
     def random_activation_key(self):
         self.activation_key = random_string(10)

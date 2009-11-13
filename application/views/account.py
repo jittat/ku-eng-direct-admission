@@ -117,6 +117,7 @@ def register(request):
                     applicant=applicant,
                     first_name=first_name,
                     last_name=last_name)
+                registration.random_activation_key()
                 registration.save()
                 send_password_by_email(applicant, passwd)
                 return render_to_response(
@@ -176,6 +177,7 @@ def activate(request, applicant_id, activation_key):
                 applicant=applicant,
                 first_name=applicant.first_name,
                 last_name=applicant.last_name)
+            registration.random_activation_key()
             registration.save()
             send_password_by_email(applicant, passwd)           
             return render_to_response(

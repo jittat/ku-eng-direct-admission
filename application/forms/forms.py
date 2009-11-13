@@ -47,7 +47,8 @@ class RegistrationForm(forms.Form):
         return self.cleaned_data['email_confirmation']
 
     def get_applicant(self):
-        return Applicant(first_name=self.cleaned_data['first_name'],
+        return Applicant(title=self.cleaned_data['title'],
+                         first_name=self.cleaned_data['first_name'],
                          last_name=self.cleaned_data['last_name'],
                          email=self.cleaned_data['email'])
 
