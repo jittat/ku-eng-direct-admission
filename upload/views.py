@@ -166,9 +166,9 @@ def save_as_temp_file(f):
     return (f, temp_filename)
 
 
-def create_thumbnail(app_docs, field_name, filename):
+def create_thumbnail(applicant, field_name, filename):
     thumb_filename = get_field_thumbnail_filename(field_name)
-    full_thumb_filename = get_doc_fullpath(app_docs.applicant, 
+    full_thumb_filename = get_doc_fullpath(applicant, 
                                            thumb_filename)
     
     import Image
@@ -217,7 +217,9 @@ def upload(request, field_name):
     if not AppDocs.valid_field_name(field_name):
         return HttpResponseServerError('Invalid field')
 
-    docs = request.applicant.get_applicant_docs_or_none()
+    applicant = request.applicant
+
+    docs = applicant.get_applicant_docs_or_none()
     request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
     form = FileUploadForm(request.POST, request.FILES)
     uploaded_field_error = None
@@ -235,17 +237,24 @@ def upload(request, field_name):
 
         if docs==None:
             docs = AppDocs()
-            docs.applicant = request.applicant
-
-        docs.__setattr__(field_name, f)
-        docs.save()
+            docs.applicant = applicant
 
         try:
-            create_thumbnail(docs, field_name, temp_filename)
+            # try to create a thumbnail
+            create_thumbnail(applicant, field_name, temp_filename)
+            if docs.__getattribute__(field_name):
+                # clean old file
+                docs.__getattribute__(field_name).delete(save=False)
+            docs.__setattr__(field_name, f)
+            docs.save()
+
         except Exception:
             # bad uploaded file
             uploaded_field_error = AppDocs.get_verbose_name_from_field_name(field_name)
-            docs.__setattr__(field_name,None)
+            if docs.__getattribute__(field_name):
+                # clean the file
+                docs.__getattribute__(field_name).delete(save=False)
+            docs.__setattr__(field_name, None)
             docs.save()
 
         f.close()
