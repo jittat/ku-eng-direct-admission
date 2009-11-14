@@ -9,7 +9,7 @@
 	action="{% url upload-form field_name=upload_field.name %}" 
 	method="post" 
         enctype="multipart/form-data">
-    {{ upload_field.field.verbose_name }}{% if not upload_field.required %}<small> (หลักฐานเพิ่มเติม ไม่จำเป็นต้องยื่น)</small>{% endif %}<br/>
+    {{ upload_field.field.verbose_name }}{% if not upload_field.required %}<small> (หลักฐานเพิ่มเติม ไม่จำเป็นต้องยื่น)</small>{% endif %}{% if upload_field.has_thumbnail %} <span class="upload-doc-view">[<a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox">ดู</a>]</span>{% endif %}<br/>
     {{ upload_field.form.uploaded_file }}
     <input type="submit" value="Upload"/>
     <div id="upload-progress-{{ upload_field.name }}">

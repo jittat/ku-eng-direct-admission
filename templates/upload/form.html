@@ -5,6 +5,8 @@
 {% block extra-head %}
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
 <script type="text/javascript" src="{% media_url %}/js/doc_submission.js"></script>
+<link href="{% media_url %}/facebox/facebox.css" media="screen" rel="stylesheet" type="text/css"/>
+<script src="{% media_url %}/facebox/facebox.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block title %}อัพโหลดหลักฐาน{% endblock %}
@@ -99,6 +101,10 @@ $(document).ready(function() {
   $("#hide-upload-detail-link").click(function() {
     $("#upload-detail-box").slideToggle("fast");
   });
+
+  $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";
+  $.facebox.settings.closeImage = "{% media_url %}/facebox/closelabel.gif";
+  $('a[rel*=facebox]').facebox()
 });
 </script>
 {% endblock %}

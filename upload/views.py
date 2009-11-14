@@ -17,7 +17,8 @@ from application.views.status import submitted_applicant_required
 
 from application.models import Applicant
 from models import AppDocs
-from models import get_field_thumbnail_filename, get_doc_fullpath
+from models import get_field_thumbnail_filename, get_field_preview_filename
+from models import get_doc_fullpath
 
 
 MAX_UPLOADED_DOC_FILE_SIZE = settings.MAX_UPLOADED_DOC_FILE_SIZE
@@ -185,6 +186,7 @@ def save_as_temp_file(f):
 
 
 def create_thumbnail(applicant, field_name, filename):
+    # create thumbnail
     thumb_filename = get_field_thumbnail_filename(field_name)
     full_thumb_filename = get_doc_fullpath(applicant, 
                                            thumb_filename)
@@ -198,6 +200,17 @@ def create_thumbnail(applicant, field_name, filename):
         os.makedirs(dirname)
 
     im.save(full_thumb_filename,'png')
+
+    # create preview
+    preview_filename = get_field_preview_filename(field_name)
+    full_preview_filename = get_doc_fullpath(applicant, 
+                                             preview_filename)
+    size = 300,200
+    im = Image.open(filename)
+    im.thumbnail(size)
+
+    im.save(full_preview_filename,'png')
+
 
 def serve_file(filename):
     import mimetypes
@@ -221,6 +234,22 @@ def doc_thumbnail(request, field_name):
     docs = request.applicant.get_applicant_docs_or_none()
     if docs!=None:
         filename = docs.thumbnail_path(field_name)
+        if os.path.exists(filename):
+            return serve_file(filename)
+        else:
+            return HttpResponseNotFound()
+    else:
+        return HttpResponseNotFound()
+
+
+@applicant_required
+def doc_preview(request, field_name):
+    if not AppDocs.valid_field_name(field_name):
+        return HttpResponseServerError('Invalid field')
+
+    docs = request.applicant.get_applicant_docs_or_none()
+    if docs!=None:
+        filename = docs.preview_path(field_name)
         if os.path.exists(filename):
             return serve_file(filename)
         else:

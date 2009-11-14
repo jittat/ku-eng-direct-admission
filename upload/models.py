@@ -24,6 +24,9 @@ def get_field_filename(org_filename, field_name):
 def get_field_thumbnail_filename(field_name):
     return field_name + '.thumbnail.png'
 
+def get_field_preview_filename(field_name):
+    return field_name + '.preview.png'
+
 def get_doc_path_function(field_name):
     "returns a function for modifying uploaded filename"
     def f(instance, filename):
@@ -96,6 +99,10 @@ class AppDocs(models.Model):
     def thumbnail_path(self, field_name):
         return get_doc_fullpath(self.applicant, 
                                 get_field_thumbnail_filename(field_name))
+
+    def preview_path(self, field_name):
+        return get_doc_fullpath(self.applicant, 
+                                get_field_preview_filename(field_name))
 
     def get_upload_fields(self):
         applicant = self.applicant
