@@ -12,7 +12,6 @@ def applicant_required(view_function):
             return redirect_to_index(request)
         try:
             applicant = (Applicant.objects.
-                         select_related(depth=1).
                          get(pk=request.session['applicant_id']))
         except Applicant.DoesNotExist:
             return redirect_to_index(request)
