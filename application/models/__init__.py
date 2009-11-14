@@ -62,13 +62,15 @@ class Applicant(models.Model):
                                   for i in 
                                   range(len(Applicant.RELATED_MODELS))]
 
-    def add_related_model(self, model_name, save=False):
+    def add_related_model(self, model_name, save=False, smart=False):
         if len(self.has_related_model)==0:
             self.initialize_related_model()
         model_id = Applicant.RELATED_MODELS[model_name]
+        old = self.has_related_model[model_id]
         self.has_related_model[model_id] = 1
         if save:
-            self.save()
+            if (not smart) or (old != 1):
+                self.save()
             
 
     class DuplicateSubmissionError(Exception):

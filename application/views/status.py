@@ -13,7 +13,8 @@ from application.views import redirect_to_applicant_first_page
 @submitted_applicant_required
 def index(request):
     return render_to_response("application/status/index.html",
-                              { 'applicant': request.applicant })
+                              { 'applicant': request.applicant,
+                                'can_log_out': True })
 
 
 # this is for showing step bar

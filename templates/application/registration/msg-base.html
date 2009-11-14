@@ -2,6 +2,10 @@
 
 
 {% block form-body %} 
+  {% if step_name %}
+    {% load adm_steps %}{% step_bar step_name %}
+    <br/>
+  {% endif %}
   <div class="normal-msg">
     {% block msg-body %}{% endblock %}
   </div>

@@ -86,7 +86,8 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
                               { 'applicant': applicant,
                                 'email': email,
                                 'old_registrations': old_registrations,
-                                'new_registration': new_registration })
+                                'new_registration': new_registration,
+                                'step_name': "อีเมล์นี้มีการลงทะเบียนไว้แล้ว ต้องมีการยืนยันอีเมล์" })
 
 def register(request):
     if request.method == 'POST':
@@ -120,7 +121,8 @@ def register(request):
                 send_password_by_email(applicant, passwd)
                 return render_to_response(
                     'application/registration/success.html',
-                    {'email': form.cleaned_data['email']})
+                    {'email': form.cleaned_data['email'],
+                     'step_name': "การลงทะเบียนเรียบร้อย" })
             else:
                 if not applicant.has_logged_in:
                     return dupplicate_email_error(applicant,
@@ -147,17 +149,21 @@ def activate(request, activation_key):
         registration = Registration.objects.get(activation_key=activation_key)
     except Registration.DoesNotExist:
         return render_to_response(
-            'application/registration/activation-not-required.html')
+            'application/registration/activation-not-required.html',
+            {'step_name': "ไม่จำเป็นต้องมีการยืนยันอีเมล์"})
 
     applicant = registration.applicant
 
     if not applicant.activation_required:
         return render_to_response(
-            'application/registration/activation-not-required.html')
+            'application/registration/activation-not-required.html',
+            {'step_name': "ไม่จำเป็นต้องมีการยืนยันอีเมล์"})
+
     if not applicant.verify_activation_key(activation_key):
         return render_to_response(
             'application/registration/incorrect-activation-key.html',
-            {'applicant': applicant })
+            {'applicant': applicant,
+             'step_name': "รหัสยืนยันผิดพลาด" })
 
     if request.method == 'GET':
         # get a click from e-mail
@@ -189,7 +195,8 @@ def activate(request, activation_key):
         {'applicant': applicant,
          'form': name_form,
          'activation_key': activation_key,
-         'no_first_page_link': True })
+         'no_first_page_link': True,
+         'step_name': "การยืนยันอีเมล์ - รหัสสำหรับยืนยันถูกต้อง" })
 
 
 def forget_password(request):
@@ -213,11 +220,13 @@ def forget_password(request):
             
                 return render_to_response(
                     'application/registration/password-sent.html',
-                    {'email': email})
+                    {'email': email,
+                     'step_name': "ส่งรหัสผ่านให้แล้ว"})
             else:
                 return render_to_response(
                     'application/registration/too-many-requests.html',
-                    {'email': email})                
+                    {'email': email,
+                     'step_name': "ขอรหัสผ่านบ่อยครั้งเกินไป"})                
     else:
         form = ForgetPasswordForm()
 
