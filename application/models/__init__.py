@@ -427,6 +427,20 @@ class Registration(models.Model):
 
     def random_activation_key(self):
         self.activation_key = random_string(10)
+        return self.activation_key
+
+    def random_and_save(self):
+        success = False
+        trials = 0
+        while not success:
+            try:
+                self.random_activation_key()
+                self.save()
+                success = True
+            except:
+                trials += 1
+                if trials > 10:
+                    raise
 
     class Meta:
         ordering = ['-registered_at']

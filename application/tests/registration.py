@@ -173,8 +173,7 @@ class RegistrationTestCase(TransactionTestCase):
             registration = Registration(applicant=applicant,
                                         first_name='s',
                                         last_name='c')
-            registration.random_activation_key()
-            registration.save()
+            registration.random_and_save()
             keys.append(registration.activation_key)
 
         for k in keys:

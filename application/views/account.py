@@ -78,8 +78,7 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
     new_registration = Registration(applicant=applicant,
                                     first_name=first_name,
                                     last_name=last_name)
-    new_registration.random_activation_key()
-    new_registration.save()
+    new_registration.random_and_save()
     send_activation_by_email(applicant, new_registration.activation_key)
     applicant.activation_required = True
     applicant.save()
@@ -117,8 +116,7 @@ def register(request):
                     applicant=applicant,
                     first_name=first_name,
                     last_name=last_name)
-                registration.random_activation_key()
-                registration.save()
+                registration.random_and_save()
                 send_password_by_email(applicant, passwd)
                 return render_to_response(
                     'application/registration/success.html',
@@ -144,12 +142,15 @@ def register(request):
                               { 'form': form })
 
 
-def activate(request, applicant_id, activation_key):
+def activate(request, activation_key):
     try:
-        applicant = Applicant.objects.get(pk=applicant_id)
-    except Applicant.DoesNotExist:
+        registration = Registration.objects.get(activation_key=activation_key)
+    except Registration.DoesNotExist:
         return render_to_response(
             'application/registration/activation-not-required.html')
+
+    applicant = registration.applicant
+
     if not applicant.activation_required:
         return render_to_response(
             'application/registration/activation-not-required.html')
@@ -177,8 +178,7 @@ def activate(request, applicant_id, activation_key):
                 applicant=applicant,
                 first_name=applicant.first_name,
                 last_name=applicant.last_name)
-            registration.random_activation_key()
-            registration.save()
+            registration.random_and_save()
             send_password_by_email(applicant, passwd)           
             return render_to_response(
                 'application/registration/activation-successful.html',

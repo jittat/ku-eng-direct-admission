@@ -86,7 +86,7 @@ Thank you.
     'lastname': applicant.last_name,
     'email': applicant.email, 
     'link': base_path + reverse('apply-activate', 
-                                args=[applicant.id, activation_key]) }
+                                args=[activation_key]) }
 )
     adm_send_mail(applicant.email, subject, message, force)
 

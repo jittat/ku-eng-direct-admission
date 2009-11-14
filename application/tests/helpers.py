@@ -33,7 +33,6 @@ class ApplicantPreparation():
             first_name=applicant.first_name,
             last_name=applicant.last_name
             )
-        registration.random_activation_key()
-        registration.save()
+        registration.random_and_save()
 
         return applicant, password
