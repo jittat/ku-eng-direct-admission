@@ -3,6 +3,7 @@
 {% block title %}Submission Error{% endblock %}
 
 {% block form-body %}
+  {% load adm_steps %}{% step_bar "เอกสารไม่ครบ" %}
   เอกสารยังไม่เรียบร้อย ยังไม่สามารถส่งได้ สิ่งที่คุณขาดคือ:
   <ul>
     <li>รายการ</li>

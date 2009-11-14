@@ -136,8 +136,8 @@ class Applicant(models.Model):
                 return False
 
     def get_applicant_docs_or_none(self):
-        result = self.check_related_model('major_preference')
-        if (result!=None) and (result==False):
+        result = self.check_related_model('appdocs')
+        if (result!=None) and (result==0):
             return None
         try:
             docs = self.appdocs
@@ -257,9 +257,13 @@ class Applicant(models.Model):
     def submit(self, submission_method):
         if self.is_submitted:
             raise Applicant.DuplicateSubmissionError()
-        submission_info = SubmissionInfo(applicant=self)
-        submission_info.random_salt()
-        submission_info.save()
+        try:
+            submission_info = SubmissionInfo(applicant=self)
+            submission_info.random_salt()
+            submission_info.save()
+        except:
+            raise Applicant.DuplicateSubmissionError()
+
         self.doc_submission_method = submission_method
         self.is_submitted = True
         self.save()

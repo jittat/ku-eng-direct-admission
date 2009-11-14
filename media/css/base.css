@@ -172,3 +172,11 @@ ul.errorlist {
     padding: 5px; }
   .application-info .address {
     padding-right: 50px; }
+  .application-info h3 {
+    font-size: 100%;
+    background: #000060;
+    color: #cccccc;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px; }

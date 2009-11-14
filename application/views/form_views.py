@@ -263,6 +263,7 @@ def applicant_major(request):
 def applicant_doc_menu(request):
     applicant = request.applicant
     chosen = applicant.doc_submission_method != Applicant.UNDECIDED_METHOD
+    #print applicant, chosen
     form_step_info = build_form_step_info(4,applicant)
     return render_to_response('application/doc_menu.html',
                               {'form_step_info': form_step_info,

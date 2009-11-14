@@ -3,7 +3,11 @@ from models import Applicant, SubmissionInfo, PersonalInfo
 from models import Address, ApplicantAddress
 from models import Education, Major, GPExamDate
 
-admin.site.register(Applicant)
+class ApplicantAdmin(admin.ModelAdmin):
+    exclude = ('has_related_model',)
+
+admin.site.register(Applicant, ApplicantAdmin)
+
 admin.site.register(SubmissionInfo)
 admin.site.register(PersonalInfo)
 admin.site.register(Address)

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% load adm_steps %}
+
+{% block extra-head %}
+<script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block title %}หลักฐานที่อัพโหลด{% endblock %}
+
+{% block body %}
+  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+
+  {% step_bar "ตรวจสอบข้อมูลและหลักฐาน" %}
+  <p>
+    โปรดตรวจสอบข้อมูลและหลักฐานที่ได้อัพโหลดทั้งหมด ก่อนกดยืนยัน<br/>
+    ถ้าคุณไม่กดยืนยันด้านล่างข้อมูลจะไม่ถูกส่งให้กับทางคณะ เมื่อส่งข้อมูลแล้ว
+    การสมัครจะสมบูรณ์ก็ต่อเมื่อคณะได้ตรวจสอบแล้ว
+  </p>
+
+  <div id="applicant-info-confirmation" class="application-info">
+    {% include "application/include/application_info.html" %}
+  </div>
+
+  <br/>
+  
+  <div class="application-info">
+    <h2>หลักฐานที่อัพโหลดแล้ว</h2>
+
+    <div id="personal" class="doc-upload-forms">
+      <h3>เอกสารข้อมูลส่วนตัว</h3>
+      {% with field_forms.nat_id as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+      {% with field_forms.picture as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+    </div>
+    <div id="education" class="doc-upload-forms">
+      <h3>ข้อมูลการศึกษา</h3>
+      {% with field_forms.edu_certificate as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+      {% with field_forms.abroad_edu_certificate as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+    </div>
+    <div id="scores" class="doc-upload-forms">
+      <h3>คะแนนสอบ</h3>
+      {% if applicant.education.uses_gat_score %}
+        {% with field_forms.gat_score as upload_field %}
+          {% include "upload/include/field_show.html" %}
+        {% endwith %}
+        {% with field_forms.pat1_score as upload_field %}
+          {% include "upload/include/field_show.html" %}
+        {% endwith %}
+        {% with field_forms.pat3_score as upload_field %}
+          {% include "upload/include/field_show.html" %}
+        {% endwith %}
+      {% else %}
+        {% with field_forms.anet_score as upload_field %}
+          {% include "upload/include/field_show.html" %}
+        {% endwith %}
+      {% endif %}
+    </div>
+    <div id="fee" class="doc-upload-forms">
+      <h3>หลักฐานการชำระเงิน</h3>
+      {% with field_forms.app_fee_doc as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+    </div>
+    <br style="clear:both"/>
+  </div>
+
+  <p>
+    ถ้าข้อมูลถูกต้อง กรุณากดยืนยัน
+    ถ้าไม่ถูกต้องสามารถเลือกกลับไปแก้ไขเพื่อแก้ไขได้&nbsp;&nbsp;&nbsp;
+    เมื่อยืนยันแล้วจะไม่สามารถกลับมาแก้ข้อมูลหรือเลือกวิธีการส่งหลักฐานแบบอื่นได้อีก
+  </p>
+  <form action="{% url upload-confirm %}" method="post">
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="ยืนยัน"/>
+      <input type="submit" name="cancel" value="กลับไปแก้ไข"/>
+    </div>
+  </form>
+{% endblock %}

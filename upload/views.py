@@ -327,16 +327,7 @@ def submit(request):
         return HttpResponseRedirect(reverse('upload-index'))
         
     if applicant.appdocs.is_complete():
-        try:
-            applicant.submit(Applicant.SUBMITTED_ONLINE)
-        except Applicant.DuplicateSubmissionError:
-            return render_to_response(
-                'commons/submission_already_submitted.html',
-                { 'applicant': applicant })
-
-        send_submission_confirmation_by_email(applicant)
-        return render_to_response('upload/submission_success.html',
-                                  { 'applicant': applicant })
+        return HttpResponseRedirect(reverse('upload-confirm'))
     else:
         missing_fields = applicant.appdocs.get_missing_fields()
         missing_field_names = [
@@ -344,6 +335,47 @@ def submit(request):
             for f in missing_fields
             ]
         return index(request, missing_field_names)
+
+
+@applicant_required
+def confirm(request):
+    applicant = request.applicant
+    if ((not applicant.has_online_docs()) or
+        (not applicant.appdocs.is_complete())):
+        return HttpResponseRedirect(reverse('upload-index'))
+
+    if request.method!='POST':
+        docs = request.applicant.get_applicant_docs_or_none()
+        fields = docs.get_upload_fields()
+        field_forms = populate_upload_field_forms(docs, fields)
+
+        return render_to_response("upload/confirm.html",
+                                  { 'applicant': request.applicant,
+                                    'field_forms': field_forms })
+
+    else:
+        if not 'submit' in request.POST:
+            return render_to_response(
+                'application/submission/not_submitted.html')
+
+        if applicant.appdocs.is_complete():
+            try:
+                applicant.submit(Applicant.SUBMITTED_ONLINE)
+            except Applicant.DuplicateSubmissionError:
+                return render_to_response(
+                    'commons/submission_already_submitted.html',
+                    { 'applicant': applicant })
+
+            send_submission_confirmation_by_email(applicant)
+            return render_to_response('upload/submission_success.html',
+                                      { 'applicant': applicant })
+        else:
+            missing_fields = applicant.appdocs.get_missing_fields()
+            missing_field_names = [
+                AppDocs.get_verbose_name_from_field_name(f)
+                for f in missing_fields
+                ]
+            return index(request, missing_field_names)
 
 
 # this is for showing step bar
