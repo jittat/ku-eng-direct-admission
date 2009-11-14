@@ -205,8 +205,12 @@ def create_thumbnail(applicant, field_name, filename):
     preview_filename = get_field_preview_filename(field_name)
     full_preview_filename = get_doc_fullpath(applicant, 
                                              preview_filename)
-    size = 300,200
+
     im = Image.open(filename)
+    if im.size[0] > im.size[1]:
+        size = 400,300
+    else:
+        size = 300,400
     im.thumbnail(size)
 
     im.save(full_preview_filename,'png')
