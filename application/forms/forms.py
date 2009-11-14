@@ -87,7 +87,8 @@ class AddressForm(forms.ModelForm):
     number = forms.CharField(widget=forms.TextInput(
             attrs={'size':6}))
 
-    village_number = forms.IntegerField(widget=forms.TextInput(
+    village_number = forms.IntegerField(required=False,
+            widget=forms.TextInput(
             attrs={'size':6}))
 
     def clean_postal_code(self):
