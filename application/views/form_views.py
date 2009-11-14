@@ -245,7 +245,7 @@ def applicant_major(request):
         if len(major_ranks)==0:
             # chooses no majors
             errors = ['ต้องเลือกอย่างน้อยหนึ่งอันดับ']
-            ranks = major_ranks
+            pref_ranks = [None] * len(majors)
         else:
             if old_preference!=None:
                 preference = old_preference
