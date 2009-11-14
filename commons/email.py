@@ -59,7 +59,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'lastname': applicant.last_name,
     'email': applicant.email, 
     'password': password }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicant.email, subject, message, force)
 
 
@@ -88,8 +88,9 @@ u"""เรียน คุณ %(firstname)s %(lastname)s
     'email': applicant.email, 
     'link': base_path + reverse('apply-activate', 
                                 args=[activation_key]) }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicant.email, subject, message, force)
+
 
 def send_submission_confirmation_by_email(applicant, force=False):
     """
@@ -123,5 +124,6 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'verification': applicant.verification_number(),
     'submission_method': applicant.get_doc_submission_method_display(),
     }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicant.email, subject, message, force)
+
