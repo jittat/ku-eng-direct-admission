@@ -137,7 +137,7 @@ class AppDocs(models.Model):
             return False
         today = date.today()
         today_datetime = datetime(today.year, today.month, today.day)
-        print self.last_uploaded_at, "today:", today_datetime
+        #print self.last_uploaded_at, "today:", today_datetime
         return self.last_uploaded_at >= today_datetime
 
     def can_upload_more_files(self):
@@ -153,7 +153,7 @@ class AppDocs(models.Model):
         return True
 
     def update_upload_counter(self):
-        print "Today?", self.has_uploaded_today()
+        #print "Today?", self.has_uploaded_today()
         if self.has_uploaded_today():
             self.num_uploaded_today += 1
         else:
