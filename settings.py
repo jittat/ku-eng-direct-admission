@@ -108,7 +108,9 @@ HTTP_BASE_PATH = ''
 
 MAX_UPLOADED_DOC_FILE_SIZE = 2000000
 
+EMAIL_BACKEND = 'adm.commons.backends.phpmailer'
 SEND_MAILS_THROUGH_DJANGO_MAILER = True
+PHPMAILER_KEY = ''
 
 ########################
 # options for admission
@@ -121,7 +123,7 @@ MAX_MAJOR_RANK = 6
 # path for storing uploaded images (for documents)
 UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 
-EMAIL_HOST = 'anti-spam.ku.ac.th'
+EMAIL_HOST = ''
 
 TEST_DATABASE_COLLATION = 'utf8_general_ci'
 
@@ -137,3 +139,7 @@ class IncompleteSettingsException(Exception):
 
 if HTTP_BASE_PATH=='':
     raise IncompleteSettingsException("HTTP_BASE_PATH")
+if PHPMAILER_KEY=='':
+    raise IncompleteSettingsException("PHPMAILER_KEY")
+if EMAIL_HOST=='':
+    raise IncompleteSettingsException("EMAIL_HOST")
