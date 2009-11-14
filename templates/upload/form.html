@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "commons/base.html" %}
 
 {% load adm_steps %}
 
@@ -12,7 +12,6 @@
 {% block title %}อัพโหลดหลักฐาน{% endblock %}
 
 {% block body %}
-  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
   {% form_steps %}
 
   {% if missing_fields %}
@@ -32,7 +31,7 @@
   <b>ขั้นตอนการอัพโหลดหลักฐาน:</b> <small>สแกนหรือถ่ายภาพเอกสารจากนั้นเลือก
   Upload เอกสารตามหัวข้อด้านล่าง
   ในการสแกนหรือถ่ายภาพจะต้องปรับแต่งแฟ้มภาพให้ความละเอียดตามที่ระบบต้องการด้วย
-  สามารถตรวจสอบแฟ้มที่อัพโหลดไปได้ โดยกดที่ลิงก์ [ดู] ข้างชื่อเอกสาร
+  สามารถตรวจสอบแฟ้มที่อัพโหลดไปได้ โดยกดที่รูปหรือลิงก์รูปแว่น <img height="10" width="10" src="{% media_url %}/image/Search.png"/> ข้างชื่อเอกสาร
   ระบบจะแสดงภาพตัวอย่างที่อาจจะผ่านการย่อให้ชม
   <a id="upload-detail-link" href="#">กดที่นี่เพื่ออ่านรายละเอียด</a>
   </small>
@@ -80,7 +79,8 @@
     <h2>หลักฐานการชำระเงิน</h2>
     {% with field_forms.app_fee_doc as upload_field %}
       {% include "upload/include/field_form.html" %}
-    {% endwith %}
+    {% endwith %}    
+    <br style="clear:both"/>
   </div>
 
   <form action="{% url upload-submit %}" method="post">

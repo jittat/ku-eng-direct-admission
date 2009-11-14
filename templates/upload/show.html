@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "commons/base.html" %}
 
 {% load adm_steps %}
 
@@ -11,10 +11,13 @@
 {% block title %}หลักฐานที่อัพโหลด{% endblock %}
 
 {% block body %}
-  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
-
   {% form_steps %}
-  <p><b>สถานะ:</b> (ระบบอยู่ระหว่างการพัฒนา จะสามารถตรวจได้เร็ว ๆ นี้ นอกจากนี้ถ้ามีการเปลี่ยนแปลงสถานะการตรวจสอบจะมีอีเมล์แจ้งถึงผู้สมัคร)</p>
+  <p>
+    ขณะนี้ระบบตรวจสอบสถานะอยู่ระหว่างการพัฒนา จะสามารถตรวจได้เร็ว ๆ นี้ นอกจากนี้ถ้ามีการเปลี่ยนแปลงสถานะการตรวจสอบจะมีอีเมล์แจ้งถึงผู้สมัคร
+  </p>
+  <small>สามารถตรวจสอบแฟ้มที่อัพโหลดไปได้ โดยกดที่รูปเล็กหรือลิงก์รูปแว่น <img width="10" height="10" src="{% media_url %}/image/Search.png"/> ข้างชื่อเอกสาร
+    ระบบจะแสดงภาพตัวอย่างที่อาจจะผ่านการย่อให้ชม</small>
+
 
   <div id="personal" class="doc-upload-forms">
     <h2>เอกสารข้อมูลส่วนตัว</h2>
@@ -58,6 +61,7 @@
       {% include "upload/include/field_show.html" %}
     {% endwith %}
   </div>
+  <br style="clear:both"/>
   <script type="text/javascript">
     $(document).ready(function($) {
       $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";

@@ -52,6 +52,9 @@ div.button {
     vertical-align: middle;
     border: none; }
 
+#reg-button {
+  padding-left: 45px; }
+
 .big {
   padding-top: 10px;
   padding-bottom: 10px; }

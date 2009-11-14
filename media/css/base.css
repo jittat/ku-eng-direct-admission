@@ -118,6 +118,8 @@ ul.errorlist {
     float: left;
     padding: 5px;
     padding-right: 10px; }
+    .doc-upload-forms .thumbnail img {
+      border: none; }
   .doc-upload-forms h2 {
     background: #bef56e;
     color: black;
@@ -180,3 +182,6 @@ ul.errorlist {
     padding-right: 5px;
     margin-top: 5px;
     margin-bottom: 5px; }
+
+.upload-doc-view img {
+  border: none; }

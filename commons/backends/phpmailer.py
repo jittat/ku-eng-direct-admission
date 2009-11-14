@@ -3,7 +3,7 @@ import urllib
 
 from django.core.mail.backends.base import BaseEmailBackend
 from django.conf import settings
-from django.http import QueryDict
+from django.utils.http import urlencode
 
 class EmailBackend(BaseEmailBackend):
     """
@@ -50,19 +50,18 @@ class EmailBackend(BaseEmailBackend):
         if not email_message.recipients():
             return False
         try:
-            params = QueryDict('').copy()
-            params.update({
-                    'key': self.key,
-                    'to': email_message.recipients()[0],
-                    'body': email_message.body,
-                    'subject': email_message.subject,
-                    })
+            params = {
+                'key': self.key,
+                'to': email_message.recipients()[0],
+                'body': email_message.body,
+                'subject': email_message.subject,
+                }
             headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
             conn = httplib.HTTPConnection("%s:%d" %
                                           (self.host, self.port))
             conn.request("POST", 
                          "/webservice/phpmailer.php", 
-                         params.urlencode(), 
+                         urlencode(params), 
                          headers)
             response = conn.getresponse()
             data = response.read()
