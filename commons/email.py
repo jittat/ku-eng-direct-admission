@@ -71,17 +71,18 @@ def send_activation_by_email(applicant, activation_key, force=False):
     base_path = settings.HTTP_BASE_PATH
     subject = 'รหัสสำหรับเปิดใช้งานบัญชีผู้ใช้สำหรับการสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มก.บางเขน'
     message = (
-u"""Dear %(firstname)s %(lastname)s
+u"""เรียน คุณ %(firstname)s %(lastname)s
 
-Thank you for applying at the Faculty of Engineering, Kasetsart University.
+เราขอส่งรหัสสำหรับยืนยันอีเมล์เพื่อสำหรับบัญชีผู้ใช้ของระบบรับสมัครเข้าศึกษาต่อของคณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ วิทยาเขตบางเขน
 
-Click this link to activate your account: 
-<a href="%(link)s">%(link)s</a>
+กรุณากดลิงก์ต่อไปนี้ <a href="%(link)s">%(link)s</a> เพื่อยืนยันบัญชีที่คุณได้ลงทะเบียนไว้
 
-Use your e-mail address (%(email)s) to log in.
+เมื่อยืนยันเรียบร้อยแล้ว เราจะส่งรหัสผ่านมายังอีเมล์นี้อีกครั้งหนึ่ง
 
-Thank you.
--jittat"""
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ กรุณาช่วยแจ้งผู้ดูแล้วด้วย
+
+-โครงการรับสมัครตรง
+"""
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
     'email': applicant.email, 
