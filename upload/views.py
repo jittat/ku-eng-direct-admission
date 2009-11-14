@@ -11,6 +11,8 @@ from django.conf import settings
 
 from commons.decorators import applicant_required
 from commons.email import send_submission_confirmation_by_email
+from commons.utils import random_string
+
 from application.views.status import submitted_applicant_required
 
 from application.models import Applicant
@@ -118,6 +120,7 @@ def populate_upload_field_forms(app_docs, fields, required_fields=None):
                            'field': field,
                            'required' :required,
                            'has_thumbnail': has_thumbnail,
+                           'random_string': random_string(5),
                            'form': FileUploadForm() }
     return field_forms
      

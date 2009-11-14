@@ -1,7 +1,7 @@
 <div class="upload-item{% if not upload_field.required %} optional{% endif %}">
   {% if upload_field.has_thumbnail %}
     <div class="thumbnail">
-      <img src="{% url upload-thumbnail upload_field.name %}"/>
+      <img src="{% url upload-thumbnail upload_field.name %}?{{ upload_field.random_string }}"/>
     </div>
   {% endif %}
   <form id="upload-form-{{ upload_field.name }}" 
