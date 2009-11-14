@@ -85,7 +85,8 @@ ul.errorlist {
   color: white;
   -moz-border-radius: 5px;
   padding: 5px;
-  padding-left: 20px; }
+  padding-left: 20px;
+  padding-right: 20px; }
 
 .app-form h2 {
   height: 40px;
@@ -185,3 +186,11 @@ ul.errorlist {
 
 .upload-doc-view img {
   border: none; }
+
+#application-conditions {
+  background: #ffffcc;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  -moz-border-radius: 5px; }
