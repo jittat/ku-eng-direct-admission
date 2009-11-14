@@ -243,6 +243,7 @@ def upload(request, field_name):
     if form.is_valid():
         f = request.FILES['uploaded_file']
 
+        # check file size limit
         if f.size > MAX_UPLOADED_DOC_FILE_SIZE:
             uploaded_field_error = (
                 "แฟ้มของ%s มีขนาดใหญ่เกินไป" % 
@@ -250,6 +251,20 @@ def upload(request, field_name):
                 )
             return upload_error(request, uploaded_field_error)
 
+        # check upload quota
+        if docs==None:
+            docs = AppDocs()
+            docs.applicant = applicant
+
+        if not docs.can_upload_more_files():
+            error = (
+                ("คุณไม่สามารถอัพโหลดแฟ้มเพิ่มได้ "
+                 "เนื่องจากในวันนี้คุณได้อัพโหลดแล้วทั้งสิ้นรวม %d ครั้ง "
+                 "ให้รออัพโหลดใหม่ในวันพรุ่งนี้")
+                % (settings.MAX_DOC_UPLOAD_PER_DAY,))
+            return upload_error(request, error)
+            
+        # copy file
         used_temp_file = False
 
         # check if it's a file on disk
@@ -260,18 +275,13 @@ def upload(request, field_name):
             f, temp_filename = save_as_temp_file(f)
             used_temp_file = True
 
-        if docs==None:
-            docs = AppDocs()
-            docs.applicant = applicant
-
+        # try to create a thumbnail
         try:
-            # try to create a thumbnail
             create_thumbnail(applicant, field_name, temp_filename)
             if docs.__getattribute__(field_name):
                 # clean old file
                 docs.__getattribute__(field_name).delete(save=False)
             docs.__setattr__(field_name, f)
-            docs.save()
 
         except Exception:
             # bad uploaded file
@@ -284,7 +294,9 @@ def upload(request, field_name):
                 # clean the file
                 docs.__getattribute__(field_name).delete(save=False)
             docs.__setattr__(field_name, None)
-            docs.save()
+
+        docs.update_upload_counter()
+        docs.save()
 
         f.close()
         if used_temp_file:

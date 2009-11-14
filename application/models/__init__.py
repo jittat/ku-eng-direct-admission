@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 
 from django.db import models
 from django.conf import settings
@@ -449,7 +449,11 @@ class PasswordRequestLog(models.Model):
         return log
 
     def requested_today(self):
-        return self.last_request_at >= datetime.today()
+        if not self.last_request_at:
+            return False
+        today = date.today()
+        today_datetime = datetime(today.year, today.month, today.day)
+        return self.last_request_at >= today_datetime
 
     def update(self):
         """

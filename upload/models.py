@@ -1,6 +1,6 @@
-# _*_  coding: utf-8 _*_
-
+# -*-  coding: utf-8 -*-
 import os
+from datetime import datetime, date
 
 from django.db import models
 from django.core.files.storage import FileSystemStorage
@@ -87,6 +87,12 @@ class AppDocs(models.Model):
         blank=True,
         verbose_name='หลักฐานใบนำฝากเงินค่าสมัคร')
 
+    # taken from application.models.PasswordRequestLog
+    # TODO: an application for controlling quota
+    last_uploaded_at = models.DateTimeField(auto_now=True)
+    num_uploaded_today = models.IntegerField(default=0)
+
+
     def thumbnail_path(self, field_name):
         return get_doc_fullpath(self.applicant, 
                                 get_field_thumbnail_filename(field_name))
@@ -120,6 +126,33 @@ class AppDocs(models.Model):
     def is_complete(self):
         missing_fields = self.get_missing_fields(find_one=True)
         return len(missing_fields)==0
+
+    def has_uploaded_today(self):
+        if not self.last_uploaded_at:
+            return False
+        today = date.today()
+        today_datetime = datetime(today.year, today.month, today.day)
+        print self.last_uploaded_at, "today:", today_datetime
+        return self.last_uploaded_at >= today_datetime
+
+    def can_upload_more_files(self):
+        """
+        checks if a user can upload more documents. The criteria are:
+        - the user hasn't uploaded the new files more than
+        settings.MAX_DOC_UPLOAD_PER_DAY (set in settings.py) times.
+        """
+        if (self.has_uploaded_today() and
+            self.num_uploaded_today >=
+            settings.MAX_DOC_UPLOAD_PER_DAY):
+            return False
+        return True
+
+    def update_upload_counter(self):
+        print "Today?", self.has_uploaded_today()
+        if self.has_uploaded_today():
+            self.num_uploaded_today += 1
+        else:
+            self.num_uploaded_today = 1
 
 
     @staticmethod
