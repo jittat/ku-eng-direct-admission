@@ -6,7 +6,7 @@ from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 
-from application.models import Applicant
+from application.models import Applicant, Education
 
 uploaded_storage = FileSystemStorage(location=settings.UPLOADED_DOC_PATH)
 
@@ -100,7 +100,12 @@ class AppDocs(models.Model):
     def get_upload_fields(self):
         applicant = self.applicant
         field_list = list(AppDocs.FormMeta.upload_fields)
-        if self.applicant.education.uses_gat_score:
+        try:
+            uses_gat_score = self.applicant.education.uses_gat_score
+        except Education.DoesNotExist:
+            uses_gat_score = True
+
+        if uses_gat_score:
             field_list.remove('anet_score')
         else:
             field_list.remove('gat_score')

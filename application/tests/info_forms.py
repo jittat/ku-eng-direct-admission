@@ -133,7 +133,8 @@ class InfoFormsTestCase(TransactionTestCase):
     def test_wrong_jump_to_online_submission_form(self):
         self._login_required()
         self._personal_info_required()
-        self._online_doc_upload_form_required()
+        response = self.client.get('/doc/')
+        self.assertNotEqual(response.status_code, 200)
 
     # helpers method
 
