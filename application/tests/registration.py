@@ -239,6 +239,9 @@ class RegistrationTestCase(TransactionTestCase):
         return m.group(1)
 
 
+    def get_user_email(self):
+        return self.regis_data['email']
+
     def create_user_and_get_password(self):
         org_email_setting = settings.FAKE_SENDING_EMAIL
         settings.FAKE_SENDING_EMAIL = False
