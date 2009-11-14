@@ -182,11 +182,15 @@ def create_thumbnail(applicant, field_name, filename):
     thumb_filename = get_field_thumbnail_filename(field_name)
     full_thumb_filename = get_doc_fullpath(applicant, 
                                            thumb_filename)
-    
     import Image
     size = 50,40
     im = Image.open(filename)
     im.thumbnail(size)
+
+    dirname = os.path.dirname(full_thumb_filename)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
     im.save(full_thumb_filename,'png')
 
 def serve_file(filename):
