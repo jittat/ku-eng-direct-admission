@@ -138,6 +138,8 @@ def index(request, missing_fields=None):
     if docs==None:
         docs = AppDocs(applicant=request.applicant)
         docs.save()
+        request.applicant.add_related_model('appdocs', save=True)
+
     fields = docs.get_upload_fields()
     field_forms = populate_upload_field_forms(docs, 
                                               fields,
@@ -304,6 +306,7 @@ def upload(request, field_name):
 
         docs.update_upload_counter()
         docs.save()
+        applicant.add_related_model('appdocs', save=True)
 
         f.close()
         if used_temp_file:

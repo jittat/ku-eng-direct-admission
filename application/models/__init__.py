@@ -38,6 +38,38 @@ class Applicant(models.Model):
         choices=SUBMISSION_METHOD_CHOICES,
         default=UNDECIDED_METHOD)
 
+    # for related model cache
+
+    RELATED_MODELS = {
+        'personal_info': 0,
+        'address': 1,
+        'educational_info': 2,
+        'major_preference': 3,
+        'appdocs': 4
+        }
+
+    has_related_model = IntegerListField(default=None)
+
+    def check_related_model(self, model_name):
+        model_id = Applicant.RELATED_MODELS[model_name]
+        if model_id < len(self.has_related_model):
+            return (self.has_related_model[model_id] == 1)
+        else:
+            return None
+
+    def initialize_related_model(self):
+        self.has_related_model = [0 
+                                  for i in 
+                                  range(len(Applicant.RELATED_MODELS))]
+
+    def add_related_model(self, model_name, save=False):
+        if len(self.has_related_model)==0:
+            self.initialize_related_model()
+        model_id = Applicant.RELATED_MODELS[model_name]
+        self.has_related_model[model_id] = 1
+        if save:
+            self.save()
+            
 
     class DuplicateSubmissionError(Exception):
         pass
@@ -62,30 +94,49 @@ class Applicant(models.Model):
         return "%s %s %s" % (self.title, self.first_name, self.last_name)
 
     def has_personal_info(self):
-        try:
-            return self.personal_info != None
-        except PersonalInfo.DoesNotExist:
-            return False
+        result = self.check_related_model('personal_info')
+        if result!=None:
+            return result
+        else:
+            try:
+                return self.personal_info != None
+            except PersonalInfo.DoesNotExist:
+                return False
 
     def has_address(self):
-        try:
-            return self.address != None
-        except ApplicantAddress.DoesNotExist:
-            return False            
+        result = self.check_related_model('address')
+        if result!=None:
+            return result
+        else:
+            try:
+                return self.address != None
+            except ApplicantAddress.DoesNotExist:
+                return False            
 
     def has_educational_info(self):
-        try:
-            return self.education != None
-        except Education.DoesNotExist:
-            return False            
+        result = self.check_related_model('educational_info')
+        if result!=None:
+            return result
+        else:
+            try:
+                return self.education != None
+            except Education.DoesNotExist:
+                return False            
 
     def has_major_preference(self):
-        try:
-            return self.preference != None
-        except MajorPreference.DoesNotExist:
-            return False
+        result = self.check_related_model('major_preference')
+        if result!=None:
+            return result
+        else:
+            try:
+                return self.preference != None
+            except MajorPreference.DoesNotExist:
+                return False
 
     def get_applicant_docs_or_none(self):
+        result = self.check_related_model('major_preference')
+        if (result!=None) and (result==False):
+            return None
         try:
             docs = self.appdocs
         except Exception:

@@ -200,6 +200,13 @@ def forget_password(request):
             applicant = form.cleaned_data['email']['applicant']
 
             if applicant.can_request_password():
+
+                if applicant.activation_required:
+                    return dupplicate_email_error(applicant,
+                                                  email,
+                                                  applicant.first_name,
+                                                  applicant.last_name)
+
                 new_pwd = applicant.random_password()
                 applicant.save()
                 send_password_by_email(applicant, new_pwd)

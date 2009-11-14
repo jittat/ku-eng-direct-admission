@@ -94,6 +94,7 @@ def applicant_personal_info(request):
             personal_info = form.save(commit=False)
             personal_info.applicant = applicant
             personal_info.save()
+            applicant.add_related_model('personal_info',save=True)
 
             return HttpResponseRedirect(reverse('apply-address'))
     else:
@@ -141,6 +142,8 @@ def applicant_address(request):
                 applicant_address.id = old_applicant_address.id
 
             applicant_address.save()
+            applicant.add_related_model('address',save=True)
+
             return HttpResponseRedirect(reverse('apply-edu'))
     else:
         home_address_form = AddressForm(prefix="home",
@@ -174,6 +177,8 @@ def applicant_education(request):
             applicant_education = form.save(commit=False)
             applicant_education.applicant = applicant
             applicant_education.save()
+            applicant.add_related_model('educational_info',save=True)
+
             return HttpResponseRedirect(reverse('apply-majors'))
             
     else:
@@ -235,6 +240,7 @@ def applicant_major(request):
         preference.majors = extract_ranks(request.POST, majors)
         preference.applicant = applicant
         preference.save()
+        applicant.add_related_model('major_preference',save=True)
 
         return HttpResponseRedirect(reverse('apply-doc-menu'))
 
