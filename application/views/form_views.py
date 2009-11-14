@@ -234,30 +234,43 @@ def applicant_major(request):
 
     max_major_rank = settings.MAX_MAJOR_RANK
     ranks = [i+1 for i in range(max_major_rank)]
+
+    errors = None
+
     if (request.method == 'POST') and ('cancel' not in request.POST):
 
         #print extract_ranks(request.POST, majors)
 
-        if old_preference!=None:
-            preference = old_preference
+        major_ranks = extract_ranks(request.POST, majors)
+        if len(major_ranks)==0:
+            # chooses no majors
+            errors = ['ต้องเลือกอย่างน้อยหนึ่งอันดับ']
+            ranks = major_ranks
         else:
-            preference = MajorPreference()
+            if old_preference!=None:
+                preference = old_preference
+            else:
+                preference = MajorPreference()
 
-        preference.majors = extract_ranks(request.POST, majors)
-        preference.applicant = applicant
-        preference.save()
-        applicant.add_related_model('major_preference',
-                                    save=True,
-                                    smart=True)
+            preference.majors = major_ranks
 
-        return HttpResponseRedirect(reverse('apply-doc-menu'))
+
+            preference.applicant = applicant
+            preference.save()
+            applicant.add_related_model('major_preference',
+                                        save=True,
+                                        smart=True)
+
+            return HttpResponseRedirect(reverse('apply-doc-menu'))
 
     form_step_info = build_form_step_info(3,applicant)
     return render_to_response('application/majors.html',
                               { 'majors_prefs': zip(majors,pref_ranks),
                                 'ranks': ranks,
                                 'max_major_rank': max_major_rank,
-                                'form_step_info': form_step_info })
+                                'form_step_info': form_step_info,
+                                'errors': errors })
+
 
 @active_applicant_required
 def applicant_doc_menu(request):

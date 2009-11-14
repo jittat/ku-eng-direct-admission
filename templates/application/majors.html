@@ -8,6 +8,18 @@
 {% block title %}Choosing majors{% endblock %}
 
 {% block form-body %}
+  {% if errors %}
+    <div class="doc-error">
+      <b>เกิดข้อผิดพลาด</b> {% for e in errors %}{{ e }}{% endfor %}
+    </div>
+  {% endif %}
+
+  <p>
+    <b>เลือกอันดับสาขาที่ต้องการ</b>
+    สามารถเลือกอันดับสาขาวิชาได้ 6 อันดับ ไม่จำเป็นต้องเลือกให้ครบ 6 อันดับ
+    แต่ต้องเลือกอย่างน้อยหนึ่งอันดับ
+  </p>
+
   <form action="{% url apply-majors %}" method="post">
     <table>
       {% for major, selected_rank in majors_prefs %}
