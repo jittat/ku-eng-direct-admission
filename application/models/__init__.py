@@ -181,7 +181,10 @@ class Applicant(models.Model):
 
         salt, enc_passwd = self.hashed_password.split('$')
 
-        return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
+        try:
+            return enc_passwd == (hashlib.sha1(salt + password).hexdigest())
+        except UnicodeEncodeError:
+            return False
 
 
     def can_request_password(self):
