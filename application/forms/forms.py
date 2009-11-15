@@ -8,6 +8,7 @@ from application.models import Applicant, PersonalInfo
 from application.models import Address, ApplicantAddress, Education
 from widgets import ThaiSelectDateWidget
 from commons.local import APP_TITLE_FORM_CHOICES
+from django.forms.util import ErrorList
 
 def validate_phone_number(phone_number):
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
@@ -39,11 +40,20 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(label=u'อีเมล์')
     email_confirmation = forms.EmailField(label=u'ยืนยันอีเมล์')
 
-    def clean_email_confirmation(self):
-        if (self.cleaned_data['email'] !=
-            self.cleaned_data['email_confirmation']):
-            raise forms.ValidationError("อีเมล์ที่ระบุไม่ตรงกัน")
-        return self.cleaned_data['email_confirmation']
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        email = cleaned_data.get('email')
+        email_confirmation = cleaned_data.get('email_confirmation')
+
+        if email and email_confirmation and (
+            email != email_confirmation): 
+
+            self._errors['email_confirmation'] = ErrorList(
+                ['อีเมล์ที่ยืนยันไม่ตรงกัน'])
+            del cleaned_data['email']
+            del cleaned_data['email_confirmation']
+
+        return cleaned_data
 
     def get_applicant(self):
         return Applicant(title=self.cleaned_data['title'],
