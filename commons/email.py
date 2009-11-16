@@ -15,7 +15,11 @@ except:
     
 
 def adm_send_mail(to_email, subject, message, force=False):
-    sender = admin_email()
+
+    if settings.EMAIL_SENDER=='':
+        sender = admin_email()
+    else:
+        sender = settings.EMAIL_SENDER
 
     send_real_email = True
 
