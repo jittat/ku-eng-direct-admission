@@ -126,6 +126,8 @@ UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 
 EMAIL_HOST = ''
 
+EMAIL_SENDER = ''
+
 TEST_DATABASE_COLLATION = 'utf8_general_ci'
 
 try:
