@@ -28,6 +28,12 @@
     </div>
   {% endif %}
 
+  {% if notice %}
+    <div class="notice-bar">
+      <span class="notice">{{ notice }}</span>
+    </div>
+  {% endif %}
+
   <b>ขั้นตอนการอัพโหลดหลักฐาน:</b> <small>สแกนหรือถ่ายภาพเอกสาร
     โดยไม่จำเป็นต้องรับรองสำเนาถูกต้อง จากนั้นเลือก Upload เอกสารตามหัวข้อด้านล่าง
     ในการสแกนหรือถ่ายภาพจะต้องปรับแต่งแฟ้มภาพให้มีความละเอียดตามที่ระบบต้องการ
@@ -109,6 +115,8 @@ $(document).ready(function() {
   $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";
   $.facebox.settings.closeImage = "{% media_url %}/facebox/closelabel.gif";
   $('a[rel*=facebox]').facebox()
+
+  $(".notice-bar").animate({opacity:1.0}, 5000).fadeOut("slow");
 });
 </script>
 {% endblock %}

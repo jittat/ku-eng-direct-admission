@@ -61,12 +61,4 @@
 
 </div>
 <br style="clear:both"/>
-<script>
-  var h = 0;
-  $(".tab-body").each(function (t) {
-    if(this.clientHeight > h)
-      h = this.clientHeight;
-  });
-  $(".tab-body").css("height",h);
-</script>
 {% endblock %}

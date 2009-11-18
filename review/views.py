@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponseForbidden
 
 from django import forms
 
@@ -60,4 +62,20 @@ def verify_ticket(request):
                               { 'form': form,
                                 'applicants_results': zip(applicants,results) })
 
+@login_required
+def toggle_received_status(request, applicant_id):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    submission_info = applicant.submission_info
+    
+    if not applicant.online_doc_submission():
+        if submission_info.has_received_doc():
+            submission_info.doc_received_at = None
+        else:
+            submission_info.doc_received_at = datetime.now()
+        submission_info.save()
 
+        return render_to_response("review/include/doc_received_status.html",
+                                  {'has_received_doc':
+                                       submission_info.has_received_doc()})
+
+    return HttpResponseForbidden()

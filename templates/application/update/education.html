@@ -5,11 +5,11 @@
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/major_selection.js"></script>
 {% endblock %}
 
-{% block title %}Choosing majors{% endblock %}
+{% block title %}แก้ข้อมูลการศึกษาและคะแนนสอบ{% endblock %}
 
 {% block form-body %}
   {% load adm_steps %}
-  {% step_bar "แก้ไขข้อมูลการศึกษา" %}
+  {% step_bar "แก้ไขข้อมูลการศึกษาและคะแนนสอบ" %}
 
   <form action="{% url update-education %}" method="post">
     <div id="edu-form" class="app-form">

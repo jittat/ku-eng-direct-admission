@@ -1,6 +1,7 @@
 {% extends "commons/base.html" %}
 
 {% block extra-head %}
+{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/review.css" />
 {% endblock %}
 

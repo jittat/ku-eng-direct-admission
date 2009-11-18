@@ -226,3 +226,15 @@ ul.errorlist {
     -moz-border-radius: 2px;
     -webkit-border-radius: 5px;
     border-radius: 5px; }
+
+table#doc-status-table th {
+  color: white;
+  background: #707070;
+  font-weight: normal;
+  padding-left: 10px;
+  padding-right: 10px; }
+table#doc-status-table td {
+  text-align: center; }
+
+.small-vert-sept {
+  height: 5px; }

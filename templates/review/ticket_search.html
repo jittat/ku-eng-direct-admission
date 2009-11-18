@@ -16,26 +16,28 @@
       <th>ชื่อ</th>
       <th>เลขตรวจสอบ</th>
       <th></th>
+      <th>ส่งเอกสาร</th>
       <th></th>
     </tr>
     {% for applicant, result in applicants_results %}
-      <tr class="{% cycle 'odd' 'even' %}">
-	<td>{{ applicant.ticket_number }}</td>
-	<td>
-	  <img src="{% passed_icon result.ticket %}"/>
-	</td>
-	<td>{{ applicant.full_name }}</td>
-	<td>{{ applicant.verification_number|slice:":8" }}</td>
-	<td>
-	  <img src="{% passed_icon result.verinum %}"/>
-	</td>
-	<td>
-	  <a href="">ยังไม่ได้รับเอกสาร</a> | <a href="">ตรวจเอกสาร</a>
-	</td>
+      <tr id="app-{{ applicant.id }}-row" class="{% cycle 'odd' 'even' %}">
+	{% include "review/include/applicant.html" %}
       </tr>
     {% empty %}
-      <tr><td colspan="6">ไม่พบผู้สมัคร</td></tr>
+      <tr><td colspan="7">ไม่พบผู้สมัคร</td></tr>
     {% endfor %}
   </table>
 
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".doc-received-toggle").click(function() {
+      var url = $(this).attr("href");
+      var id = this.id.replace('doc-received-toggle-','');
+      $.get(url, function(data) {
+        $("#doc-received-status-" + id).text(data);    
+      });
+      return false;
+    });
+  });
+</script>
 {% endblock %}

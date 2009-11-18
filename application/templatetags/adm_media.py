@@ -16,6 +16,6 @@ def passed_icon(is_passed=True):
         img_src="/image/Clear.png"
     else:
         img_src="/image/MinusRed.png"
-    return "%s%s" % (settings.MEDIA_URL, img_src)
+    return '<img src="%s%s"/>' % (settings.MEDIA_URL, img_src)
 passed_icon = register.simple_tag(passed_icon)
 

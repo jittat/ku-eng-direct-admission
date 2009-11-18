@@ -310,7 +310,7 @@ class SubmissionInfo(models.Model):
             return None
 
     def has_received_doc(self):
-        return not self.doc_received_at
+        return self.doc_received_at != None
 
     def random_salt(self):
         self.salt = random_string(10)

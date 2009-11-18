@@ -32,6 +32,8 @@ urlpatterns = patterns(
     url(r'^update/majors$', 'update.update_majors', name='update-majors'),
     url(r'^update/education$', 'update.update_education', 
         name='update-education'),
+    url(r'^update/postal_sub$', 'update.update_to_postal_submission', 
+        name='update-postal-sub'),
 
     # Example:
     # (r'^adm/', include('adm.foo.urls')),

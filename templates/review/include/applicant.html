@@ -1,0 +1,24 @@
+{% load adm_media %}
+<td>{{ applicant.ticket_number }}</td>
+<td>
+  {% passed_icon result.ticket %}
+</td>
+<td>{{ applicant.full_name }}</td>
+<td>{{ applicant.verification_number|slice:":8" }}</td>
+<td>
+  {% passed_icon result.verinum %}
+</td>
+<td>
+  {{ applicant.get_doc_submission_method_display }}
+</td>
+<td>
+  <span id="doc-received-status-{{ applicant.id }}">
+    {% with applicant.submission_info.has_received_doc as has_received_doc %}
+      {% include "review/include/doc_received_status.html" %}
+    {% endwith %}
+  </span>
+  {% if not applicant.online_doc_submission %}
+    [<a class="doc-received-toggle" id="doc-received-toggle-{{ applicant.id }}" href="{% url review-toggle-received-status applicant.id %}">สลับ</a>]
+  {% endif %}
+  | [ตรวจเอกสาร]
+</td>

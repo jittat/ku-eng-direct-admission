@@ -17,8 +17,11 @@ def index(request):
         notice = request.session['notice']
         del request.session['notice']
 
+    submission_info = request.applicant.submission_info
+
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
+                                'submission_info': submission_info,
                                 'notice': notice,
                                 'can_log_out': True })
 

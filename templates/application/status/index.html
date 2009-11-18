@@ -23,12 +23,22 @@
 	  แก้ไขข้อมูลการศึกษาและคะแนนสอบ
 	</div>
       </a>
-      <div style="height: 5px"></div>
+      <div class="small-vert-sept"></div>
       <a class="in-button" href="{% url update-majors %}">
 	<div class="button">
 	  แก้ไขอันดับสาขาวิชา
 	</div>
       </a>
+      {% if not applicant.online_doc_submission %}
+        {% if not submission_info.has_received_doc %}
+          <div class="small-vert-sept"></div>
+          <a class="in-button" href="{% url update-postal-sub %}">
+  	    <div class="button">
+	      เปลี่ยนวิธีการส่งหลักฐานเป็นแบบออนไลน์
+	    </div>
+	  </a>
+	{% endif %}
+      {% endif %}
     </div>
     <small>
       <ul>
@@ -46,13 +56,40 @@
   </div>
   
   <p>
-    คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }}
+    คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
   </p>
   <p>
-    ขณะนี้ระบบตรวจสอบสถานะอยู่ระหว่างการพัฒนา จะสามารถตรวจได้เร็ว ๆ นี้ นอกจากนี้ถ้ามีการเปลี่ยนแปลงสถานะการตรวจสอบจะมีอีเมล์แจ้งถึงผู้สมัคร
+    <table id="doc-status-table">
+      <tr>
+	<th>วิธีการส่งหลักฐาน</th>
+	<th>วันที่ได้รับหลักฐาน</th>
+	<th>สถานะการตรวจสอบหลักฐาน</th>
+      </tr>
+      <tr>
+	<td>{{ applicant.get_doc_submission_method_display }}</td>
+	<td>
+	  {% passed_icon submission_info.has_received_doc %}
+	  {% if submission_info.doc_received_at %}
+	    {{ submission_info.doc_received_at|date:"j N y" }}
+	  {% else %}
+	    ยังไม่ได้รับ 
+	  {% endif %}
+	</td>
+	<td>
+	  (ระบบกำลังพัฒนา)
+	</td>
+      </tr>
+    </table>
   </p>
   <p>
-    คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a> เพื่อตรวจสอบรายละเอียด ตอนนี้คุณสามารถแก้ข้อมูลการศึกษาและอันดับสาขาวิชาที่เลือกได้ ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ {% load adm_info %}{% adm_admin_email_link %}
+    คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a>
+    เพื่อตรวจสอบรายละเอียด{% if not applicant.online_doc_submission %}และพิมพ์ใบนำส่งหลักฐาน{% endif %}
+  </p>
+  <p>
+    คุณสามารถแก้ข้อมูลการศึกษาและอันดับสาขาวิชาที่เลือกได้โดยกดเลือกจากเมนูด้านขวามือ
+  </p>
+  <p>
+    ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ {% load adm_info %}{% adm_admin_email_link %}
   </p>
   <br style="clear:both"/>
   <script type="text/javascript">

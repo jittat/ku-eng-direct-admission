@@ -10,6 +10,9 @@ from application.views.form_views import prepare_major_form
 from application.forms.handlers import handle_major_form
 from application.forms.handlers import handle_education_form
 from application.forms import EducationForm
+from application.models import Applicant
+
+from commons.email import send_sub_method_change_notice_by_email
 
 @submitted_applicant_required
 def update_majors(request):
@@ -73,3 +76,36 @@ def update_education(request):
                               {'form': form,
                                'can_log_out': True,
                                'applicant': applicant })
+
+
+@submitted_applicant_required
+def update_to_postal_submission(request):
+
+    applicant = request.applicant
+
+    if request.method == 'POST': 
+
+        if 'cancel' not in request.POST:
+
+            submission_info = applicant.submission_info
+            submission_info.delete()
+
+            applicant.doc_submission_method = Applicant.UNDECIDED_METHOD
+            applicant.is_submitted = False
+            applicant.save()
+
+            request.session['notice'] = 'คุณได้ยกเลิกการเลือกส่งหลักฐานทางไปรษณีย์แล้ว  อย่าลืมว่าคุณจะต้องยืนยันข้อมูลอีกครั้ง'
+
+            send_sub_method_change_notice_by_email(applicant)
+
+            return HttpResponseRedirect(reverse('upload-index'))
+
+        else:
+            request.session['notice'] = 'วิธีการส่งยังคงเป็นแบบไปรษณีย์ไม่เปลี่ยนแปลง'
+            return HttpResponseRedirect(reverse('status-index'))
+
+    else:
+        return render_to_response('application/update/postal_sub.html',
+                                  { 'can_log_out': False,
+                                    'applicant': applicant })
+

@@ -135,6 +135,10 @@ UPLOAD_FORM_STEPS = [
 
 @applicant_required
 def index(request, missing_fields=None):
+    notice = ''
+    if 'notice' in request.session:
+        notice = request.session['notice']
+        del request.session['notice']
 
     if not request.applicant.has_major_preference():
         return redirect_to_applicant_first_page(request.applicant)
@@ -167,6 +171,7 @@ def index(request, missing_fields=None):
                               { 'applicant': request.applicant,
                                 'field_forms': field_forms,
                                 'form_step_info': form_step_info,
+                                'notice': notice,
                                 'missing_fields': missing_fields,
                                 'uploaded_field_error': uploaded_field_error })
 
