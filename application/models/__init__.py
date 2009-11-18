@@ -289,6 +289,7 @@ class SubmissionInfo(models.Model):
     applicant = models.OneToOneField(Applicant, 
                                      related_name="submission_info")
     salt = models.CharField(max_length=30)
+    submitted_at = models.DateTimeField(auto_now_add=True)
 
     @staticmethod
     def find_by_ticket_number(ticket):
