@@ -1,5 +1,7 @@
 {% extends "review/base.html" %}
 
+{% load adm_media %}
+
 {% block regis-body %}
   <form action="{% url review-ticket %}" method="post">
     หมายเลขประจำตัว: {{ form.ticket_number }}{{ form.ticket_number.errors }} | 
@@ -20,12 +22,12 @@
       <tr class="{% cycle 'odd' 'even' %}">
 	<td>{{ applicant.ticket_number }}</td>
 	<td>
-	  {{ result.ticket|yesno:"/,X" }}
+	  <img src="{% passed_icon result.ticket %}"/>
 	</td>
 	<td>{{ applicant.full_name }}</td>
 	<td>{{ applicant.verification_number|slice:":8" }}</td>
 	<td>
-	  {{ result.verinum|yesno:"/,X" }}
+	  <img src="{% passed_icon result.verinum %}"/>
 	</td>
 	<td>
 	  <a href="">ยังไม่ได้รับเอกสาร</a> | <a href="">ตรวจเอกสาร</a>
