@@ -49,7 +49,7 @@ def verify_ticket(request):
                     pass
 
                 for applicant in applicants:
-                    match_ticket = (applicant.ticket_number()==ticket)
+                    match_ticket = (applicant.ticket_number()==str(ticket))
                     match_verinum = (
                         applicant.verification_number().startswith(verinum))
                     results.append({ 'ticket': match_ticket,
