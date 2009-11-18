@@ -3,6 +3,7 @@
 from django.conf import settings
 
 from application.models import Major, MajorPreference
+from application.forms import EducationForm
 
 def extract_ranks(post_data, major_list):
     """
@@ -57,3 +58,22 @@ def handle_major_form(request):
         return (True, major_ranks, None)
 
     return (False, major_ranks, errors)
+
+
+def handle_education_form(request, old_education):
+    applicant = request.applicant
+    form = EducationForm(request.POST, 
+                         instance=old_education)
+
+    if form.is_valid():
+        applicant_education = form.save(commit=False)
+        applicant_education.applicant = applicant
+        applicant_education.save()
+        applicant.add_related_model('educational_info',
+                                    save=True,
+                                    smart=True)
+
+        return (True, form)
+    else:
+        return (False, form)
+

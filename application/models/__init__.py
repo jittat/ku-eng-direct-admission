@@ -125,6 +125,14 @@ class Applicant(models.Model):
             except Education.DoesNotExist:
                 return False            
 
+    def get_educational_info_or_none(self):
+        if self.has_educational_info():
+            edu = self.education
+            edu.fix_boolean_fields()
+            return edu
+        else:
+            return None
+
     def has_major_preference(self):
         result = self.check_related_model('major_preference')
         if result!=None:

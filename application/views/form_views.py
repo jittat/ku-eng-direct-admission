@@ -20,6 +20,7 @@ from application.models import Major, MajorPreference
 
 from application.forms import PersonalInfoForm, AddressForm, EducationForm
 from application.forms.handlers import handle_major_form
+from application.forms.handlers import handle_education_form
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -169,27 +170,15 @@ def applicant_address(request):
 def applicant_education(request):
     applicant = request.applicant
 
-    if applicant.has_educational_info():
-        old_education = applicant.education
-        old_education.fix_boolean_fields()
-    else:
-        old_education = None
+    old_education = applicant.get_educational_info_or_none()
 
     if (request.method == 'POST') and ('cancel' not in request.POST):
 
-        form = EducationForm(request.POST, 
-                             instance=old_education)
+        result, form = handle_education_form(request, old_education)
 
-        if form.is_valid():
-            applicant_education = form.save(commit=False)
-            applicant_education.applicant = applicant
-            applicant_education.save()
-            applicant.add_related_model('educational_info',
-                                        save=True,
-                                        smart=True)
-
+        if result:
             return HttpResponseRedirect(reverse('apply-majors'))
-            
+
     else:
         form = EducationForm(instance=old_education)
 
@@ -197,6 +186,7 @@ def applicant_education(request):
     return render_to_response('application/education.html', 
                               { 'form': form,
                                 'form_step_info': form_step_info })
+
 
 def prepare_major_form(applicant, pref_ranks=None, errors=None):
     majors = Major.get_all_majors()

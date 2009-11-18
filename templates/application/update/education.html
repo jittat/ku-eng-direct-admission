@@ -9,25 +9,21 @@
 
 {% block form-body %}
   {% load adm_steps %}
-  {% step_bar "แก้ไขอันดับสาขาวิชา" %}
+  {% step_bar "แก้ไขข้อมูลการศึกษา" %}
 
-  {% if errors %}
-    <div class="doc-error">
-      <b>เกิดข้อผิดพลาด</b> {% for e in errors %}{{ e }}{% endfor %}
+  <form action="{% url update-education %}" method="post">
+    <div id="edu-form" class="app-form">
+      {% include "application/forms/education.html" %}
     </div>
-  {% endif %}
-
-  <form action="{% url update-majors %}" method="post">
-    {% include "application/forms/major_ranks.html" %}
     <div class="submission-bar">
-      <input id="change-button" type="submit" name="submit" value="แก้ไขอันดับ"/>
+      <input id="change-button" type="submit" name="submit" value="แก้ไขข้อมูลการศึกษา"/>
       <input id="cancel-button" type="submit" name="cancel" value="ยกเลิก"/>
     </div>
   </form>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#change-button").click(function() {
-        return confirm("คุณแน่ใจที่จะแก้ไขอันดับหรือไม่?\nอันดับที่เลือกใหม่นี้จะเข้าไปแทนอันดับที่เลือกไว้เดิมทันที\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
+        return confirm("คุณแน่ใจที่จะแก้ไขข้อมูลการศึกษาหรือไม่?\nข้อมูลที่ป้อนเข้าไปใหม่นี้จะเข้าไปแทนข้อมูลเก่าทันที\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
       });
       $("#cancel-button").click(function() {
         return confirm("คุณต้องการยกเลิกการแก้ไขนี้?\nถ้าต้องการยกเลิกกด OK ถ้าต้องการกลับไปแก้ไขต่อกด Cancel");
