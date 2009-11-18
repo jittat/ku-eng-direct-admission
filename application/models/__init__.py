@@ -290,6 +290,18 @@ class SubmissionInfo(models.Model):
                                      related_name="submission_info")
     salt = models.CharField(max_length=30)
 
+    @staticmethod
+    def find_by_ticket_number(ticket):
+        if len(ticket)>8:
+            return None
+        sub_id = ticket[-5:]
+        try:
+            sub_id = int(sub_id)
+            sub = SubmissionInfo.objects.get(pk=sub_id)
+            return sub
+        except:
+            return None
+
     def random_salt(self):
         self.salt = random_string(10)
 

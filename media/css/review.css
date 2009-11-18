@@ -5,6 +5,24 @@
   font-weight: bold; }
 
 .admin-menu {
-  border: 1px solid gray;
-  padding: 10px;
-  float: right; }
+  border: 1px solid gray; }
+  .admin-menu ul {
+    margin: 0px;
+    padding: 0px; }
+  .admin-menu li {
+    display: block;
+    float: left;
+    padding-left: 10px; }
+
+table.applicants {
+  border-collapse: collapse; }
+  table.applicants th {
+    border: 1px solid black;
+    background: #000040;
+    color: lightgray; }
+  table.applicants tr.odd {
+    background: white; }
+  table.applicants tr.even {
+    background: #e0e0e0; }
+  table.applicants td {
+    border: 1px solid black; }

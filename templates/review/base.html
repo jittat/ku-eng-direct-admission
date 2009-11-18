@@ -10,10 +10,14 @@
   <div class="admin-bar">หน่วยทะเบียนและประมวลผล คณะวิศวกรรมศาสตร์</div>
   <div class="admin-menu">
     <ul>
+      <li>เมนู:</li>
+      <li><a href="{% url review-index %}">หน้าแรกของระบบดูแล</a><li>
+      <li><a href="{% url review-ticket %}">ค้นหาด้วยหมายเลขและรหัส</a></li>
       <li><a href="{% url django.contrib.auth.views.logout %}">ออกจากระบบ</a></li>
     </ul>
+    <br style="clear: both"/>
   </div>
   {% block regis-body %}
   {% endblock %}
-  <br class="clear: both"/>
+  <br style="clear: both"/>
 {% endblock %}
