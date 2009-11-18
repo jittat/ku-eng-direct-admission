@@ -17,6 +17,12 @@ urlpatterns = patterns(
 
     (r'^apply/', include('adm.application.urls')),
     (r'^doc/', include('adm.upload.urls')),
+    (r'^review/', include('adm.review.urls')),
+
+    # authentication
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout',
+     { 'next_page': settings.LOGOUT_URL }),
 
     # Example:
     # (r'^adm/', include('adm.foo.urls')),

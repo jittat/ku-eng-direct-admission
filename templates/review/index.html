@@ -1,0 +1,11 @@
+{% extends "review/base.html" %}
+
+{% block regis-body %}
+<p>
+  สถิติพื้นฐาน:
+  <ul>
+    <li>จำนวนผู้ลงทะเบียนเว็บไซต์: {{ stat.app_registered }}</li>
+    <li>จำนวนผู้ส่งใบสมัครออนไลน์: {{ stat.app_submitted }}</li>
+  </ul>
+</p>
+{% endblock %}

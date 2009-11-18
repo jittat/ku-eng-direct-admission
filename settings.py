@@ -85,6 +85,7 @@ INSTALLED_APPS = (
     'mailer',
     'adm.application',
     'adm.upload',
+    'adm.review',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

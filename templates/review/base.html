@@ -1,0 +1,19 @@
+{% extends "commons/base.html" %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/review.css" />
+{% endblock %}
+
+{% block title %}หน่วยทะเบียน{% endblock %}
+
+{% block body %}
+  <div class="admin-bar">หน่วยทะเบียนและประมวลผล คณะวิศวกรรมศาสตร์</div>
+  <div class="admin-menu">
+    <ul>
+      <li><a href="{% url django.contrib.auth.views.logout %}">ออกจากระบบ</a></li>
+    </ul>
+  </div>
+  {% block regis-body %}
+  {% endblock %}
+  <br class="clear: both"/>
+{% endblock %}
