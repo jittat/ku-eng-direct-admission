@@ -44,7 +44,9 @@ ul.errorlist {
   background: green;
   color: white;
   height: 40px;
-  -moz-border-radius: 5px; }
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px; }
   #step-bar li {
     display: block;
     float: left;
@@ -84,6 +86,8 @@ ul.errorlist {
   background: green;
   color: white;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
   padding: 5px;
   padding-left: 20px;
   padding-right: 20px; }
@@ -117,6 +121,8 @@ ul.errorlist {
     background: #e0e0e0;
     border: 1px solid gray;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     float: left; }
   .doc-upload-forms .optional {
     background: white; }
@@ -137,6 +143,8 @@ ul.errorlist {
     margin-top: 2px;
     margin-bottom: 2px;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
     font-weight: normal; }
 
 .progress-container {
@@ -160,7 +168,9 @@ ul.errorlist {
 .submission-ticket {
   border: 2px black solid;
   padding: 10px;
-  -moz-border-radius: 5px; }
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
   .submission-ticket .info {
     font-size: 150%; }
   .submission-ticket .verification {
@@ -168,6 +178,8 @@ ul.errorlist {
 
 .application-info {
   -moz-border-radius: 3px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
   border: 1px solid #777777;
   padding: 5px; }
   .application-info h2 {
@@ -200,7 +212,9 @@ ul.errorlist {
   margin-top: 5px;
   margin-bottom: 5px;
   border: 1px solid black;
-  -moz-border-radius: 5px; }
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
 
 .notice-bar {
   margin-top: 3px;
@@ -209,4 +223,6 @@ ul.errorlist {
   .notice-bar span.notice {
     background: #bef56e;
     padding: 3px 20px 3px 20px;
-    -moz-border-radius: 2px; }
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
