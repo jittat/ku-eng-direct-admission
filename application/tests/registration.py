@@ -29,6 +29,14 @@ class RegistrationTestCase(TransactionTestCase):
 
         email.send_mail = send_mail 
 
+        self.org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
+
+    def tearDown(self):
+        settings.FAKE_SENDING_EMAIL = self.org_email_setting
+
+
     def test_load_register_page(self):
         response = self.client.get('/apply/register/')
         self.assertEquals(response.status_code,200)
@@ -53,9 +61,6 @@ class RegistrationTestCase(TransactionTestCase):
         is created, correct template is rendered after correct
         registration data is entered, and an email is sent.
         """
-        org_email_setting = settings.FAKE_SENDING_EMAIL
-        settings.FAKE_SENDING_EMAIL = False
-
         response = self.client.post('/apply/register/',
                                     self.regis_data)
 
@@ -70,8 +75,6 @@ class RegistrationTestCase(TransactionTestCase):
 
         self.assertEquals(len(mail.outbox),1)
         self.assertEquals(mail.outbox[0].to[0],self.regis_data['email'])
-
-        settings.FAKE_SENDING_EMAIL = org_email_setting
 
 
     def test_user_can_login_from_sent_password(self):
@@ -242,26 +245,15 @@ class RegistrationTestCase(TransactionTestCase):
         return self.regis_data['email']
 
     def create_user_and_get_password(self):
-        org_email_setting = settings.FAKE_SENDING_EMAIL
-        settings.FAKE_SENDING_EMAIL = False
-
         response = self.client.post('/apply/register/',
                                     self.regis_data)
         self.assertEquals(len(mail.outbox),1)
         password = self.take_password_from_email_body(mail.outbox[0].body)
 
-        settings.FAKE_SENDING_EMAIL = org_email_setting
-
         return password
 
 
     def perform_password_request(self,email):
-        org_email_setting = settings.FAKE_SENDING_EMAIL
-        settings.FAKE_SENDING_EMAIL = False
-
         response = self.client.post('/apply/forget/',
                                     {'email': email})
-
-        settings.FAKE_SENDING_EMAIL = org_email_setting
-
         return response

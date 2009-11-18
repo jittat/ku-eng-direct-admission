@@ -14,6 +14,7 @@ from commons.email import send_submission_confirmation_by_email
 from commons.utils import random_string
 
 from application.views.status import submitted_applicant_required
+from application.views.form_views import redirect_to_applicant_first_page
 
 from application.models import Applicant
 from models import AppDocs
@@ -134,6 +135,9 @@ UPLOAD_FORM_STEPS = [
 
 @applicant_required
 def index(request, missing_fields=None):
+
+    if not request.applicant.has_major_preference():
+        return redirect_to_applicant_first_page(request.applicant)
 
     docs = request.applicant.get_applicant_docs_or_none()
     if docs==None:

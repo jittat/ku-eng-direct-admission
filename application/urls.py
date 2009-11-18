@@ -28,6 +28,9 @@ urlpatterns = patterns(
     url(r'^status/show$', 'status.show', name='status-show'),
     url(r'^status/ticket$', 'status.show_ticket', name='status-show-ticket'),
 
+    # upadte
+    url(r'^update/majors$', 'update.update_majors', name='update-majors'),
+
     # Example:
     # (r'^adm/', include('adm.foo.urls')),
 

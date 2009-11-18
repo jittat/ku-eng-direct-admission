@@ -437,7 +437,8 @@ class MajorPreference(models.Model):
                                      related_name="preference")
     majors = IntegerListField()
 
-    def to_major_rank_list(self):
+    @staticmethod
+    def major_list_to_major_rank_list(major_list):
         """
         return a list of preference ranks for each major
         """
@@ -451,11 +452,15 @@ class MajorPreference(models.Model):
             rev[int(all_majors[i].number)] = i
 
         r = 1
-        for m in self.majors:
+        for m in major_list:
             ranks[rev[m]] = r
             r += 1
 
         return ranks
+        
+
+    def to_major_rank_list(self):
+        return MajorPreference.major_list_to_major_rank_list(self.majors)
 
     def get_major_list(self):
         """

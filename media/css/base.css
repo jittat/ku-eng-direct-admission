@@ -194,3 +194,12 @@ ul.errorlist {
   margin-bottom: 5px;
   border: 1px solid black;
   -moz-border-radius: 5px; }
+
+.notice-bar {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  text-align: center; }
+  .notice-bar span.notice {
+    background: #bef56e;
+    padding: 3px 20px 3px 20px;
+    -moz-border-radius: 2px; }

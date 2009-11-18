@@ -5,7 +5,9 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django import forms
 
-from commons.decorators import applicant_required, active_applicant_required
+from commons.decorators import applicant_required
+from commons.decorators import active_applicant_required
+from commons.decorators import active_applicant_required_or_update
 from commons.utils import redirect_to_index
 from commons.email import send_submission_confirmation_by_email
 
@@ -17,6 +19,7 @@ from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
 
 from application.forms import PersonalInfoForm, AddressForm, EducationForm
+from application.forms.handlers import handle_major_form
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -195,81 +198,48 @@ def applicant_education(request):
                               { 'form': form,
                                 'form_step_info': form_step_info })
 
+def prepare_major_form(applicant, pref_ranks=None, errors=None):
+    majors = Major.get_all_majors()
+    max_major_rank = settings.MAX_MAJOR_RANK
 
-def extract_ranks(post_data, major_list):
-    """
-    extracts a list of majors from post data.  Each select list has an
-    id of the form 'major_ID'.
-    """
-    
-    rank_dict = {}
-    for m in major_list:
-        sel_id = m.select_id()
-        if sel_id in post_data:
-            r = post_data[sel_id]
-            try:
-                rnum = int(r)
-            except:
-                rnum = -1
-            if (rnum >= 1) and (rnum <= settings.MAX_MAJOR_RANK):
-                rank_dict[rnum] = int(m.number)
+    if pref_ranks==None:
+        pref_ranks = [None] * len(majors) 
 
-    ranks = []
-    for r in sorted(rank_dict.keys()):
-        ranks.append(rank_dict[r])
-    return ranks
+    ranks = [i+1 for i in range(max_major_rank)]
+
+    return { 'majors_prefs': zip(majors,pref_ranks),
+             'ranks': ranks,
+             'max_major_rank': max_major_rank,
+             'errors': errors }
+
 
 @active_applicant_required
 def applicant_major(request):
     applicant = request.applicant
 
-    majors = Major.get_all_majors()
-
-    if applicant.has_major_preference():
-        old_preference = applicant.preference
-        pref_ranks = old_preference.to_major_rank_list()
-    else:
-        old_preference = None
-        pref_ranks = [None] * len(majors)
-
-    max_major_rank = settings.MAX_MAJOR_RANK
-    ranks = [i+1 for i in range(max_major_rank)]
-
-    errors = None
-
     if (request.method == 'POST') and ('cancel' not in request.POST):
 
-        #print extract_ranks(request.POST, majors)
+        result, major_list, errors = handle_major_form(request)
 
-        major_ranks = extract_ranks(request.POST, majors)
-        if len(major_ranks)==0:
-            # chooses no majors
-            errors = ['ต้องเลือกอย่างน้อยหนึ่งอันดับ']
-            pref_ranks = [None] * len(majors)
-        else:
-            if old_preference!=None:
-                preference = old_preference
-            else:
-                preference = MajorPreference()
-
-            preference.majors = major_ranks
-
-
-            preference.applicant = applicant
-            preference.save()
-            applicant.add_related_model('major_preference',
-                                        save=True,
-                                        smart=True)
-
+        if result:
             return HttpResponseRedirect(reverse('apply-doc-menu'))
 
-    form_step_info = build_form_step_info(3,applicant)
+        pref_ranks = MajorPreference.major_list_to_major_rank_list(major_list)
+        form_data = prepare_major_form(applicant, pref_ranks, errors)
+
+    else:
+        if applicant.has_major_preference():
+            pref_ranks = applicant.preference.to_major_rank_list()
+        else:
+            pref_ranks = None
+
+        form_data = prepare_major_form(applicant, pref_ranks)
+
+    # add step info
+    form_step_info = build_form_step_info(3, applicant)
+    form_data['form_step_info'] = form_step_info
     return render_to_response('application/majors.html',
-                              { 'majors_prefs': zip(majors,pref_ranks),
-                                'ranks': ranks,
-                                'max_major_rank': max_major_rank,
-                                'form_step_info': form_step_info,
-                                'errors': errors })
+                              form_data)
 
 
 @active_applicant_required

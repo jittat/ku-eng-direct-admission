@@ -1,8 +1,44 @@
 {% extends "application/status/base.html" %}
 
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
 {% block body %}
   {% load adm_steps %}{% step_bar "ตรวจสอบสถานะใบสมัคร" %}
 
+  {% if notice %}
+    <div class="notice-bar">
+      <span class="notice">{{ notice }}</span>
+    </div>
+  {% endif %}
+
+  <div class="right-box">
+    <br/>
+    <div class="login-box">
+      <center>คุณต้องการที่จะ</center>
+      <a href="{% url update-majors %}">
+	<div class="button">
+	  แก้ไขอันดับสาขาวิชา
+	</div>
+      </a>
+    </div>
+    <small>
+      <ul>
+	<li>
+	  <b>การแก้ไขอันดับสาขาวิชา</b> สามารถแก้ได้จนสิ้นสุดวันที่ 15 ธ.ค. 52
+	</li>
+	<li>
+	  <b>การแก้ไขข้อมูลการสมัคร</b> จะเปิดเร็ว ๆ นี้
+	  อย่างไรก็จะอนุญาตให้แก้ไขได้จนกระทั่งทางคณะได้ ตรวจสอบหลักฐานที่ยื่นมาเท่านั้น
+	  โดยในช่วงก่อนวันที่ 10 ธ.ค. คณะจะเว้นระยะเผื่อให้มีเวลาแก้ข้อมูลได้อย่างน้อย 3
+	  วัน
+	</li>
+      </ul>
+    </small>
+  </div>
+  
   <p>
     คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }}
   </p>
@@ -12,4 +48,5 @@
   <p>
     คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a> เพื่อตรวจสอบรายละเอียด อย่างไรก็ตาม คุณจะไม่สามารถแก้ไขข้อมูลได้อีกแล้ว ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ {% load adm_info %}{% adm_admin_email_link %}
   </p>
+  <br style="clear:both"/>
 {% endblock %}

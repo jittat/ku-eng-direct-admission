@@ -1,0 +1,32 @@
+{% extends "application/formbase.html" %}
+
+{% block extra-head %}
+{{ block.super }}
+<script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/major_selection.js"></script>
+{% endblock %}
+
+{% block title %}Choosing majors{% endblock %}
+
+{% block form-body %}
+  {% load adm_steps %}
+  {% step_bar "แก้ไขอันดับสาขาวิชา" %}
+
+  {% if errors %}
+    <div class="doc-error">
+      <b>เกิดข้อผิดพลาด</b> {% for e in errors %}{{ e }}{% endfor %}
+    </div>
+  {% endif %}
+
+  <form action="{% url update-majors %}" method="post">
+    {% include "application/forms/major_ranks.html" %}
+    <div class="submission-bar">
+      <input id="change-button" type="submit" name="submit" value="แก้ไขอันดับ"/>
+      <input type="submit" name="cancel" value="ยกเลิก"/>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $("#change-button").click(function() {
+      return confirm("คุณแน่ใจที่จะแก้ไขอันดับหรือไม่?\nอันดับที่เลือกใหม่นี้จะเข้าไปแทนอันดับที่เลือกไว้เดิมทันที\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
+    });
+  </script>
+{% endblock %}

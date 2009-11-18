@@ -50,3 +50,24 @@ def submitted_applicant_required(view_function):
             return redirect_to_index(request)
 
     return decorate
+
+
+def active_applicant_required_or_update(view_function):
+    """
+    returns a view function that checks if the applicant has submitted
+    the application, otherwise redirect to the applicant first page.
+    """
+    @applicant_required
+    def decorate(request, update, *args, **kwargs):
+        if (not request.applicant.is_submitted) and (not update):
+            # not submitted applicant, not update
+            return view_function(request, *args, **kwargs)
+        elif request.applicant.is_submitted and update:
+            # submitted applicant, update
+            return view_function(request, *args, **kwargs)
+        else:
+            return redirect_to_index(request)
+
+    return decorate
+
+
