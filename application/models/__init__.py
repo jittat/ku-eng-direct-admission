@@ -271,6 +271,8 @@ class Applicant(models.Model):
         try:
             submission_info = SubmissionInfo(applicant=self)
             submission_info.random_salt()
+            if submission_method==Applicant.SUBMITTED_ONLINE:
+                submission_info.doc_received_at = datetime.now()
             submission_info.save()
         except:
             raise Applicant.DuplicateSubmissionError()
@@ -289,7 +291,11 @@ class SubmissionInfo(models.Model):
     applicant = models.OneToOneField(Applicant, 
                                      related_name="submission_info")
     salt = models.CharField(max_length=30)
+
     submitted_at = models.DateTimeField(auto_now_add=True)
+    doc_received_at = models.DateTimeField(blank=True, 
+                                           null=True,
+                                           default=None)
 
     @staticmethod
     def find_by_ticket_number(ticket):
@@ -302,6 +308,9 @@ class SubmissionInfo(models.Model):
             return sub
         except:
             return None
+
+    def has_received_doc(self):
+        return not self.doc_received_at
 
     def random_salt(self):
         self.salt = random_string(10)
