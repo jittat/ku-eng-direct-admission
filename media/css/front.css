@@ -33,6 +33,13 @@ table.schedule {
   -moz-border-radius: 5px;
   background: #e0ffe0; }
 
+a.in-button {
+  text-decoration: none; }
+  a.in-button:visited {
+    text-decoration: none; }
+  a.in-button:hover {
+    text-decoration: none; }
+
 div.button {
   background: green;
   color: white;
@@ -44,10 +51,9 @@ div.button {
   -moz-border-radius: 5px;
   border-radius: 5px;
   border: 1px double gray;
-  vertical-align: middle; }
-  div.button a {
-    color: white;
-    text-decoration: none; }
+  vertical-align: middle;
+  padding-top: 5px;
+  padding-bottom: 5px; }
   div.button img {
     vertical-align: middle;
     border: none; }
