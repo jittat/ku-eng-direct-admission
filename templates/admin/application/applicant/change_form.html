@@ -1,0 +1,17 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_related_objects %}
+{% if original.address %}
+  <fieldset class="module aligned">
+    <h2>Applicant address</h2>
+    <div class="form-row">
+      <label class="required">Home:</label> {{ original.address.home_address }} 
+      [<a href="{% url admin:application_address_change original.address.home_address.id %}" onclick="return showAddAnotherPopup(this);">edit</a>]
+    </div>
+    <div class="form-row">
+      <label class="required">Contact:</label> {{ original.address.contact_address }} 
+      [<a href="{% url admin:application_address_change original.address.contact_address.id %}" onclick="return showAddAnotherPopup(this);">edit</a>]
+    </div>
+  </fieldset>
+{% endif %}
+{% endblock %}

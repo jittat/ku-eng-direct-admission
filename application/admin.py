@@ -9,12 +9,7 @@ admin.site.register(Address)
 admin.site.register(GPExamDate)
 admin.site.register(Education)
 admin.site.register(Major)
-
-
-class ApplicantAddressAdmin(admin.ModelAdmin):
-    search_fields = ['applicant__email']
-
-admin.site.register(ApplicantAddress, ApplicantAddressAdmin)
+admin.site.register(ApplicantAddress)
 
 class PersonalInfoInline(admin.StackedInline):
     model = PersonalInfo
