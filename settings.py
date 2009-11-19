@@ -86,6 +86,7 @@ INSTALLED_APPS = (
     'adm.application',
     'adm.upload',
     'adm.review',
+    'adm.commons',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
