@@ -1,6 +1,6 @@
 {{ address.number }} {{ address.village_name }}
 {% if address.village_number %}หมู่ {{ address.village_number }}{% endif %}
-ถ. {{ address.road }} {{ address.district }} 
+{% if address.road %}ถ. {{ address.road }}{% endif %} {{ address.district }} 
 <br/>
 {{ address.city }}
 {{ address.province }} {{ address.postal_code }}
