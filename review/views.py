@@ -4,11 +4,15 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from django import forms
 
 from application.models import Applicant
 from application.models import SubmissionInfo
+
+from models import ReviewField, ReviewFieldResult
 
 def find_basic_statistics():
     return {
@@ -48,13 +52,17 @@ def verify_ticket(request):
                 except:
                     pass
 
+                if ('search-and-show' in request.POST) and (len(applicants)==1):
+                    return HttpResponseRedirect(reverse('review-show',
+                                                        args=[applicants[0].id]))
+
                 for applicant in applicants:
                     match_ticket = (applicant.ticket_number()==str(ticket))
                     match_verinum = (
                         applicant.verification_number().startswith(verinum))
                     results.append({ 'ticket': match_ticket,
                                      'verinum': match_verinum })
-                           
+
     else:
         form = ApplicantSearchByIDForm()
 
@@ -79,3 +87,31 @@ def toggle_received_status(request, applicant_id):
                                        submission_info.has_received_doc()})
 
     return HttpResponseForbidden()
+
+
+def prepare_applicant_review_data(applicant):
+    fields = ReviewField.get_all_fields()
+    app_fields = []
+    app_fields.append(fields['image'])
+    app_fields.append(fields['id_card'])
+    app_fields.append(fields['edu_certificate'])
+    if applicant.education.uses_gat_score:
+        app_fields.append(fields['gat'])
+        app_fields.append(fields['pat1'])
+        app_fields.append(fields['pat3'])
+    else:
+        app_fields.append(fields['anet'])
+    app_fields.append(fields['deposite'])
+    app_fields.append(fields['abroad_edu_certificate'])
+    return app_fields
+
+
+@login_required
+def review_document(request, applicant_id):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    fields = prepare_applicant_review_data(applicant)
+
+    return render_to_response("review/show.html",
+                              { 'applicant': applicant,
+                                'fields': fields })
+

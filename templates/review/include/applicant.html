@@ -20,5 +20,5 @@
   {% if not applicant.online_doc_submission %}
     [<a class="doc-received-toggle" id="doc-received-toggle-{{ applicant.id }}" href="{% url review-toggle-received-status applicant.id %}">สลับ</a>]
   {% endif %}
-  | [ตรวจเอกสาร]
+  | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
 </td>

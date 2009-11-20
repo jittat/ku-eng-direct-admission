@@ -1,0 +1,93 @@
+{% extends "review/base.html" %}
+
+{% load adm_media %}
+
+{% block regis-body %}
+  <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
+  <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
+  <b>ยื่นเมื่อ:</b> {{ applicant.submission_info.submitted_at|date }}<br/>
+  <form action="">
+    <table class="applicants">
+      <tr>
+	<th>เอกสาร</th>
+	<th>ถูกต้อง</th>
+	<th>หมายเหตุสำหรับผู้สมัคร</th>
+	<th>หมายเหตุภายใน</th>
+	<th>มีเอกสาร</th>
+      </tr>
+      {% for f in fields %}
+        <tr>  
+	  <td>{{ f.name }} <a id="doc-{{ f.short_name }}-link" href="#">[show]</a></td>
+	  <td><input type="checkbox"/></td>
+	  <td>
+	    <input type="text" name="app-{{ f.short_name }}"/>
+	    {% if f.applicant_note_help_text %}
+    	      <div class="help-text">{{ f.applicant_note_help_text }}</div>
+	    {% endif %}
+	  </td>
+	  <td>
+	    <input type="text" name="admin-{{ f.short_name }}"/>
+	    {% if f.admin_note_help_text %}
+  	      <div class="help-text">{{ f.admin_note_help_text }}</div>
+            {% endif %}
+	  </td>
+	  <td>
+	    {% if not f.required %}
+	      <input type="checkbox"/>
+	    {% endif %}
+	  </td>
+	</tr>
+      {% endfor %}
+    </table>
+    <div class="small-vert-sept"></div>
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="เก็บข้อมูล"/>
+    </div>
+  </form>
+  <div class="small-vert-sept"></div>
+  <div id="doc-preview" class="application-info">
+    <div id="app-doc-personal-preview">
+      <h2>ข้อมูลส่วนตัว</h2>
+      <div class="section">
+	{% include "application/include/applicant_personal.html" %}
+      </div>
+      <h2>ที่อยู่</h2>
+      <div class="section">
+	{% include "application/include/applicant_address.html" %}
+      </div>
+    </div>
+    <div id="app-doc-education-preview" style="display: none">
+      <h2>ข้อมูลการศึกษา</h2>
+      <div class="section">
+	{% include "application/include/applicant_edu.html" %}
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function show_personal_info() {
+      $("#app-doc-personal-preview").show();
+      $("#app-doc-education-preview").hide();
+    }
+    function show_education_info() {
+      $("#app-doc-personal-preview").hide();
+      $("#app-doc-education-preview").show();
+    }
+    function register_personal_trigger(id) {
+      $(id).click(function() { show_personal_info(); return false; });
+    }
+    function register_education_trigger(id) {
+      $(id).click(function() { show_education_info(); return false; });
+    }
+    $(document).ready(function() {
+      register_personal_trigger("#doc-id_card-link");
+      register_education_trigger("#doc-edu_certificate-link");
+      register_education_trigger("#doc-gat-link");
+      register_education_trigger("#doc-pat1-link");
+      register_education_trigger("#doc-pat3-link");
+      register_education_trigger("#doc-anet-link");
+      $("#doc-image-link").hide();
+      $("#doc-deposite-link").hide();
+      $("#doc-abroad_edu_certificate-link").hide();
+    });
+  </script>
+{% endblock %}

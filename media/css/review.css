@@ -1,11 +1,18 @@
+.title-bar h1 {
+  height: 20px;
+  font-size: 100%; }
+
 .admin-bar {
   text-align: center;
   background: #2f0000;
   color: white;
-  font-weight: bold; }
+  font-weight: bold;
+  font-size: 50%;
+  height: 10px; }
 
 .admin-menu {
-  border: 1px solid gray; }
+  border: 1px solid gray;
+  font-size: 80%; }
   .admin-menu ul {
     margin: 0px;
     padding: 0px; }
@@ -14,7 +21,11 @@
     float: left;
     padding-left: 10px; }
 
+.help-text {
+  font-size: 80%; }
+
 table.applicants {
+  font-size: 90%;
   border-collapse: collapse; }
   table.applicants th {
     border: 1px solid black;
@@ -25,4 +36,11 @@ table.applicants {
   table.applicants tr.even {
     background: #e0e0e0; }
   table.applicants td {
-    border: 1px solid black; }
+    border: 1px solid black;
+    vertical-align: top; }
+
+#doc-preview {
+  font-size: 90%;
+  border: 1px solid gray;
+  height: 200px;
+  overflow: scroll; }
