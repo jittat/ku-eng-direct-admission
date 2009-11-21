@@ -12,6 +12,9 @@ from django import forms
 from application.models import Applicant
 from application.models import SubmissionInfo
 
+from commons.email import send_validation_successful_by_email
+from commons.email import send_validation_error_by_email
+
 from models import ReviewField, ReviewFieldResult
 
 def find_basic_statistics():
@@ -195,7 +198,7 @@ def review_document(request, applicant_id):
                 error = True
 
         if not error:
-            doc_complete = True
+            failed_fields = []
 
             for field, result, form in zip(fields, results, forms):
                 if not result:
@@ -215,16 +218,22 @@ def review_document(request, applicant_id):
                         result.save(force_insert=True)
 
                     if not result.is_passed:
-                        doc_complete = False
+                        failed_fields.append((field,result))
                 else:
                     if result.id!=None:
                         result.delete()
 
             submission_info.has_been_reviewed = True
-            submission_info.doc_reviewed_complete = doc_complete
+            submission_info.doc_reviewed_complete = (len(failed_fields)==0)
             submission_info.save()
 
-        data = build_review_data(fields, results, forms)
+            if submission_info.doc_reviewed_complete:
+                send_validation_successful_by_email(applicant)
+                request.session['notice'] = 'จัดเก็บและแจ้งผลการตรวจว่าผ่านกับผู้สมัครแล้ว'
+            else:
+                send_validation_error_by_email(applicant, failed_fields)
+                request.session['notice'] = 'จัดเก็บและแจ้งผลการตรวจว่าหลักฐานไม่ผ่านกับผู้สมัครแล้ว'
+            return HttpResponseRedirect(reverse('review-ticket'))
     else:
         data = prepare_applicant_review_data(applicant)
         

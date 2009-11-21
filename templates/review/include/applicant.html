@@ -16,6 +16,9 @@
 </td>
 <td>
   {% include "review/include/doc_received_status.html" %}
+  {% if applicant.submission_info.has_been_reviewed %}
+    | ตรวจเอกสารแล้ว ({% if applicant.submission_info.doc_reviewed_complete %}ผ่าน{% else %}ไม่ผ่าน{% endif %}{% passed_icon applicant.submission_info.doc_reviewed_complete %})
+  {% endif %}
   {% if not applicant.online_doc_submission %}
     {% if applicant.submission_info.can_be_reviewed %}
       | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
@@ -23,6 +26,6 @@
       | อยู่ในช่วงรอการแก้ไข
     {% endif %}
   {% else %}
-    | ระบบตรวจสอบสำหรับการส่งแบบออนไลน์อยู่ระหว่างการพัฒนา
+    | ระบบตรวจสำหรับออนไลน์กำลังพัฒนา
   {% endif %}
 </td>

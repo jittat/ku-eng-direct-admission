@@ -163,3 +163,62 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 ).replace('\n','<br/>\n')
     adm_send_mail(applicant.email, subject, message, force)
 
+
+def send_validation_successful_by_email(applicant, force=False):
+    """
+    sends validation result
+    """
+    subject = 'การตรวจหลักฐานเพื่อการสมัครตรงเรียบร้อย'
+    message = (
+u"""เรียนคุณ %(firstname)s %(lastname)s
+
+จดหมายอิเล็กทรอนิกส์นี้แจ้งว่าคณะวิศวกรรมศาสตร์ได้ตรวจสอบหลักฐานที่คุณได้ยื่นให้กับคณะ
+เพื่อใช้ในการสมัครเข้าศึกษาต่อ ด้วยวิธีรับตรง ประจำปีการศึกษา 2553 แล้ว
+
+หลักฐานที่คุณส่งมานั้นครบถ้วนและสมบูรณ์แล้ว ขณะนี้คุณได้เข้าสู่กระบวนการคัดเลือกของคณะต่อไป
+คณะจะประกาศรายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือกเข้าศึกษาต่อแบบรับตรงในวันที่ 22 ธ.ค. 2552
+
+ขอบคุณ
+โครงการรับตรง คณะวิศวกรรมศาสตร์"""
+% { 'firstname': applicant.first_name, 
+    'lastname': applicant.last_name,
+    'email': applicant.email, 
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicant.email, subject, message, force)
+
+
+def send_validation_error_by_email(applicant, failed_fields, force=False):
+    """
+    sends validation result
+    """
+
+    error_list = []
+    for field, result in failed_fields:
+        error_list.append('%s - %s' % (field.name, result.applicant_note))
+    errors = '\n'.join(error_list)
+
+    subject = 'การตรวจหลักฐานเพื่อการสมัครตรงไม่ผ่าน'
+    message = (
+u"""เรียนคุณ %(firstname)s %(lastname)s
+
+จดหมายอิเล็กทรอนิกส์นี้แจ้งว่าคณะวิศวกรรมศาสตร์ได้ตรวจสอบหลักฐานที่คุณได้ยื่นให้กับคณะ
+เพื่อใช้ในการสมัครเข้าศึกษาต่อ ด้วยวิธีรับตรง ประจำปีการศึกษา 2553 แล้ว
+
+หลักฐานที่คุณส่งมานั้นมีปัญหาดังนี้:
+%(errors)s
+
+คุณสามารถส่งหลักฐานได้ใหม่ ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบเดิม
+ถ้ามีข้อสงสัยประการใด สามารถสอบถามได้ในเว็บบอร์ด หรือส่งเมล์หาผู้ดูแลที่ %(admin_email)s
+
+ขอบคุณ
+โครงการรับตรง คณะวิศวกรรมศาสตร์"""
+% { 'firstname': applicant.first_name, 
+    'lastname': applicant.last_name,
+    'email': applicant.email, 
+    'errors': errors,
+    'admin_email': admin_email()
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicant.email, subject, message, force)
+
