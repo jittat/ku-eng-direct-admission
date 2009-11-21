@@ -5,6 +5,7 @@ from django.test import TestCase, TransactionTestCase
 
 from django.conf import settings
 
+from commons import email
 from application.models import Applicant
 
 SOMCHAI_EMAIL = "somchai@thailand.com"
@@ -60,6 +61,22 @@ DEPOSITE_MISSING_REVIEW_FORM_DATA = {
 class ReviewTestCase(TransactionTestCase):
 
     fixtures = ['submissions', 'admin_user', 'review_field']
+
+
+    def setUp(self):
+        # make sure the when testing, the app is using django's email
+        # system.
+        from django.core.mail import send_mail
+
+        email.send_mail = send_mail 
+
+        self.org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
+
+    def tearDown(self):
+        settings.FAKE_SENDING_EMAIL = self.org_email_setting
+
 
     def test_doc_received_status_display_changed_after_admin_update(self):
         self._login_required(SOMYING_EMAIL,SOMYING_PASSWORD)
@@ -125,8 +142,8 @@ class ReviewTestCase(TransactionTestCase):
 
         self._admin_login_required()
 
-        self.client.post('/review/show/2/',
-                         DEPOSITE_MISSING_REVIEW_FORM_DATA)
+        response = self.client.post('/review/show/2/',
+                                    DEPOSITE_MISSING_REVIEW_FORM_DATA)
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 

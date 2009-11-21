@@ -299,6 +299,10 @@ class SubmissionInfo(models.Model):
     has_been_reviewed = models.BooleanField(default=False)
     doc_reviewed_complete = models.BooleanField(default=False)
 
+    doc_reviewed_at = models.DateTimeField(blank=True,
+                                           null=True,
+                                           default=None)
+
     @staticmethod
     def find_by_ticket_number(ticket):
         if len(ticket)>8:

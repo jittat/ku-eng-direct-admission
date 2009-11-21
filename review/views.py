@@ -224,6 +224,7 @@ def review_document(request, applicant_id):
                         result.delete()
 
             submission_info.has_been_reviewed = True
+            submission_info.doc_reviewed_at = datetime.now()
             submission_info.doc_reviewed_complete = (len(failed_fields)==0)
             submission_info.save()
 
