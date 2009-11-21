@@ -8,7 +8,7 @@ from commons.decorators import submitted_applicant_required
 
 from application.models import Applicant
 from application.views import redirect_to_applicant_first_page
-
+from review.models import ReviewFieldResult
 
 @submitted_applicant_required
 def index(request):
@@ -18,10 +18,15 @@ def index(request):
         del request.session['notice']
 
     submission_info = request.applicant.submission_info
+    if submission_info.has_been_reviewed:
+        review_results = ReviewFieldResult.get_applicant_review_error_results(request.applicant)
+    else:
+        review_results = None
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
+                                'review_results': review_results,
                                 'notice': notice,
                                 'can_log_out': True })
 

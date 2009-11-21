@@ -1,5 +1,8 @@
-{% if has_received_doc %}
-  ได้รับเอกสารแล้ว
-{% else %}
-  ยังไม่ได้รับเอกสาร
+<span id="doc-received-status-{{ applicant.id }}">
+  {% with applicant.submission_info.has_received_doc as has_received_doc %}
+    {% include "review/include/doc_received_status_block.html" %}
+  {% endwith %}
+</span>
+{% if not applicant.online_doc_submission %}
+  [<a class="doc-received-toggle" id="doc-received-toggle-{{ applicant.id }}" href="{% url review-toggle-received-status applicant.id %}">สลับ</a>]
 {% endif %}

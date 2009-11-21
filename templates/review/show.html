@@ -2,11 +2,17 @@
 
 {% load adm_media %}
 
+{% block extra-head %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
+{% endblock %}
+
 {% block regis-body %}
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
-  <b>ยื่นเมื่อ:</b> {{ applicant.submission_info.submitted_at|date }}<br/>
-  <form action="">
+  <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
+  {% include "review/include/doc_received_status.html" %}<br/>
+  <form action="{% url review-show applicant.id %}" method="post">
     <table class="applicants">
       <tr>
 	<th>เอกสาร</th>
@@ -15,28 +21,30 @@
 	<th>หมายเหตุภายใน</th>
 	<th>มีเอกสาร</th>
       </tr>
-      {% for f in fields %}
+      {% for item in review_data %}
+        {% with item.field as f %}
         <tr>  
 	  <td>{{ f.name }} <a id="doc-{{ f.short_name }}-link" href="#">[show]</a></td>
-	  <td><input type="checkbox"/></td>
+	  <td>{{ item.form.is_passed }}</td>
 	  <td>
-	    <input type="text" name="app-{{ f.short_name }}"/>
+	    {{ item.form.applicant_note }}
 	    {% if f.applicant_note_help_text %}
     	      <div class="help-text">{{ f.applicant_note_help_text }}</div>
 	    {% endif %}
 	  </td>
 	  <td>
-	    <input type="text" name="admin-{{ f.short_name }}"/>
+	    {{ item.form.internal_note }}
 	    {% if f.admin_note_help_text %}
   	      <div class="help-text">{{ f.admin_note_help_text }}</div>
             {% endif %}
 	  </td>
 	  <td>
 	    {% if not f.required %}
-	      <input type="checkbox"/>
+	      {{ item.form.is_submitted }}
 	    {% endif %}
 	  </td>
 	</tr>
+	{% endwith %}
       {% endfor %}
     </table>
     <div class="small-vert-sept"></div>
@@ -88,6 +96,8 @@
       $("#doc-image-link").hide();
       $("#doc-deposite-link").hide();
       $("#doc-abroad_edu_certificate-link").hide();
+
+      register_doc_recevied_toggle_click();
     });
   </script>
 {% endblock %}

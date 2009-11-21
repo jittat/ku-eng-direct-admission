@@ -31,7 +31,7 @@ class ReviewField(models.Model):
                                          "รูปแบบสำหรับตรวจสอบ"
                                          "ของหมายเหตุภายใน")
 
-    field_cache = None
+    fields_cache = None
 
     def __unicode__(self):
         return self.name
@@ -40,26 +40,72 @@ class ReviewField(models.Model):
         ordering = ['order']
 
     @staticmethod
+    def build_fields_cache():
+        fields = ReviewField.objects.all()
+        fields_cache = {}
+        fields_cache['id'] = {}
+        fields_cache['short_name'] = {}
+        fields_cache['raw'] = fields
+        for f in fields:
+            fields_cache['id'][f.id] = f
+            fields_cache['short_name'][f.short_name] = f
+        ReviewField.fields_cache = fields_cache
+
+    @staticmethod
     def get_all_fields():
-        if ReviewField.field_cache==None:
-            fields = ReviewField.objects.all()
-            d = {}
-            for f in fields:
-                d[f.short_name] = f
-            ReviewField.field_cache = d
+        if ReviewField.fields_cache==None:
+            ReviewField.build_fields_cache()
+            
+        return fields_cache['raw']
 
-        return ReviewField.field_cache
+    @staticmethod
+    def get_field_by_short_name(name):
+        if ReviewField.fields_cache==None:
+            ReviewField.build_fields_cache()
 
+        try:
+            return ReviewField.fields_cache['short_name'][name]
+        except:
+            return None
+
+    @staticmethod
+    def get_field_by_id(id):
+        if ReviewField.fields_cache==None:
+            ReviewField.build_fields_cache()
+
+        try:
+            return ReviewField.fields_cache['id'][id]
+        except:
+            return None
+        
 
 class ReviewFieldResult(models.Model):
     applicant = models.ForeignKey(Applicant)
     review_field = models.ForeignKey(ReviewField)
 
     is_passed = models.NullBooleanField()
-    applicant_note = models.CharField(max_length=200)
-    internal_note = models.CharField(max_length=200)
+    applicant_note = models.CharField(blank=True, max_length=200)
+    internal_note = models.CharField(blank=True, max_length=200)
 
     def __unicode__(self):
-        return is_passed
+        return str(self.is_passed)
 
+    @staticmethod
+    def build_ref_to_review_field(results):
+        for res in results:
+            res.review_field = ReviewField.get_field_by_id(res.review_field_id)
+
+    @staticmethod
+    def get_applicant_review_results(applicant):
+        results = ReviewFieldResult.objects.filter(applicant=applicant).all()
+        ReviewFieldResult.build_ref_to_review_field(results)
+        return results
+
+    @staticmethod
+    def get_applicant_review_error_results(applicant):
+        results = (ReviewFieldResult.objects
+                   .filter(applicant=applicant)
+                   .filter(is_passed=False).all())
+        ReviewFieldResult.build_ref_to_review_field(results)
+        return results
 

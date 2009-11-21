@@ -77,7 +77,21 @@
 	  {% endif %}
 	</td>
 	<td>
-	  (ระบบกำลังพัฒนา)
+          {% if submission_info.has_been_reviewed %}
+	    {% passed_icon submission_info.doc_reviewed_complete %}
+	    {% if submission_info.doc_reviewed_complete %}
+	      ตรวจสอบเรียบร้อย
+	    {% else %}
+	      เอกสารบางส่วนผิดพลาด
+	      <ul>
+  		{% for result in review_results %}
+	          <li>{{ result.review_field }} : {{ result.applicant_note }}</li>
+		{% endfor %}
+	      </ul>
+	    {% endif %}  
+	  {% else %}
+	    ยังไม่ได้ตรวจสอบ
+	  {% endif %}
 	</td>
       </tr>
     </table>

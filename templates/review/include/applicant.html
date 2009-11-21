@@ -12,13 +12,6 @@
   {{ applicant.get_doc_submission_method_display }}
 </td>
 <td>
-  <span id="doc-received-status-{{ applicant.id }}">
-    {% with applicant.submission_info.has_received_doc as has_received_doc %}
-      {% include "review/include/doc_received_status.html" %}
-    {% endwith %}
-  </span>
-  {% if not applicant.online_doc_submission %}
-    [<a class="doc-received-toggle" id="doc-received-toggle-{{ applicant.id }}" href="{% url review-toggle-received-status applicant.id %}">สลับ</a>]
-  {% endif %}
+  {% include "review/include/doc_received_status.html" %}
   | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
 </td>

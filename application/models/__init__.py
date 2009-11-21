@@ -296,6 +296,8 @@ class SubmissionInfo(models.Model):
     doc_received_at = models.DateTimeField(blank=True, 
                                            null=True,
                                            default=None)
+    has_been_reviewed = models.BooleanField(default=False)
+    doc_reviewed_complete = models.BooleanField(default=False)
 
     @staticmethod
     def find_by_ticket_number(ticket):

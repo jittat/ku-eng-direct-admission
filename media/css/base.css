@@ -234,7 +234,10 @@ table#doc-status-table th {
   padding-left: 10px;
   padding-right: 10px; }
 table#doc-status-table td {
-  text-align: center; }
+  text-align: center;
+  vertical-align: top; }
+  table#doc-status-table td ul {
+    text-align: left; }
 
 .small-vert-sept {
   height: 5px; }

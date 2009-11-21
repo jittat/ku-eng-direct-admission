@@ -2,6 +2,11 @@
 
 {% load adm_media %}
 
+{% block extra-head %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
+{% endblock %}
+
 {% block regis-body %}
   <form action="{% url review-ticket %}" method="post">
     หมายเลขประจำตัว: {{ form.ticket_number }}{{ form.ticket_number.errors }} | 
@@ -31,14 +36,7 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-    $(".doc-received-toggle").click(function() {
-      var url = $(this).attr("href");
-      var id = this.id.replace('doc-received-toggle-','');
-      $.get(url, function(data) {
-        $("#doc-received-status-" + id).text(data);    
-      });
-      return false;
-    });
+    register_doc_recevied_toggle_click();
   });
 </script>
 {% endblock %}
