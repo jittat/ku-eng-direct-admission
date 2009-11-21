@@ -44,3 +44,8 @@ table.applicants {
   border: 1px solid gray;
   height: 200px;
   overflow: scroll; }
+  #doc-preview h2 {
+    font-size: 100%;
+    margin: 0; }
+  #doc-preview .section {
+    line-height: 120%; }
