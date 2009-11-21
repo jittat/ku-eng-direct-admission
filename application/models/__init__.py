@@ -317,6 +317,20 @@ class SubmissionInfo(models.Model):
     def random_salt(self):
         self.salt = random_string(10)
 
+    def can_update_info(self):
+        if self.has_been_reviewed:
+            return False
+        if datetime.now() >= settings.SUBMISSION_CHANGE_GRACE_PERIOD_END:
+            return False
+        return True
+
+    def can_be_reviewed(self):
+        if datetime.now() >= settings.SUBMISSION_CHANGE_GRACE_PERIOD_END:
+            return True
+        return (datetime.now() > 
+                self.submitted_at + 
+                settings.SUBMISSION_CHANGE_GRACE_PERIOD)
+
     class Meta:
         ordering = ['applicantion_id']
 

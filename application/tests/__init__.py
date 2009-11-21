@@ -1,4 +1,4 @@
 from registration import RegistrationTestCase
 from submission import SubmissionTestCase
 from info_forms import InfoFormsTestCase
-
+from status import StatusTestCase

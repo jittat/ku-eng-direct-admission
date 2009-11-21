@@ -13,7 +13,7 @@
 	<b>เลขประจำตัวประชาชน:</b> {{ info.national_id }}
       </td>
       <td>
-	<b>วันเกิด:</b> {{ info.birth_date }}
+	<b>วันเกิด:</b> {% load adm_info %}{{ info.birth_date|thai_date }}
       </td>
     </tr>
     <tr>

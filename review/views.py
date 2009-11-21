@@ -36,6 +36,12 @@ class ApplicantSearchByIDForm(forms.Form):
 
 @login_required
 def verify_ticket(request):
+
+    if 'notice' in request.session:
+        notice = request.session['notice']
+        del request.session['notice']
+    else:
+        notice = ''
     
     applicants = []
     results = []
@@ -52,7 +58,10 @@ def verify_ticket(request):
                 except:
                     pass
 
-                if ('search-and-show' in request.POST) and (len(applicants)==1):
+                if (('search-and-show' in request.POST) 
+                    and (len(applicants)==1) and
+                    (applicants[0].submission_info.can_be_reviewed()) and
+                    (not applicants[0].online_doc_submission)):
                     return HttpResponseRedirect(reverse('review-show',
                                                         args=[applicants[0].id]))
 
@@ -68,6 +77,7 @@ def verify_ticket(request):
 
     return render_to_response("review/ticket_search.html",
                               { 'form': form,
+                                'notice': notice,
                                 'applicants_results': zip(applicants,results) })
 
 @login_required
@@ -168,6 +178,10 @@ def prepare_applicant_review_data(applicant):
 def review_document(request, applicant_id):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     submission_info = applicant.submission_info
+
+    if not submission_info.can_be_reviewed():
+        request.session['notice'] = 'ยังไม่สามารถตรวจสอบเอกสารได้เนื่องจากยังไม่พ้นช่วงเวลาสำหรับการแก้ไข'
+        return HttpResponseRedirect(reverse('review-ticket'))
 
     if request.method=='POST':
         field_names = get_applicant_doc_name_list(applicant)

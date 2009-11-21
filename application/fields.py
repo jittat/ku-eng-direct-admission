@@ -23,6 +23,10 @@ class IntegerListField(models.Field):
         if value==None or value=='':
             return []
         else:
+            if value[0]=='[':
+                value = value[1:]
+            if value[-1]==']':
+                value = value[:-1]
             return [ int(r) for r in value.split(',') ]
 
     def get_db_prep_value(self, value):

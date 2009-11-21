@@ -15,6 +15,12 @@
     <input type="submit" name="search" value="ค้นข้อมูล"/>
   </form>
 
+  {% if notice %}
+    <div class="notice-bar">
+      <span class="notice">{{ notice }}</span>
+    </div>
+  {% endif %}
+
   <table class="applicants">
     <tr>
       <th>เลขประจำตัว</th>
@@ -22,6 +28,7 @@
       <th>ชื่อ</th>
       <th>เลขตรวจสอบ</th>
       <th></th>
+      <th>วันที่ยืนยัน</th>
       <th>ส่งเอกสาร</th>
       <th></th>
     </tr>

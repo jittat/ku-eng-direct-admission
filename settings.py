@@ -123,6 +123,12 @@ ADMISSION_YEAR = 53
 # maximum number of choices
 MAX_MAJOR_RANK = 6
 
+from datetime import datetime, timedelta
+
+SUBMISSION_CHANGE_GRACE_PERIOD = timedelta(3)
+SUBMISSION_CHANGE_GRACE_PERIOD_END = datetime(2009,12,11)
+
+
 # path for storing uploaded images (for documents)
 UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
 

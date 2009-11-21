@@ -18,13 +18,15 @@
     <br/>
     <div class="login-box">
       <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
-      <a class="in-button" href="{% url update-education %}">
-	<div class="button">
-	  แก้ไขข้อมูลการศึกษาและคะแนนสอบ
-	</div>
-      </a>
-      <div class="small-vert-sept"></div>
-      <a class="in-button" href="{% url update-majors %}">
+      {% if submission_info.can_update_info %}
+        <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
+  	  <div class="button">
+	    แก้ไขข้อมูลการศึกษาและคะแนนสอบ
+	  </div>
+        </a>
+        <div class="small-vert-sept"></div>
+      {% endif %}	
+      <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
 	<div class="button">
 	  แก้ไขอันดับสาขาวิชา
 	</div>

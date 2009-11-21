@@ -9,9 +9,20 @@
   {% passed_icon result.verinum %}
 </td>
 <td>
+  {{ applicant.submission_info.submitted_at|date:"H:i, j N" }}
+</td>
+<td>
   {{ applicant.get_doc_submission_method_display }}
 </td>
 <td>
   {% include "review/include/doc_received_status.html" %}
-  | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
+  {% if not applicant.online_doc_submission %}
+    {% if applicant.submission_info.can_be_reviewed %}
+      | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
+    {% else %}
+      | อยู่ในช่วงรอการแก้ไข
+    {% endif %}
+  {% else %}
+    | ระบบตรวจสอบสำหรับการส่งแบบออนไลน์อยู่ระหว่างการพัฒนา
+  {% endif %}
 </td>
