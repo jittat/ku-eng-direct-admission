@@ -64,7 +64,7 @@ def verify_ticket(request):
                 if (('search-and-show' in request.POST) 
                     and (len(applicants)==1) and
                     (applicants[0].submission_info.can_be_reviewed()) and
-                    (not applicants[0].online_doc_submission)):
+                    (not applicants[0].online_doc_submission())):
                     return HttpResponseRedirect(reverse('review-show',
                                                         args=[applicants[0].id]))
 
