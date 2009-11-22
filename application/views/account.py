@@ -16,10 +16,12 @@ from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm, ActivationNameForm
 from commons.email import send_password_by_email, send_activation_by_email
+from commons.models import Announcement
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 
 def login(request):
+    announcements = Announcement.get_all_enabled_annoucements()
     error_messages = []
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -56,7 +58,8 @@ def login(request):
         form = LoginForm()
     return render_to_response('application/start.html',
                               { 'form': form,
-                                'errors': error_messages })
+                                'errors': error_messages,
+                                'announcements': announcements })
 
 def logout(request):
     next_url = None

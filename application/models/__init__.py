@@ -449,6 +449,11 @@ class Education(models.Model):
     anet = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน A-NET")
 
+    # This is used for post-identifying potential cross review-update
+    # condition.  In that case the document must be manually validated
+    # again.
+    updated_at = models.DateTimeField(auto_now=True)
+
     def fix_boolean_fields(self):
         self.has_graduated = bool(self.has_graduated)
         self.uses_gat_score = bool(self.uses_gat_score)
