@@ -17,6 +17,12 @@
   <div class="right-box">
     <br/>
     <div class="login-box">
+      <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
+  	<div class="button">
+	  ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว{% if not applicant.online_doc_submission %}<br/>และพิมพ์ใบนำส่งหลักฐาน{% endif %}
+	</div>
+      </a>
+      <div class="small-vert-sept"></div>
       <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
       {% if submission_info.can_update_info %}
         <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
@@ -78,7 +84,7 @@
 	    ยังไม่ได้รับ 
 	  {% endif %}
 	</td>
-	<td>
+	<td id="id_review_result_tcell">
           {% if submission_info.has_been_reviewed %}
 	    {% passed_icon submission_info.doc_reviewed_complete %}
 	    {% if submission_info.doc_reviewed_complete %}
@@ -98,6 +104,16 @@
       </tr>
     </table>
   </p>
+
+  {% if submission_info.has_been_reviewed %}
+    {% if not submission_info.doc_reviewed_complete %}
+      <div class="normal-msg" style="width: 510px">
+	<img src="{% media_url %}/image/Info.png"/>
+	เพื่อให้การสมัครสมบูรณ์ <b>คุณจะต้องส่งหลักฐานเพิ่มเติมเพื่อแก้ไขข้อผิดพลาดข้างต้น</b>
+	อย่าลืมแนบใบนำส่งหลักฐานมาด้วย
+      </div>
+    {% endif %}
+  {% endif %}
   <p>
     คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a>
     เพื่อตรวจสอบรายละเอียด{% if not applicant.online_doc_submission %}และพิมพ์ใบนำส่งหลักฐาน{% endif %}
