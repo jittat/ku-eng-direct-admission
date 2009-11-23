@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 from django import forms
 
-from application.models import Applicant
+from application.models import Applicant, Education
 from application.models import SubmissionInfo
 
 from commons.email import send_validation_successful_by_email
@@ -82,6 +82,42 @@ def verify_ticket(request):
                               { 'form': form,
                                 'notice': notice,
                                 'applicants_results': zip(applicants,results) })
+
+
+class ApplicantSearchForm(forms.Form):
+    school_name = forms.CharField(label="โรงเรียน", required=False)
+
+@login_required
+def search(request):
+    applicants = []
+    display = {}
+    applicant_count = 0
+    if request.method=='POST':
+        form = ApplicantSearchForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['school_name']!='':
+                educations = (Education.objects.filter(
+                        school_name__contains=form.cleaned_data['school_name'])
+                              .select_related(depth=1))
+                applicant_count = educations.count()
+
+                # only show the first 100
+                educations = educations.all()[:200]
+
+                for e in educations:
+                    app = e.applicant
+                    app.education = e
+                    applicants.append(app)
+                display['edu'] = True
+    else:
+        form = ApplicantSearchForm()
+
+    return render_to_response("review/search.html",
+                              { 'form': form,
+                                'applicant_count': applicant_count,
+                                'applicants': applicants,
+                                'display': display })
+
 
 @login_required
 def toggle_received_status(request, applicant_id):

@@ -1,0 +1,44 @@
+{% extends "review/base.html" %}
+
+{% load adm_media %}
+
+{% block extra-head %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
+{% endblock %}
+
+{% block regis-body %}
+  <form action="{% url review-search %}" method="post">
+    {{ form }}
+    <input type="submit" name="search" value="ค้นข้อมูล"/>
+  </form>
+
+  {% if applicant_count %}
+    <p>ผลลัพธ์ทั้งหมด {{ applicant_count }} รายการ แสดงผลแค่ 200 รายการแรก</p>
+  {% endif %}
+
+  <div class="small-vert-sept"></div>
+
+  <table class="applicants">
+    <tr>
+      <th>ชื่อ</th>
+      {% if display.edu %}<th>โรงเรียน</th>{% endif %}
+      <th>สถานะการยื่นใบสมัคร</th>
+    </tr>
+    {% for applicant in applicants %}
+      <tr id="app-{{ applicant.id }}-row" class="{% cycle 'odd' 'even' %}">
+	<td>{{ applicant.full_name }}</td>
+	{% if display.edu %}<td>{{ applicant.education.school_name }}</td>{% endif %}
+	<td>{% if applicant.is_submitted %}ยื่นใบสมัครแล้ว{% else %}ยังไม่ยื่น{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="7">ไม่พบผู้สมัคร</td></tr>
+    {% endfor %}
+  </table>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    register_doc_recevied_toggle_click();
+  });
+</script>
+{% endblock %}
