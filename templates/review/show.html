@@ -88,14 +88,14 @@
       $(id).click(function() { show_education_info(); return false; });
     }
     $(document).ready(function() {
-      register_personal_trigger("#doc-id_card-link");
+      register_personal_trigger("#doc-nat_id-link");
       register_education_trigger("#doc-edu_certificate-link");
-      register_education_trigger("#doc-gat-link");
-      register_education_trigger("#doc-pat1-link");
-      register_education_trigger("#doc-pat3-link");
-      register_education_trigger("#doc-anet-link");
-      $("#doc-image-link").hide();
-      $("#doc-deposite-link").hide();
+      register_education_trigger("#doc-gat_score-link");
+      register_education_trigger("#doc-pat1_score-link");
+      register_education_trigger("#doc-pat3_score-link");
+      register_education_trigger("#doc-anet_score-link");
+      $("#doc-picture-link").hide();
+      $("#doc-app_fee_doc-link").hide();
       $("#doc-abroad_edu_certificate-link").hide();
 
       register_doc_recevied_toggle_click();

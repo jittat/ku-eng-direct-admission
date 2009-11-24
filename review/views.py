@@ -148,16 +148,16 @@ def toggle_received_status(request, applicant_id):
 
 def get_applicant_doc_name_list(applicant):
     names = []
-    names.append('image')
-    names.append('id_card')
+    names.append('picture')
+    names.append('nat_id')
     names.append('edu_certificate')
     if applicant.education.uses_gat_score:
-        names.append('gat')
-        names.append('pat1')
-        names.append('pat3')
+        names.append('gat_score')
+        names.append('pat1_score')
+        names.append('pat3_score')
     else:
-        names.append('anet')
-    names.append('deposite')
+        names.append('anet_score')
+    names.append('app_fee_doc')
     names.append('abroad_edu_certificate')
     return names
 
@@ -281,9 +281,15 @@ def review_document(request, applicant_id):
             return HttpResponseRedirect(reverse('review-ticket'))
     else:
         data = prepare_applicant_review_data(applicant)
+
+    if applicant.online_doc_submission():
+        appdocs = applicant.appdocs
+    else:
+        appdocs = None
         
     return render_to_response("review/show.html",
                               { 'applicant': applicant,
+                                'appdocs': appdocs,
                                 'submission_info': submission_info,
                                 'review_data': data })
 
