@@ -5,7 +5,13 @@
   สถิติพื้นฐาน:
   <ul>
     <li>จำนวนผู้ลงทะเบียนเว็บไซต์: {{ stat.app_registered }}</li>
-    <li>จำนวนผู้ส่งใบสมัครออนไลน์: {{ stat.app_submitted }} (ส่งทางไปรษณีย์ {{ stat.app_submitted_postal }} คน, ส่งออนไลน์ {{ stat.app_submitted_online }} คน)</li>
+    <li>จำนวนผู้ส่งใบสมัครออนไลน์: {{ stat.app_submitted }} (ส่งหลักฐานทางไปรษณีย์ {{ stat.app_submitted_postal }} คน, ส่งหลักฐานออนไลน์ {{ stat.app_submitted_online }} คน)</li>
+    <li>ได้รับใบสมัครแล้ว {{ stat.app_received.total }} คน
+      <ul>
+	<li>ตรวจสอบแล้ว: {{ stat.app_received.reviewed }}</li>
+	<li>รอตรวจสอบ: {{ stat.app_received.not_reviewed }}</li>
+      </ul>
+    </li>
   </ul>
 </p>
 {% endblock %}
