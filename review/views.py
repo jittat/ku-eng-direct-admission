@@ -92,7 +92,7 @@ def verify_ticket(request):
 
             applicants = find_applicants(form)
 
-            if applicants.count()>20:
+            if (not type(applicants)==list) and (applicants.count()>20):
                 name_only_mode = True
                 notice = 'ผลลัพธ์ที่ได้มากเกินไป แสดงเฉพาะชื่อ'
 
