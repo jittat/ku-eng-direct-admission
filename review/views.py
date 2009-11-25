@@ -166,11 +166,7 @@ def toggle_received_status(request, applicant_id):
     submission_info = applicant.submission_info
     
     if not applicant.online_doc_submission():
-        if submission_info.has_received_doc():
-            submission_info.doc_received_at = None
-        else:
-            submission_info.doc_received_at = datetime.now()
-        submission_info.save()
+        submission_info.toggle_doc_received_at()
 
         return render_to_response("review/include/doc_received_status_block.html",
                                   {'has_received_doc':
@@ -258,6 +254,9 @@ def prepare_applicant_review_data(applicant):
 def review_document(request, applicant_id):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     submission_info = applicant.submission_info
+
+    # auto set received flag
+    submission_info.set_doc_received_at_now_if_not()
 
     if not submission_info.can_be_reviewed():
         request.session['notice'] = 'ยังไม่สามารถตรวจสอบเอกสารได้เนื่องจากยังไม่พ้นช่วงเวลาสำหรับการแก้ไข'

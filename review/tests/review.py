@@ -20,41 +20,41 @@ ADMIN_PASSWORD = 'testadmin'
 ALL_PASSED_REVIEW_FORM_DATA = {
     'abroad_edu_certificate-applicant_note':'',
     'abroad_edu_certificate-internal_note':'',
-    'deposite-applicant_note':'',
-    'deposite-internal_note':'',
-    'deposite-is_passed':'on',
+    'app_fee_doc-applicant_note':'',
+    'app_fee_doc-internal_note':'',
+    'app_fee_doc-is_passed':'on',
     'edu_certificate-applicant_note':'',
     'edu_certificate-internal_note':'',
     'edu_certificate-is_passed':'on',
-    'id_card-applicant_note':'',
-    'id_card-internal_note':'',
-    'id_card-is_passed':'on',
-    'image-applicant_note':'',
-    'image-internal_note':'',
-    'image-is_passed':'on',
-    'anet-applicant_note':'',
-    'anet-internal_note':'',
-    'anet-is_passed':'on',
+    'nat_id-applicant_note':'',
+    'nat_id-internal_note':'',
+    'nat_id-is_passed':'on',
+    'picture-applicant_note':'',
+    'picture-internal_note':'',
+    'picture-is_passed':'on',
+    'anet_score-applicant_note':'',
+    'anet_score-internal_note':'',
+    'anet_score-is_passed':'on',
     'submit':'เก็บข้อมูล',
     }
 
 DEPOSITE_MISSING_REVIEW_FORM_DATA = {
     'abroad_edu_certificate-applicant_note':'',
     'abroad_edu_certificate-internal_note':'',
-    'deposite-applicant_note':'หมายเลขไม่มี',
-    'deposite-internal_note':'',
+    'app_fee_doc-applicant_note':'หมายเลขไม่มี',
+    'app_fee_doc-internal_note':'',
     'edu_certificate-applicant_note':'',
     'edu_certificate-internal_note':'',
     'edu_certificate-is_passed':'on',
-    'id_card-applicant_note':'',
-    'id_card-internal_note':'',
-    'id_card-is_passed':'on',
-    'image-applicant_note':'',
-    'image-internal_note':'',
-    'image-is_passed':'on',
-    'anet-applicant_note':'',
-    'anet-internal_note':'',
-    'anet-is_passed':'on',
+    'nat_id-applicant_note':'',
+    'nat_id-internal_note':'',
+    'nat_id-is_passed':'on',
+    'picture-applicant_note':'',
+    'picture-internal_note':'',
+    'picture-is_passed':'on',
+    'anet_score-applicant_note':'',
+    'anet_score-internal_note':'',
+    'anet_score-is_passed':'on',
     'submit':'เก็บข้อมูล',
     }
 
@@ -132,6 +132,7 @@ class ReviewTestCase(TransactionTestCase):
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
         response = self.client.get('/apply/status/')
+
         self.assertContains(response, "ตรวจสอบเรียบร้อย")
 
     def test_review_status_update_failed(self):
@@ -148,6 +149,7 @@ class ReviewTestCase(TransactionTestCase):
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
         response = self.client.get('/apply/status/')
+
         self.assertNotContains(response, "ตรวจสอบเรียบร้อย")
         self.assertContains(response, "หลักฐานใบนำฝาก")
         self.assertContains(response, "หมายเลขไม่มี")

@@ -335,6 +335,20 @@ class SubmissionInfo(models.Model):
                 self.submitted_at + 
                 settings.SUBMISSION_CHANGE_GRACE_PERIOD)
 
+    def set_doc_received_at_now_if_not(self, save=True):
+        if self.doc_received_at==None:
+            self.doc_received_at = datetime.now()
+            if save:
+                self.save()
+
+    def toggle_doc_received_at(self, save=True):
+        if self.has_received_doc():
+            self.doc_received_at = None
+        else:
+            self.doc_received_at = datetime.now()
+        if save:
+            self.save()
+
     class Meta:
         ordering = ['applicantion_id']
 
