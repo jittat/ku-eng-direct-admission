@@ -70,6 +70,20 @@ def find_applicants(form):
     else:
         return []
 
+def put_minimal_info_to_applicants(applicants):
+
+    def ticket_number(self):
+        return '-'
+    def verification_number(self):
+        return '-'
+
+    import new
+
+    for applicant in applicants:
+        applicant.ticket_number = new.instancemethod(ticket_number,applicant)
+        applicant.verification_number = new.instancemethod(verification_number,applicant)
+        applicant.is_submitted = False
+
 @login_required
 def verify_ticket(request):
 
@@ -81,7 +95,6 @@ def verify_ticket(request):
     
     applicants = []
     results = []
-    name_only_mode = False
 
     if request.method=='POST':
         form = ApplicantSearchByIDForm(request.POST)
@@ -91,9 +104,10 @@ def verify_ticket(request):
 
             applicants = find_applicants(form)
 
+            # when there are too many results, put empty stub to
+            # prevent huge database load.
             if (not type(applicants)==list) and (applicants.count()>20):
-                name_only_mode = True
-                notice = 'ผลลัพธ์ที่ได้มากเกินไป แสดงเฉพาะชื่อ'
+                put_minimal_info_to_applicants(applicants)
 
             if applicants != None and len(applicants) > 0:
                 if (('search-and-show' in request.POST) 
@@ -104,24 +118,17 @@ def verify_ticket(request):
                                                         args=[applicants[0].id]))
 
                 for applicant in applicants:
-                    if not name_only_mode:
-                        match_ticket = (applicant.ticket_number()==str(ticket))
-                        match_verinum = (
-                            applicant.verification_number().startswith(verinum))
-                        results.append({ 'ticket': match_ticket,
-                                         'verinum': match_verinum })
-                    else:
-                        results.append({ 'ticket': False,
-                                         'verinum': False })
-                        
-
+                    match_ticket = (applicant.ticket_number()==str(ticket))
+                    match_verinum = (
+                        applicant.verification_number().startswith(verinum))
+                    results.append({ 'ticket': match_ticket,
+                                     'verinum': match_verinum })
     else:
         form = ApplicantSearchByIDForm()
 
     return render_to_response("review/ticket_search.html",
                               { 'form': form,
                                 'notice': notice,
-                                'name_only_mode': name_only_mode,
                                 'applicants_results': zip(applicants,results) })
 
 
@@ -325,3 +332,27 @@ def review_document(request, applicant_id):
                                 'submission_info': submission_info,
                                 'review_data': data })
 
+
+@login_required
+def list_applicant(request, complete=True):
+    applicants = []
+    display = {}
+    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=complete).select_related(depth=1).order_by('-doc_reviewed_at')
+    applicant_count = submission_infos.count()
+
+    submission_infos = submission_infos.all()[:100]
+    applicants = []
+    for s in submission_infos:
+        app = s.applicant
+        app.submission_info = s
+        applicants.append(app)
+
+    display['ticket_number']=True
+    display['doc_reviewed_at']=True
+
+    return render_to_response("review/search.html",
+                              { 'form': None,
+                                'applicant_count': applicant_count,
+                                'applicants': applicants,
+                                'force_review_link': True,
+                                'display': display })

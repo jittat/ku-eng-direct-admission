@@ -8,10 +8,12 @@
 {% endblock %}
 
 {% block regis-body %}
-  <form action="{% url review-search %}" method="post">
-    {{ form }}
-    <input type="submit" name="search" value="ค้นข้อมูล"/>
-  </form>
+  {% if form %}
+    <form action="{% url review-search %}" method="post">
+      {{ form }}
+      <input type="submit" name="search" value="ค้นข้อมูล"/>
+    </form>
+  {% endif %}
 
   {% if applicant_count %}
     <p>ผลลัพธ์ทั้งหมด {{ applicant_count }} รายการ แสดงผลแค่ 200 รายการแรก</p>
@@ -21,15 +23,33 @@
 
   <table class="applicants">
     <tr>
+      {% if display.ticket_number %}
+        <th>หมายเลขผู้สมัคร</th>
+      {% endif %}
       <th>ชื่อ</th>
       {% if display.edu %}<th>โรงเรียน</th>{% endif %}
       <th>สถานะการยื่นใบสมัคร</th>
+      {% if display.doc_reviewed_at %}<th>ตรวจเมื่อ</th>{% endif %}
+      {% if force_review_link %}
+        <th></th>
+      {% endif %}
     </tr>
     {% for applicant in applicants %}
       <tr id="app-{{ applicant.id }}-row" class="{% cycle 'odd' 'even' %}">
+	{% if display.ticket_number %}
+	  <td>{{ applicant.ticket_number }}</td>
+	{% endif %}
 	<td>{{ applicant.full_name }}</td>
-	{% if display.edu %}<td>{{ applicant.education.school_name }}</td>{% endif %}
+	{% if display.edu %}
+	  <td>{{ applicant.education.school_name }}</td>
+        {% endif %}
 	<td>{% if applicant.is_submitted %}ยื่นใบสมัครแล้ว{% else %}ยังไม่ยื่น{% endif %}</td>
+	{% if display.doc_reviewed_at %}
+	  <td>{{ applicant.submission_info.doc_reviewed_at|date:"H:i, j N" }}</td>
+	{% endif %}
+	{% if force_review_link %}
+	<td>[<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
+	{% endif %}
       </tr>
     {% empty %}
       <tr><td colspan="7">ไม่พบผู้สมัคร</td></tr>

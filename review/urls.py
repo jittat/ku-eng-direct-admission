@@ -9,4 +9,6 @@ urlpatterns = patterns(
     url(r'^show/(\d+)/$', 'review_document', name='review-show'),
     url(r'^received/toggle/(\d+)/$', 'toggle_received_status', 
         name='review-toggle-received-status'),
+    url(r'^list/complete/$', 'list_applicant',
+        { 'complete': True }, name='review-list-complete'),
 )
