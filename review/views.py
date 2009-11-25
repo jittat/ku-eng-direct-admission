@@ -50,7 +50,6 @@ def find_applicants(form):
     ticket = form.cleaned_data['ticket_number']
     verinum = form.cleaned_data['verification_number']
     full_name = form.cleaned_data['full_name']
-    print full_name
     if ticket:
         submission_info = SubmissionInfo.find_by_ticket_number(str(ticket))
         if submission_info!=None:
