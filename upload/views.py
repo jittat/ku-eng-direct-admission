@@ -11,7 +11,7 @@ from django.conf import settings
 
 from commons.decorators import applicant_required
 from commons.email import send_submission_confirmation_by_email
-from commons.utils import random_string
+from commons.utils import random_string, serve_file
 
 from application.views.status import submitted_applicant_required
 from application.views.form_views import redirect_to_applicant_first_page
@@ -225,44 +225,17 @@ def create_thumbnail(applicant, field_name, filename):
     im.save(full_preview_filename,'png')
 
 
-def serve_file(filename):
-    import mimetypes
-    import stat
-    from django.utils.http import http_date
-
-    statobj = os.stat(filename)
-    mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-    contents = open(filename, 'rb').read()
-    response = HttpResponse(contents, mimetype=mimetype)
-    response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
-    response["Content-Length"] = len(contents)
-    return response
-
-
 @applicant_required
-def doc_thumbnail(request, field_name):
+def doc_get_img(request, field_name, thumbnail=True):
     if not AppDocs.valid_field_name(field_name):
         return HttpResponseServerError('Invalid field')
 
     docs = request.applicant.get_applicant_docs_or_none()
     if docs!=None:
-        filename = docs.thumbnail_path(field_name)
-        if os.path.exists(filename):
-            return serve_file(filename)
+        if thumbnail:
+            filename = docs.thumbnail_path(field_name)
         else:
-            return HttpResponseNotFound()
-    else:
-        return HttpResponseNotFound()
-
-
-@applicant_required
-def doc_preview(request, field_name):
-    if not AppDocs.valid_field_name(field_name):
-        return HttpResponseServerError('Invalid field')
-
-    docs = request.applicant.get_applicant_docs_or_none()
-    if docs!=None:
-        filename = docs.preview_path(field_name)
+            filename = docs.preview_path(field_name)
         if os.path.exists(filename):
             return serve_file(filename)
         else:

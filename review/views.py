@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import os
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
@@ -9,8 +10,11 @@ from django.core.urlresolvers import reverse
 
 from django import forms
 
+from commons.utils import serve_file
+
 from application.models import Applicant, Education
 from application.models import SubmissionInfo
+from upload.models import AppDocs
 
 from commons.email import send_validation_successful_by_email
 from commons.email import send_validation_error_by_email
@@ -368,3 +372,29 @@ def list_applicant(request, reviewed=True):
                                 'applicants': applicants,
                                 'force_review_link': True,
                                 'display': display })
+
+
+@login_required
+def doc_view(request, applicant_id, filename):
+    print applicant_id, filename
+
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    docs = applicant.get_applicant_docs_or_none()
+
+
+    if docs!=None:
+        print filename
+
+        field_name, ext = os.path.splitext(filename)
+
+        if not AppDocs.valid_field_name(field_name):
+            return HttpResponseServerError('Invalid field')
+
+        full_path = docs.__getattribute__(field_name).path
+
+        if os.path.exists(full_path):
+            return serve_file(full_path)
+        else:
+            return HttpResponseNotFound()
+    else:
+        return HttpResponseNotFound()

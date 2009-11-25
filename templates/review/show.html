@@ -1,10 +1,13 @@
 {% extends "review/base.html" %}
 
 {% load adm_media %}
+{% load adm_review %}
 
 {% block extra-head %}
   {{ block.super }}
   <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
+  <link href="{% media_url %}/facebox/facebox.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="{% media_url %}/facebox/facebox.js" type="text/javascript"></script> 
 {% endblock %}
 
 {% block extra-title-bar %}ตรวจสอบเอกสาร | {% endblock %}
@@ -26,7 +29,11 @@
       {% for item in review_data %}
         {% with item.field as f %}
         <tr>  
-	  <td>{{ f.name }} <a id="doc-{{ f.short_name }}-link" href="#">[show]</a></td>
+	  <td>
+	    {{ f.name }} 
+	    <a id="doc-{{ f.short_name }}-link" href="#">[show]</a>
+	    {% if appdocs %}{% doc_view applicant f.short_name %}{% endif %}
+	  </td>
 	  <td>{{ item.form.is_passed }}</td>
 	  <td>
 	    {{ item.form.applicant_note }}
@@ -101,6 +108,10 @@
       $("#doc-abroad_edu_certificate-link").hide();
 
       register_doc_recevied_toggle_click();
+
+      $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";
+      $.facebox.settings.closeImage = "{% media_url %}/facebox/closelabel.gif";
+      $('a[rel*=facebox]').facebox();
     });
   </script>
 {% endblock %}

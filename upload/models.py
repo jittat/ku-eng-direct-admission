@@ -104,6 +104,10 @@ class AppDocs(models.Model):
         return get_doc_fullpath(self.applicant, 
                                 get_field_preview_filename(field_name))
 
+    def fulldoc_path(self, field_name):
+        image = self.__getattribute__(field_name)
+        return image.path
+
     def get_upload_fields(self):
         applicant = self.applicant
         field_list = list(AppDocs.FormMeta.upload_fields)
