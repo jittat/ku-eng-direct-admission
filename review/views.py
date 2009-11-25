@@ -42,8 +42,34 @@ def index(request):
                               { 'stat': stat })
 
 class ApplicantSearchByIDForm(forms.Form):
-    ticket_number = forms.IntegerField()
+    ticket_number = forms.IntegerField(required=False)
+    full_name = forms.CharField(required=False)
     verification_number = forms.CharField(required=False)
+
+def find_applicants(form):
+    ticket = form.cleaned_data['ticket_number']
+    verinum = form.cleaned_data['verification_number']
+    full_name = form.cleaned_data['full_name']
+    print full_name
+    if ticket:
+        submission_info = SubmissionInfo.find_by_ticket_number(str(ticket))
+        if submission_info!=None:
+            return [submission_info.applicant]
+        else:
+            return []
+    elif full_name:
+        # search by name
+        applicants = []
+        items = full_name.strip().split(' ')
+        if items[0]!='':
+            applicants = Applicant.objects.all()
+            applicants = applicants.filter(first_name__contains=items[0])
+            if len(items)>1 and items[1]!='':
+                applicants = applicants.filter(last_name__contains=items[1])
+            applicants = applicants.filter(is_submitted=True)
+        return applicants
+    else:
+        return []
 
 @login_required
 def verify_ticket(request):
@@ -56,19 +82,21 @@ def verify_ticket(request):
     
     applicants = []
     results = []
+    name_only_mode = False
 
     if request.method=='POST':
         form = ApplicantSearchByIDForm(request.POST)
         if form.is_valid():
             ticket = form.cleaned_data['ticket_number']
             verinum = form.cleaned_data['verification_number']
-            submission_info = SubmissionInfo.find_by_ticket_number(str(ticket))
-            if submission_info!=None:
-                try:
-                    applicants = [submission_info.applicant]
-                except:
-                    pass
 
+            applicants = find_applicants(form)
+
+            if applicants.count()>20:
+                name_only_mode = True
+                notice = 'ผลลัพธ์ที่ได้มากเกินไป แสดงเฉพาะชื่อ'
+
+            if applicants != None and len(applicants) > 0:
                 if (('search-and-show' in request.POST) 
                     and (len(applicants)==1) and
                     (applicants[0].submission_info.can_be_reviewed()) and
@@ -77,11 +105,16 @@ def verify_ticket(request):
                                                         args=[applicants[0].id]))
 
                 for applicant in applicants:
-                    match_ticket = (applicant.ticket_number()==str(ticket))
-                    match_verinum = (
-                        applicant.verification_number().startswith(verinum))
-                    results.append({ 'ticket': match_ticket,
-                                     'verinum': match_verinum })
+                    if not name_only_mode:
+                        match_ticket = (applicant.ticket_number()==str(ticket))
+                        match_verinum = (
+                            applicant.verification_number().startswith(verinum))
+                        results.append({ 'ticket': match_ticket,
+                                         'verinum': match_verinum })
+                    else:
+                        results.append({ 'ticket': False,
+                                         'verinum': False })
+                        
 
     else:
         form = ApplicantSearchByIDForm()
@@ -89,6 +122,7 @@ def verify_ticket(request):
     return render_to_response("review/ticket_search.html",
                               { 'form': form,
                                 'notice': notice,
+                                'name_only_mode': name_only_mode,
                                 'applicants_results': zip(applicants,results) })
 
 

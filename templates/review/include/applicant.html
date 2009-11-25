@@ -1,20 +1,31 @@
 {% load adm_media %}
-<td>{{ applicant.ticket_number }}</td>
+<td>
+  {% if not name_only_mode %}
+    {{ applicant.ticket_number }}
+  {% endif %}
+</td>
 <td>
   {% passed_icon result.ticket %}
 </td>
 <td>{{ applicant.full_name }}</td>
-<td>{{ applicant.verification_number|slice:":8" }}</td>
+<td>
+  {% if not name_only_mode %}
+    {{ applicant.verification_number|slice:":8" }}
+  {% endif %}
+</td>
 <td>
   {% passed_icon result.verinum %}
 </td>
 <td>
-  {{ applicant.submission_info.submitted_at|date:"H:i, j N" }}
+  {% if not name_only_mode %}
+    {{ applicant.submission_info.submitted_at|date:"H:i, j N" }}
+  {% endif %}
 </td>
 <td>
   {{ applicant.get_doc_submission_method_display }}
 </td>
 <td>
+{% if not name_only_mode %}
   {% include "review/include/doc_received_status.html" %}
   {% if applicant.submission_info.has_been_reviewed %}
     | ตรวจเอกสารแล้ว ({% if applicant.submission_info.doc_reviewed_complete %}ผ่าน{% else %}ไม่ผ่าน{% endif %}{% passed_icon applicant.submission_info.doc_reviewed_complete %})
@@ -28,4 +39,5 @@
   {% else %}
     | ระบบตรวจสำหรับออนไลน์กำลังพัฒนา
   {% endif %}
+{% endif %}
 </td>

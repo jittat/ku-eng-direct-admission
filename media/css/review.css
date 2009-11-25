@@ -49,3 +49,12 @@ table.applicants {
     margin: 0; }
   #doc-preview .section {
     line-height: 120%; }
+
+.search-form {
+  margin: 2px 0 2px 0;
+  border: 1px solid gray;
+  background: #f0fff0; }
+  .search-form #id_verification_number {
+    width: 100px; }
+  .search-form #id_ticket_number {
+    width: 100px; }

@@ -8,12 +8,15 @@
 {% endblock %}
 
 {% block regis-body %}
-  <form action="{% url review-ticket %}" method="post">
-    หมายเลขประจำตัว: {{ form.ticket_number }}{{ form.ticket_number.errors }} | 
-    หมายเลขตรวจสอบ: {{ form.verification_number }}{{ form.verification_number.errors }} |
-    <input type="submit" name="search-and-show" value="ค้นแล้วไปหน้าตรวจสอบ"/>
-    <input type="submit" name="search" value="ค้นข้อมูล"/>
-  </form>
+  <div class="search-form">
+    <form action="{% url review-ticket %}" method="post">
+      หมายเลข: {{ form.ticket_number }}{{ form.ticket_number.errors }} | 
+      ชื่อ: {{ form.full_name }} |
+      หมายเลขตรวจสอบ: {{ form.verification_number }}{{ form.verification_number.errors }} |
+      <input type="submit" name="search-and-show" value="ค้นแล้วไปหน้าตรวจสอบ"/>
+      <input type="submit" name="search" value="ค้นข้อมูล"/>
+    </form>
+  </div>
 
   {% if notice %}
     <div class="notice-bar">
