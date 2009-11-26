@@ -1,0 +1,19 @@
+{% extends "manual/base.html" %}
+
+{% block extra-title-bar %}ป้อนใบสมัคร - ข้อมูลผู้สมัคร | {% endblock %}
+
+{% block regis-body %}
+
+<div class="manual-app-info-bar">
+  ป้อนข้อมูลใบสมัครของ {{ applicant.full_name }} | ข้อมูลส่วนตัวผู้สมัคร
+</div>
+<form action="{% url manual-personal applicant.id %}" method="post">
+  <table class="header-left">
+    {{ form.as_table }}
+  </table>
+  <div class="submission-bar">
+    <input type="submit" name="submit" value="เก็บข้อมูล"/>
+    <input type="submit" name="cancel" value="ยกเลิก"/>
+  </div>
+</form>
+{% endblock %}

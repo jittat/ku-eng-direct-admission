@@ -7,6 +7,8 @@
   <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
 {% endblock %}
 
+{% block extra-title-bar %}ค้นหาเพื่อตรวจสอบ | {% endblock %}
+
 {% block regis-body %}
   <div class="search-form">
     <form action="{% url review-ticket %}" method="post">

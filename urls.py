@@ -18,6 +18,7 @@ urlpatterns = patterns(
     (r'^apply/', include('adm.application.urls')),
     (r'^doc/', include('adm.upload.urls')),
     (r'^review/', include('adm.review.urls')),
+    (r'^manual/', include('adm.manual.urls')),
 
     # authentication
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),

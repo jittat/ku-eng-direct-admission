@@ -1,0 +1,37 @@
+{% extends "manual/base.html" %}
+
+{% block extra-title-bar %}ป้อนใบสมัคร | {% endblock %}
+
+{% block regis-body %}
+
+<div class="new-manual-app-form">
+  <form action="{% url manual-create %}" method="post">
+    {{ form }} 
+    <input type="submit" value="เริ่มต้นสร้างใบสมัครใหม่"/>
+  </form>
+</div>
+
+{% if notice %}
+  <div class="notice-bar">
+    <span class="notice">{{ notice }}</span>
+  </div>
+{% endif %}
+
+<h3>รายชื่อใบสมัครที่ยังกรอกไม่เสร็จ</h3>
+
+<table class="applicants">
+  <tr>
+    <th>ชื่อ</th>
+    <th>อีเมล์</th>
+    <th></th>
+  </tr>
+  {% for applicant in active_applicants %}
+    <tr class="{% cycle 'odd' 'even' %}">
+      <td>{{ applicant.full_name }}</td>
+      <td>{{ applicant.get_email }}</td>
+      <td>[<a href="{% url manual-personal applicant.id %}">กรอกข้อมูล</a>]</td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

@@ -26,6 +26,8 @@ class Applicant(models.Model):
 
     # application data
 
+    is_submitted = models.BooleanField(default=False)
+
     UNDECIDED_METHOD = 0
     SUBMITTED_BY_MAIL = 1
     SUBMITTED_ONLINE = 2
@@ -33,10 +35,11 @@ class Applicant(models.Model):
                                  (SUBMITTED_BY_MAIL,'ส่งทางไปรษณีย์'),
                                  (SUBMITTED_ONLINE,'ส่งออนไลน์')]
 
-    is_submitted = models.BooleanField(default=False)
     doc_submission_method = models.IntegerField(
         choices=SUBMISSION_METHOD_CHOICES,
         default=UNDECIDED_METHOD)
+
+    is_offline = models.BooleanField(default=False)
 
     # for related model cache
 
@@ -87,6 +90,10 @@ class Applicant(models.Model):
         else:
             return applicants[0]
 
+    @staticmethod
+    def get_active_offline_applicant():
+        return Applicant.objects.filter(is_offline=True).filter(is_submitted=False)
+
     # accessor methods
 
     def __unicode__(self):
@@ -94,6 +101,16 @@ class Applicant(models.Model):
 
     def full_name(self):
         return "%s %s %s" % (self.title, self.first_name, self.last_name)
+
+    def get_email(self):
+        if not self.is_offline:
+            return self.email
+        else:
+            idx = self.email.find('-')
+            if idx!=-1:
+                return self.email[(idx+1):]
+            else:
+                return self.email
 
     def has_personal_info(self):
         result = self.check_related_model('personal_info')
@@ -104,6 +121,12 @@ class Applicant(models.Model):
                 return self.personal_info != None
             except PersonalInfo.DoesNotExist:
                 return False
+
+    def get_personal_info_or_none(self):
+        if self.has_personal_info():
+            return self.personal_info
+        else:
+            return None
 
     def has_address(self):
         result = self.check_related_model('address')
@@ -178,7 +201,7 @@ class Applicant(models.Model):
         self.hashed_password = full_password
 
 
-    def random_password(self):
+    def random_password(self, length=5):
         import random
         password = random_string(5)
         self.set_password(password)

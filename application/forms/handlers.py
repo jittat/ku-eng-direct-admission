@@ -3,7 +3,9 @@
 from django.conf import settings
 
 from application.models import Major, MajorPreference
-from application.forms import EducationForm
+from application.models import Address, ApplicantAddress
+from application.forms import EducationForm, PersonalInfoForm
+from application.forms import AddressForm
 
 def extract_ranks(post_data, major_list):
     """
@@ -60,20 +62,87 @@ def handle_major_form(request):
     return (False, major_ranks, errors)
 
 
-def handle_education_form(request, old_education):
-    applicant = request.applicant
-    form = EducationForm(request.POST, 
-                         instance=old_education)
+def handle_basic_form_save(form_class, field_name, request, old_data, 
+                           applicant=None):
+    if applicant==None:
+        applicant = request.applicant
+    form = form_class(request.POST, 
+                      instance=old_data)
 
     if form.is_valid():
-        applicant_education = form.save(commit=False)
-        applicant_education.applicant = applicant
-        applicant_education.save()
-        applicant.add_related_model('educational_info',
+        data = form.save(commit=False)
+        data.applicant = applicant
+        data.save()
+        applicant.add_related_model(field_name,
                                     save=True,
                                     smart=True)
-
         return (True, form)
     else:
         return (False, form)
+
+
+def handle_education_form(request, old_education, applicant=None):
+    return handle_basic_form_save(EducationForm,
+                                  'educational_info',
+                                  request,
+                                  old_education,
+                                  applicant)
+
+
+def handle_personal_info_form(request, old_info, applicant=None):
+    return handle_basic_form_save(PersonalInfoForm,
+                                  'personal_info',
+                                  request,
+                                  old_info,
+                                  applicant)
+
+def handle_address_form(request, applicant=None):
+    if applicant==None:
+        applicant = request.applicant
+
+    have_old_address = applicant.has_address()
+
+    if have_old_address:
+        old_applicant_address = applicant.address
+        old_home_address = applicant.address.home_address
+        old_contact_address = applicant.address.contact_address
+    else:
+        # still need this for form instances
+        old_home_address, old_contact_address = None, None
+
+    if (request.method == 'POST') and ('cancel' not in request.POST):
+
+        home_address_form = AddressForm(request.POST, 
+                                        prefix="home",
+                                        instance=old_home_address)
+        contact_address_form = AddressForm(request.POST, 
+                                           prefix="contact",
+                                           instance=old_contact_address)
+
+        if (home_address_form.is_valid() and
+            contact_address_form.is_valid()):
+            home_address = home_address_form.save()
+            contact_address = contact_address_form.save()
+
+            applicant_address = ApplicantAddress(
+                applicant=applicant,
+                home_address=home_address,
+                contact_address=contact_address)
+
+            if have_old_address:
+                applicant_address.id = old_applicant_address.id
+
+            applicant_address.save()
+            applicant.add_related_model('address',
+                                        save=True,
+                                        smart=True)
+
+            return (True, home_address_form, contact_address_form)
+    else:
+        home_address_form = AddressForm(prefix="home",
+                                        instance=old_home_address)
+        contact_address_form = AddressForm(prefix="contact",
+                                           instance=old_contact_address)
+
+    return (False, home_address_form, contact_address_form)
 

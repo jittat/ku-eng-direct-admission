@@ -1,0 +1,28 @@
+{% extends "commons/base.html" %}
+
+{% block extra-head %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/review.css" />
+<link rel="stylesheet" type="text/css" href="{% media_url %}/css/manual.css" />
+{% endblock %}
+
+{% block title %}หน่วยทะเบียน{% endblock %}
+
+{% block body %}
+  <div class="admin-bar">หน่วยทะเบียนและประมวลผล คณะวิศวกรรมศาสตร์</div>
+  <div class="admin-menu">
+    <ul>
+      <li>เมนู:</li>
+      <li>[<a href="{% url review-index %}">หน้าแรกของระบบดูแล</a>]<li>
+      <li>[<a href="{% url review-ticket %}">ค้นหาด้วยหมายเลขและชื่อเพื่อการตรวจสอบ</a>]</li>
+      <li>[<a href="{% url review-search %}">ค้นหาอื่น ๆ</a>]</li>
+      <li>[<a href="{% url manual-index %}">ป้อนใบสมัคร</a>]</li>
+      {% block extra-menu %}{% endblock %}
+      <li>[<a href="{% url django.contrib.auth.views.logout %}">ออกจากระบบ</a>]</li>
+    </ul>
+    <br style="clear: both"/>
+  </div>
+  {% block regis-body %}
+  {% endblock %}
+  <br style="clear: both"/>
+{% endblock %}

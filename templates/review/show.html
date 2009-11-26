@@ -7,6 +7,8 @@
   <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/review.js"></script>
 {% endblock %}
 
+{% block extra-title-bar %}ตรวจสอบเอกสาร | {% endblock %}
+
 {% block regis-body %}
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 

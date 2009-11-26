@@ -21,6 +21,8 @@ from application.models import Major, MajorPreference
 from application.forms import PersonalInfoForm, AddressForm, EducationForm
 from application.forms.handlers import handle_major_form
 from application.forms.handlers import handle_education_form
+from application.forms.handlers import handle_personal_info_form
+from application.forms.handlers import handle_address_form
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -86,22 +88,11 @@ def redirect_to_applicant_first_page(applicant):
 @active_applicant_required
 def applicant_personal_info(request):
     applicant = request.applicant
-
-    if applicant.has_personal_info():
-        old_info = applicant.personal_info
-    else:
-        old_info = None
+    old_info = applicant.get_personal_info_or_none()
 
     if (request.method == 'POST') and ('cancel' not in request.POST):
-        form = PersonalInfoForm(request.POST, instance=old_info)
-        if form.is_valid():
-            personal_info = form.save(commit=False)
-            personal_info.applicant = applicant
-            personal_info.save()
-            applicant.add_related_model('personal_info',
-                                        save=True, 
-                                        smart=True)
-
+        result, form = handle_personal_info_form(request, old_info)
+        if result:
             return HttpResponseRedirect(reverse('apply-address'))
     else:
         form = PersonalInfoForm(instance=old_info)
@@ -114,55 +105,15 @@ def applicant_personal_info(request):
 
 @active_applicant_required
 def applicant_address(request):
-    applicant = request.applicant
-    have_old_address = applicant.has_address()
+    result, hform, cform = handle_address_form(request)
 
-    if have_old_address:
-        old_applicant_address = applicant.address
-        old_home_address = applicant.address.home_address
-        old_contact_address = applicant.address.contact_address
-    else:
-        # still need this for form instances
-        old_home_address, old_contact_address = None, None
+    if result:
+        return HttpResponseRedirect(reverse('apply-edu'))
 
-    if (request.method == 'POST') and ('cancel' not in request.POST):
-
-        home_address_form = AddressForm(request.POST, 
-                                        prefix="home",
-                                        instance=old_home_address)
-        contact_address_form = AddressForm(request.POST, 
-                                           prefix="contact",
-                                           instance=old_contact_address)
-
-        if (home_address_form.is_valid() and
-            contact_address_form.is_valid()):
-            home_address = home_address_form.save()
-            contact_address = contact_address_form.save()
-
-            applicant_address = ApplicantAddress(
-                applicant=applicant,
-                home_address=home_address,
-                contact_address=contact_address)
-
-            if have_old_address:
-                applicant_address.id = old_applicant_address.id
-
-            applicant_address.save()
-            applicant.add_related_model('address',
-                                        save=True,
-                                        smart=True)
-
-            return HttpResponseRedirect(reverse('apply-edu'))
-    else:
-        home_address_form = AddressForm(prefix="home",
-                                        instance=old_home_address)
-        contact_address_form = AddressForm(prefix="contact",
-                                           instance=old_contact_address)
-
-    form_step_info = build_form_step_info(1,applicant)
+    form_step_info = build_form_step_info(1,request.applicant)
     return render_to_response('application/address.html', 
-                              { 'home_address_form': home_address_form,
-                                'contact_address_form': contact_address_form,
+                              { 'home_address_form': hform,
+                                'contact_address_form': cform,
                                 'form_step_info': form_step_info })
 
 
