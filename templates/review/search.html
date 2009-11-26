@@ -48,8 +48,12 @@
 	  <td>{{ applicant.submission_info.doc_reviewed_at|date:"H:i, j N" }}</td>
 	{% endif %}
 	{% if force_review_link %}
-	<td>[<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
-	{% endif %}
+	  <td>
+	    {% if not applicant.online_doc_submission %}
+  	      [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
+	    {% endif %}
+	  </td>
+        {% endif %}
       </tr>
     {% empty %}
       <tr><td colspan="7">ไม่พบผู้สมัคร</td></tr>

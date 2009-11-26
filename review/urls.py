@@ -11,4 +11,6 @@ urlpatterns = patterns(
         name='review-toggle-received-status'),
     url(r'^list/complete/$', 'list_applicant',
         { 'complete': True }, name='review-list-complete'),
+    url(r'^list/wait/$', 'list_applicant',
+        { 'complete': False }, name='review-list-wait'),
 )

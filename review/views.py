@@ -340,7 +340,7 @@ def list_applicant(request, complete=True):
     submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=complete).select_related(depth=1).order_by('-doc_reviewed_at')
     applicant_count = submission_infos.count()
 
-    submission_infos = submission_infos.all()[:100]
+    submission_infos = submission_infos.all()[:200]
     applicants = []
     for s in submission_infos:
         app = s.applicant
