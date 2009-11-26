@@ -25,14 +25,14 @@ urlpatterns = patterns(
         name='apply-incomplete'),
 
     url(r'^status/$', 'status.index', name='status-index'),
-    url(r'^status/show$', 'status.show', name='status-show'),
-    url(r'^status/ticket$', 'status.show_ticket', name='status-show-ticket'),
+    url(r'^status/show/$', 'status.show', name='status-show'),
+    url(r'^status/ticket/$', 'status.show_ticket', name='status-show-ticket'),
 
     # upadte
-    url(r'^update/majors$', 'update.update_majors', name='update-majors'),
-    url(r'^update/education$', 'update.update_education', 
+    url(r'^update/majors/$', 'update.update_majors', name='update-majors'),
+    url(r'^update/education/$', 'update.update_education', 
         name='update-education'),
-    url(r'^update/postal_sub$', 'update.update_to_postal_submission', 
+    url(r'^update/postal_sub/$', 'update.update_to_postal_submission', 
         name='update-postal-sub'),
 
     # Example:

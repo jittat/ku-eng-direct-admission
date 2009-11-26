@@ -58,22 +58,14 @@ def update_education(request):
         
     old_education = applicant.get_educational_info_or_none()
 
-    if request.method == 'POST': 
+    result, form = handle_education_form(request, old_education)
 
-        if 'cancel' not in request.POST:
-
-            result, form = handle_education_form(request, old_education)
-
-            if result:
-                request.session['notice'] = 'การแก้ไขข้อมูลการศึกษาเรียบร้อย'
-                return HttpResponseRedirect(reverse('status-index'))
-
-        else:
-            request.session['notice'] = 'ข้อมูลการศึกษาไม่ถูกแก้ไข'
-            return HttpResponseRedirect(reverse('status-index'))
-
-    else:
-        form = EducationForm(instance=old_education)
+    if result:
+        request.session['notice'] = 'การแก้ไขข้อมูลการศึกษาเรียบร้อย'
+        return HttpResponseRedirect(reverse('status-index'))
+    elif 'cancel' in request.POST:
+        request.session['notice'] = 'ข้อมูลการศึกษาไม่ถูกแก้ไข'
+        return HttpResponseRedirect(reverse('status-index'))
 
     return render_to_response('application/update/education.html',
                               {'form': form,

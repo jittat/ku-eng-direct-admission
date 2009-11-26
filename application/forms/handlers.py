@@ -31,8 +31,10 @@ def extract_ranks(post_data, major_list):
     return ranks
 
 
-def handle_major_form(request):
-    applicant = request.applicant
+def handle_major_form(request, applicant=None):
+    if applicant==None:
+        applicant = request.applicant
+
     majors = Major.get_all_majors()
 
     errors = None

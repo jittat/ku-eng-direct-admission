@@ -31,9 +31,11 @@ class Applicant(models.Model):
     UNDECIDED_METHOD = 0
     SUBMITTED_BY_MAIL = 1
     SUBMITTED_ONLINE = 2
+    SUBMITTED_OFFLINE = 3
     SUBMISSION_METHOD_CHOICES = [(UNDECIDED_METHOD,'ยังไม่ได้เลือก'),
                                  (SUBMITTED_BY_MAIL,'ส่งทางไปรษณีย์'),
-                                 (SUBMITTED_ONLINE,'ส่งออนไลน์')]
+                                 (SUBMITTED_ONLINE,'ส่งออนไลน์'),
+                                 (SUBMITTED_OFFLINE,'ส่งใบสมัครและหลักฐานทางไปรษณีย์')]
 
     doc_submission_method = models.IntegerField(
         choices=SUBMISSION_METHOD_CHOICES,
@@ -288,15 +290,19 @@ class Applicant(models.Model):
     #######################
     # submission
     
-    def submit(self, submission_method):
+    def submit(self, submission_method, submitted_at=None):
         if self.is_submitted:
             raise Applicant.DuplicateSubmissionError()
         try:
             submission_info = SubmissionInfo(applicant=self)
             submission_info.random_salt()
-            if submission_method==Applicant.SUBMITTED_ONLINE:
+            if ((submission_method==Applicant.SUBMITTED_ONLINE) or
+                (submission_method==Applicant.SUBMITTED_OFFLINE)):
                 submission_info.doc_received_at = datetime.now()
             submission_info.save()
+            if submitted_at!=None:
+                submission_info.submitted_at = submitted_at
+                submission_info.save()
         except:
             raise Applicant.DuplicateSubmissionError()
 

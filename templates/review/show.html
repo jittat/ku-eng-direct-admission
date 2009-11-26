@@ -14,7 +14,7 @@
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
   {% include "review/include/doc_received_status.html" %}<br/>
-  <form action="{% url review-show applicant.id %}" method="post">
+  <form action="" method="post">
     <table class="applicants">
       <tr>
 	<th>เอกสาร</th>

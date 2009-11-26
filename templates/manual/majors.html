@@ -1,0 +1,28 @@
+{% extends "manual/base.html" %}
+
+{% block extra-head %}
+{{ block.super }}
+<script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/major_selection.js"></script>
+{% endblock %}
+
+{% block extra-title-bar %}ป้อนใบสมัคร - อันดับสาขา | {% endblock %}
+
+{% block regis-body %}
+  <div class="manual-app-info-bar">
+    ป้อนข้อมูลใบสมัครของ {{ applicant.full_name }} | อันดับสาขา
+  </div>
+
+  {% if errors %}
+    <div class="doc-error">
+      <b>เกิดข้อผิดพลาด</b> {% for e in errors %}{{ e }}{% endfor %}
+    </div>
+  {% endif %}
+
+  <form action="{% url manual-majors applicant.id %}" method="post">
+    {% include "application/forms/major_ranks.html" %}
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="เก็บข้อมูล"/>
+      <input type="submit" name="cancel" value="ยกเลิก"/>
+    </div>
+  </form>
+{% endblock %}

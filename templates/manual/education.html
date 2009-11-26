@@ -1,0 +1,16 @@
+{% extends "manual/base.html" %}
+
+{% block extra-title-bar %}ป้อนใบสมัคร - ข้อมูลการศึกษา | {% endblock %}
+
+{% block regis-body %}
+<div class="manual-app-info-bar">
+  ป้อนข้อมูลใบสมัครของ {{ applicant.full_name }} | ข้อมูลการศึกษา
+</div>
+<form class="app-form" action="{% url manual-edu applicant.id %}" method="post">
+  {% include "application/forms/education.html" %}
+  <div class="submission-bar">
+    <input type="submit" name="submit" value="เก็บข้อมูล"/>
+    <input type="submit" name="cancel" value="ยกเลิก"/>
+  </div>
+</form>
+{% endblock %}

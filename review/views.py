@@ -258,7 +258,7 @@ def prepare_applicant_review_data(applicant):
     return build_review_data(fields, results, forms)
 
 @login_required
-def review_document(request, applicant_id):
+def review_document(request, applicant_id, return_to_manual=False):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     submission_info = applicant.submission_info
 
@@ -269,7 +269,7 @@ def review_document(request, applicant_id):
         request.session['notice'] = 'ยังไม่สามารถตรวจสอบเอกสารได้เนื่องจากยังไม่พ้นช่วงเวลาสำหรับการแก้ไข'
         return HttpResponseRedirect(reverse('review-ticket'))
 
-    if request.method=='POST':
+    if (request.method=='POST') and ('submit' in request.POST):
         field_names = get_applicant_doc_name_list(applicant)
         fields = prepare_applicant_review_fields(field_names)
         results = prepare_applicant_review_results(applicant, field_names)
@@ -317,7 +317,17 @@ def review_document(request, applicant_id):
             else:
                 send_validation_error_by_email(applicant, failed_fields)
                 request.session['notice'] = 'จัดเก็บและแจ้งผลการตรวจว่าหลักฐานไม่ผ่านกับผู้สมัครแล้ว'
+            if not return_to_manual:
+                return HttpResponseRedirect(reverse('review-ticket'))
+            else:
+                return HttpResponseRedirect(reverse('manual-index'))
+    elif 'cancel' in request.POST:
+        request.session['notice'] = 'ยกเลิกการตรวจสอบ ผลตรวจทุกอย่างคงเดิม'
+        print return_to_manual
+        if not return_to_manual:
             return HttpResponseRedirect(reverse('review-ticket'))
+        else:
+            return HttpResponseRedirect(reverse('manual-index'))
     else:
         data = prepare_applicant_review_data(applicant)
 

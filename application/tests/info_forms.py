@@ -19,9 +19,17 @@ class InfoFormsTestCase(TransactionTestCase):
         self.applicant, self.password = self.app_prep.create_applicant()
         self.email = self.applicant.email
 
+        from django.core.mail import send_mail
+
+        email.send_mail = send_mail 
+
+        self.org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
 
     def test_user_can_login(self):
         self._login_required()
+        settings.FAKE_SENDING_EMAIL = self.org_email_setting
 
 
     PERSONAL_FORM_DATA = {
@@ -73,6 +81,23 @@ class InfoFormsTestCase(TransactionTestCase):
         'uses_gat_score':'True',
         }
 
+    EDU_FORM_DATA_GATPAT_UPDATED = {
+        'anet':'10',
+        'gat':'100',
+        'gat_date':'1',
+        'gpax':'3.45',
+        'has_graduated':'True',
+        'pat1':'123',
+        'pat1_date':'2',
+        'pat3':'237',
+        'pat3_date':'3',
+        'school_city':'เมือง',
+        'school_name':'สาธิต',
+        'school_province':'นครปฐม',
+        'submit':'เก็บข้อมูล',
+        'uses_gat_score':'True',
+        }
+
     MAJOR_RANK_FORM_DATA = {
         'major_1':'3',
         'major_10':'--',
@@ -99,13 +124,13 @@ class InfoFormsTestCase(TransactionTestCase):
         self._personal_info_required()
         self._address_info_required()
 
-    def test_edu_form(self):
+    def _test_edu_form(self):
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
         self._edu_info_required()
 
-    def test_majors_form(self):
+    def _test_majors_form(self):
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
@@ -120,6 +145,24 @@ class InfoFormsTestCase(TransactionTestCase):
         self._major_ranks_info_required()
         self._submit_postal_doc_confirm_required()
 
+    def test_postal_submission(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        self._edu_info_required()
+        self._major_ranks_info_required()
+        self._submit_postal_doc_confirm_required()
+        self._submit_postal_confirm_required()
+
+    def test_edu_info_update(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        self._edu_info_required()
+        self._major_ranks_info_required()
+        self._submit_postal_doc_confirm_required()
+        self._submit_postal_confirm_required()
+        self._edu_update_required()
 
     def test_online_submission_form(self):
         self._login_required()
@@ -128,7 +171,6 @@ class InfoFormsTestCase(TransactionTestCase):
         self._edu_info_required()
         self._major_ranks_info_required()
         self._online_doc_upload_form_required()
-
 
     def test_wrong_jump_to_online_submission_form(self):
         self._login_required()
@@ -172,4 +214,20 @@ class InfoFormsTestCase(TransactionTestCase):
     def _online_doc_upload_form_required(self):
         response = self.client.get('/doc/')
         self.assertEqual(response.status_code, 200)
+
+    def _submit_postal_confirm_required(self):
+        response = self.client.post('/apply/confirm/',
+                                    {'submit': 'ยืนยัน'})
+        self.assertRedirects(response,'/apply/ticket/')
+        self.assertEquals(len(mail.outbox),1)       
+
+    def _edu_update_required(self):
+        response = self.client.post('/apply/update/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT_UPDATED)
+        self.assertRedirects(response,'/apply/status/')
+
+        response = self.client.get('/apply/update/education/')
+        self.assertContains(response,'237')
+        self.assertContains(response,'123')
+        self.assertContains(response,'นครปฐม')
 

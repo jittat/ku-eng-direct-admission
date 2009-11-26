@@ -182,7 +182,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 โครงการรับตรง คณะวิศวกรรมศาสตร์"""
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     }
 ).replace('\n','<br/>\n')
     adm_send_mail(applicant.email, subject, message, force)
@@ -217,7 +217,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 โครงการรับตรง คณะวิศวกรรมศาสตร์"""
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     'errors': errors,
     'admin_email': admin_email()
     }

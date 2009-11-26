@@ -29,6 +29,7 @@
       <th>ชื่อ</th>
       {% if display.edu %}<th>โรงเรียน</th>{% endif %}
       <th>สถานะการยื่นใบสมัคร</th>
+      <th>วิธีการส่งหลักฐาน</th>
       {% if display.doc_reviewed_at %}<th>ตรวจเมื่อ</th>{% endif %}
       {% if display.doc_reviewed_at %}<th>ผลการตรวจ</th>{% endif %}
       {% if force_review_link %}
@@ -45,6 +46,7 @@
 	  <td>{{ applicant.education.school_name }}</td>
         {% endif %}
 	<td>{% if applicant.is_submitted %}ยื่นใบสมัครแล้ว{% else %}ยังไม่ยื่น{% endif %}</td>
+	<td>{{ applicant.get_doc_submission_method_display }}</td>
 	{% if display.doc_reviewed_at %}
 	  <td>{{ applicant.submission_info.doc_reviewed_at|date:"H:i, j N" }}</td>
 	{% endif %}
@@ -57,7 +59,9 @@
 	{% if force_review_link %}
 	  <td>
 	    {% if not applicant.online_doc_submission %}
-  	      [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
+	      {% if applicant.submission_info.can_be_reviewed %}
+    	        [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
+	      {% endif %}
 	    {% endif %}
 	  </td>
         {% endif %}

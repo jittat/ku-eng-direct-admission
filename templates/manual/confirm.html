@@ -1,0 +1,27 @@
+{% extends "manual/base.html" %}
+
+{% block extra-head %}
+{{ block.super }}
+<script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/major_selection.js"></script>
+{% endblock %}
+
+{% block extra-title-bar %}ป้อนใบสมัคร - ตรวจสอบ | {% endblock %}
+
+{% block regis-body %}
+  <div class="manual-app-info-bar">
+    ป้อนข้อมูลใบสมัครของ {{ applicant.full_name }} | ตรวจสอบ
+  </div>
+
+  <p>กรุณาตรวจสอบข้อมูล ก่อนยืนยัน</p>
+
+  <div id="applicant-info-confirmation" class="application-info">
+    {% include "application/include/application_info.html" %}
+  </div>
+
+  <form action="{% url manual-confirm applicant.id %}" method="post">
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="ยืนยัน"/>
+      <input type="submit" name="cancel" value="กลับไปแก้ไข"/>
+    </div>
+  </form>
+{% endblock %}
