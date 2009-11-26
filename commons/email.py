@@ -185,7 +185,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'email': applicant.get_email(), 
     }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_validation_error_by_email(applicant, failed_fields, force=False):
@@ -222,5 +222,5 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'admin_email': admin_email()
     }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
