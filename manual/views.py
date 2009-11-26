@@ -9,6 +9,7 @@ from commons.local import APP_TITLE_FORM_CHOICES
 from application.models import Applicant
 from application.forms import RegistrationForm, PersonalInfoForm
 from application.forms.handlers import handle_personal_info_form
+from application.forms.handlers import handle_address_form
 from commons.utils import random_string
 
 class NewAppForm(forms.Form):
@@ -79,15 +80,10 @@ def create(request):
 def personal_form(request,applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
     old_info = applicant.get_personal_info_or_none()
-
-    if (request.method == 'POST') and ('cancel' not in request.POST):
-        result, form = handle_personal_info_form(request, old_info, applicant)
-        if result:
-            return HttpResponseRedirect(reverse('manual-address',
-                                                args=[applicant.id]))
-    else:
-        form = PersonalInfoForm(instance=old_info)
-
+    result, form = handle_personal_info_form(request, old_info, applicant)
+    if result:
+        return HttpResponseRedirect(reverse('manual-address',
+                                            args=[applicant.id]))
     return render_to_response('manual/personal.html',
                               { 'applicant': applicant,
                                 'form': form })
@@ -95,51 +91,12 @@ def personal_form(request,applicant_id):
 @login_required
 def address_form(request, applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
-    have_old_address = applicant.has_address()
-
-    if have_old_address:
-        old_applicant_address = applicant.address
-        old_home_address = applicant.address.home_address
-        old_contact_address = applicant.address.contact_address
-    else:
-        # still need this for form instances
-        old_home_address, old_contact_address = None, None
-
-    if (request.method == 'POST') and ('cancel' not in request.POST):
-
-        home_address_form = AddressForm(request.POST, 
-                                        prefix="home",
-                                        instance=old_home_address)
-        contact_address_form = AddressForm(request.POST, 
-                                           prefix="contact",
-                                           instance=old_contact_address)
-
-        if (home_address_form.is_valid() and
-            contact_address_form.is_valid()):
-            home_address = home_address_form.save()
-            contact_address = contact_address_form.save()
-
-            applicant_address = ApplicantAddress(
-                applicant=applicant,
-                home_address=home_address,
-                contact_address=contact_address)
-
-            if have_old_address:
-                applicant_address.id = old_applicant_address.id
-
-            applicant_address.save()
-            applicant.add_related_model('address',
-                                        save=True,
-                                        smart=True)
-
-            return HttpResponseRedirect(reverse('manual-edu'))
-    else:
-        home_address_form = AddressForm(prefix="home",
-                                        instance=old_home_address)
-        contact_address_form = AddressForm(prefix="contact",
-                                           instance=old_contact_address)
+    result, hform, cform = handle_address_form(request, applicant)
+    if result:
+        return HttpResponseRedirect(reverse('manual-edu',
+                                            args=[applicant.id]))
 
     return render_to_response('manual/address.html', 
                               { 'applicant': applicant,
-                                'home_address_form': home_address_form,
-                                'contact_address_form': contact_address_form })
+                                'home_address_form': hform,
+                                'contact_address_form': cform })

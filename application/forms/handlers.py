@@ -66,27 +66,20 @@ def handle_basic_form_save(form_class, field_name, request, old_data,
                            applicant=None):
     if applicant==None:
         applicant = request.applicant
-    form = form_class(request.POST, 
-                      instance=old_data)
-
-    if form.is_valid():
-        data = form.save(commit=False)
-        data.applicant = applicant
-        data.save()
-        applicant.add_related_model(field_name,
-                                    save=True,
-                                    smart=True)
-        return (True, form)
+    if (request.method == 'POST') and ('cancel' not in request.POST):
+        form = form_class(request.POST, 
+                          instance=old_data)
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.applicant = applicant
+            data.save()
+            applicant.add_related_model(field_name,
+                                        save=True,
+                                        smart=True)
+            return (True, form)
     else:
-        return (False, form)
-
-
-def handle_education_form(request, old_education, applicant=None):
-    return handle_basic_form_save(EducationForm,
-                                  'educational_info',
-                                  request,
-                                  old_education,
-                                  applicant)
+        form = form_class(instance=old_data)
+    return (False, form)
 
 
 def handle_personal_info_form(request, old_info, applicant=None):
@@ -95,6 +88,14 @@ def handle_personal_info_form(request, old_info, applicant=None):
                                   request,
                                   old_info,
                                   applicant)
+
+def handle_education_form(request, old_education, applicant=None):
+    return handle_basic_form_save(EducationForm,
+                                  'educational_info',
+                                  request,
+                                  old_education,
+                                  applicant)
+
 
 def handle_address_form(request, applicant=None):
     if applicant==None:

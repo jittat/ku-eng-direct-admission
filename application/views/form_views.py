@@ -89,13 +89,10 @@ def redirect_to_applicant_first_page(applicant):
 def applicant_personal_info(request):
     applicant = request.applicant
     old_info = applicant.get_personal_info_or_none()
+    result, form = handle_personal_info_form(request, old_info)
 
-    if (request.method == 'POST') and ('cancel' not in request.POST):
-        result, form = handle_personal_info_form(request, old_info)
-        if result:
-            return HttpResponseRedirect(reverse('apply-address'))
-    else:
-        form = PersonalInfoForm(instance=old_info)
+    if result:
+        return HttpResponseRedirect(reverse('apply-address'))
 
     form_step_info = build_form_step_info(0,applicant)
     return render_to_response('application/personal.html',
@@ -106,7 +103,6 @@ def applicant_personal_info(request):
 @active_applicant_required
 def applicant_address(request):
     result, hform, cform = handle_address_form(request)
-
     if result:
         return HttpResponseRedirect(reverse('apply-edu'))
 
@@ -120,18 +116,10 @@ def applicant_address(request):
 @active_applicant_required
 def applicant_education(request):
     applicant = request.applicant
-
     old_education = applicant.get_educational_info_or_none()
-
-    if (request.method == 'POST') and ('cancel' not in request.POST):
-
-        result, form = handle_education_form(request, old_education)
-
-        if result:
-            return HttpResponseRedirect(reverse('apply-majors'))
-
-    else:
-        form = EducationForm(instance=old_education)
+    result, form = handle_education_form(request, old_education)
+    if result:
+        return HttpResponseRedirect(reverse('apply-majors'))
 
     form_step_info = build_form_step_info(2,applicant)
     return render_to_response('application/education.html', 
