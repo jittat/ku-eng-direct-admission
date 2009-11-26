@@ -334,10 +334,10 @@ def review_document(request, applicant_id):
 
 
 @login_required
-def list_applicant(request, complete=True):
+def list_applicant(request, reviewed=True):
     applicants = []
     display = {}
-    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=complete).select_related(depth=1).order_by('-doc_reviewed_at')
+    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=reviewed).select_related(depth=1).order_by('-doc_reviewed_at')
     applicant_count = submission_infos.count()
 
     submission_infos = submission_infos.all()[:200]
@@ -348,7 +348,9 @@ def list_applicant(request, complete=True):
         applicants.append(app)
 
     display['ticket_number']=True
-    display['doc_reviewed_at']=True
+    if reviewed==True:
+        display['doc_reviewed_at']=True
+        display['doc_reviewed_complete']=True
 
     return render_to_response("review/search.html",
                               { 'form': None,

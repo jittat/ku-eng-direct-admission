@@ -30,6 +30,7 @@
       {% if display.edu %}<th>โรงเรียน</th>{% endif %}
       <th>สถานะการยื่นใบสมัคร</th>
       {% if display.doc_reviewed_at %}<th>ตรวจเมื่อ</th>{% endif %}
+      {% if display.doc_reviewed_at %}<th>ผลการตรวจ</th>{% endif %}
       {% if force_review_link %}
         <th></th>
       {% endif %}
@@ -46,6 +47,12 @@
 	<td>{% if applicant.is_submitted %}ยื่นใบสมัครแล้ว{% else %}ยังไม่ยื่น{% endif %}</td>
 	{% if display.doc_reviewed_at %}
 	  <td>{{ applicant.submission_info.doc_reviewed_at|date:"H:i, j N" }}</td>
+	{% endif %}
+	{% if display.doc_reviewed_complete %}
+	  <td>
+	    {% passed_icon applicant.submission_info.doc_reviewed_complete  %}
+	    {% if applicant.submission_info.doc_reviewed_complete %}ผ่าน{% else %}ไม่ผ่าน{% endif %}
+	  </td>
 	{% endif %}
 	{% if force_review_link %}
 	  <td>

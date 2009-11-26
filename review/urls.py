@@ -10,7 +10,7 @@ urlpatterns = patterns(
     url(r'^received/toggle/(\d+)/$', 'toggle_received_status', 
         name='review-toggle-received-status'),
     url(r'^list/complete/$', 'list_applicant',
-        { 'complete': True }, name='review-list-complete'),
+        { 'reviewed': True }, name='review-list-complete'),
     url(r'^list/wait/$', 'list_applicant',
-        { 'complete': False }, name='review-list-wait'),
+        { 'reviewed': False }, name='review-list-wait'),
 )
