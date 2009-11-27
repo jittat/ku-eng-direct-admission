@@ -198,6 +198,14 @@ def send_validation_error_by_email(applicant, failed_fields, force=False):
         error_list.append('%s - %s' % (field.name, result.applicant_note))
     errors = '\n'.join(error_list)
 
+    extra_msg = """คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบเดิม
+ถ้าคุณใช้การส่งหลักฐานทางไปรษณีย์ อย่าลืมพิมพ์ใบนำส่งแนบมาด้วย (สามารถพิมพ์ได้จากเว็บรับสมัคร)"""
+    if applicant.is_offline:
+        extra_msg = u"""คุณจะต้องส่งหลักฐาน ภายในวันที่ 15 ธ.ค. นี้
+เนื่องจากคุณสมัครโดยส่งใบสมัครและหลักฐานทุกอย่างทางไปรษณีย์ 
+ในการส่งหลักฐานให้ระบุให้ชัดเจนว่าเป็นการส่งหลักฐานเพิ่มเติม
+และให้ระบุหมายเลขประจำตัวผู้สมัครว่า %(ticket_number)s ด้วย""" % {'ticket_number': applicant.ticket_number()}
+
     subject = 'การตรวจหลักฐานเพื่อการสมัครตรงไม่ผ่าน'
     message = (
 u"""เรียนคุณ %(firstname)s %(lastname)s
@@ -208,8 +216,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 หลักฐานที่คุณส่งมานั้นมีปัญหาดังนี้:
 %(errors)s
 
-คุณสามารถส่งหลักฐานได้ใหม่ ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบเดิม
-ถ้าคุณใช้การส่งหลักฐานทางไปรษณีย์ อย่าลืมพิมพ์ใบนำส่งแนบมาด้วย (สามารถพิมพ์ได้จากเว็บรับสมัคร)
+%(extra_msg)s
 
 ถ้ามีข้อสงสัยประการใด สามารถสอบถามได้ในเว็บบอร์ด หรือส่งเมล์หาผู้ดูแลที่ %(admin_email)s
 
@@ -219,6 +226,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'lastname': applicant.last_name,
     'email': applicant.get_email(), 
     'errors': errors,
+    'extra_msg': extra_msg,
     'admin_email': admin_email()
     }
 ).replace('\n','<br/>\n')
