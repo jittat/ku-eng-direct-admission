@@ -198,7 +198,7 @@ def send_validation_error_by_email(applicant, failed_fields, force=False):
         error_list.append('%s - %s' % (field.name, result.applicant_note))
     errors = '\n'.join(error_list)
 
-    extra_msg = """คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบเดิม
+    extra_msg = u"""คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบเดิม
 ถ้าคุณใช้การส่งหลักฐานทางไปรษณีย์ อย่าลืมพิมพ์ใบนำส่งแนบมาด้วย (สามารถพิมพ์ได้จากเว็บรับสมัคร)"""
     if applicant.is_offline:
         extra_msg = u"""คุณจะต้องส่งหลักฐาน ภายในวันที่ 15 ธ.ค. นี้
