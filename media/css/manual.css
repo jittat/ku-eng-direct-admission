@@ -14,3 +14,7 @@
   font-weight: bold;
   font-size: 110%;
   padding-left: 5px; }
+
+.manual-nav-bar {
+  font-size: 90%;
+  float: right; }

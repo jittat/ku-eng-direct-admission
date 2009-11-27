@@ -8,6 +8,15 @@
 {% block extra-title-bar %}ป้อนใบสมัคร - อันดับสาขา | {% endblock %}
 
 {% block regis-body %}
+  {% if show_navigation %}
+  <div class="manual-nav-bar">
+    <b>ย้อนแก้ไข:</b> 
+    [<a href="{% url manual-personal applicant.id %}">ข้อมูลส่วนตัว</a>]
+    [<a href="{% url manual-address applicant.id %}">ที่อยู่</a>]
+    [<a href="{% url manual-edu applicant.id %}">การศึกษา</a>]
+  </div>
+  {% endif %}
+
   <div class="manual-app-info-bar">
     ป้อนข้อมูลใบสมัครของ {{ applicant.full_name }} | อันดับสาขา
   </div>

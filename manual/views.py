@@ -105,7 +105,8 @@ def address_form(request, applicant_id):
     return render_to_response('manual/address.html', 
                               { 'applicant': applicant,
                                 'home_address_form': hform,
-                                'contact_address_form': cform })
+                                'contact_address_form': cform,
+                                'show_navigation': True })
 
 
 @login_required
@@ -118,6 +119,7 @@ def edu_form(request, applicant_id):
                                             args=[applicant.id]))
     return render_to_response('manual/education.html',
                               { 'applicant': applicant,
+                                'show_navigation': True,
                                 'form': form })
 
 @login_required
@@ -146,6 +148,8 @@ def major_form(request, applicant_id):
 
     # add step info
     form_data['applicant'] = applicant
+    form_data['show_navigation'] = True
+    form_data['hide_description'] = True
     return render_to_response('manual/majors.html',
                               form_data)
 
@@ -170,5 +174,6 @@ def manual_confirm(request, applicant_id):
             return HttpResponseRedirect(reverse('manual-index'))
 
     return render_to_response('manual/confirm.html',
-                              {'applicant': applicant })
+                              {'applicant': applicant,
+                               'show_navigation': True })
     
