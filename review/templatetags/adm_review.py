@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 register = template.Library()
 
 @register.inclusion_tag('review/tags/doc_view_link.html')
-def doc_view(applicant, field_name):
+def doc_img_view_link(applicant, field_name):
     appdocs = applicant.get_applicant_docs_or_none()
     if appdocs:
         filename = appdocs.__getattribute__(field_name).name

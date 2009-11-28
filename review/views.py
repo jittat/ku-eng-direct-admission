@@ -375,7 +375,7 @@ def list_applicant(request, reviewed=True):
 
 
 @login_required
-def doc_view(request, applicant_id, filename):
+def doc_img_view(request, applicant_id, filename):
     print applicant_id, filename
 
     applicant = get_object_or_404(Applicant, pk=applicant_id)

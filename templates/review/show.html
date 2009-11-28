@@ -32,7 +32,7 @@
 	  <td>
 	    {{ f.name }} 
 	    <a id="doc-{{ f.short_name }}-link" href="#">[show]</a>
-	    {% if appdocs %}{% doc_view applicant f.short_name %}{% endif %}
+	    {% if appdocs %}{% doc_img_view_link applicant f.short_name %}{% endif %}
 	  </td>
 	  <td>{{ item.form.is_passed }}</td>
 	  <td>
