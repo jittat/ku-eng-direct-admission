@@ -1,7 +1,6 @@
 {% extends "review/base.html" %}
 
 {% load adm_media %}
-{% load adm_review %}
 
 {% block extra-head %}
   {{ block.super }}
@@ -32,7 +31,11 @@
 	  <td>
 	    {{ f.name }} 
 	    <a id="doc-{{ f.short_name }}-link" href="#">[show]</a>
-	    {% if appdocs %}{% doc_img_view_link applicant f.short_name %}{% endif %}
+	    {% if appdocs %}
+              {% with f.short_name as field_name %}
+  	        {% include "review/include/doc_view_link.html" %}
+              {% endwith %}
+            {% endif %}
 	  </td>
 	  <td>{{ item.form.is_passed }}</td>
 	  <td>

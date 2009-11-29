@@ -373,18 +373,57 @@ def list_applicant(request, reviewed=True):
                                 'force_review_link': True,
                                 'display': display })
 
+IMG_MAX_HEIGHT = 450
+IMG_MAX_WIDTH = 800
+
+@login_required
+def doc_view(request, applicant_id, field_name):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    docs = applicant.get_applicant_docs_or_none()
+    if not AppDocs.valid_field_name(field_name):
+        return HttpResponseServerError('Invalid field')
+
+    field = docs.__getattribute__(field_name)
+
+    ext = ''
+    if field:
+        height = field.height
+        width = field.width
+        filename = docs.__getattribute__(field_name).name
+        if filename:
+            name, ext = os.path.splitext(filename)
+    if ext=='':
+        ext = 'png'
+        height = 1
+        width = 1
+
+    hscale = float(height) / IMG_MAX_HEIGHT
+    wscale = float(width) / IMG_MAX_WIDTH
+
+    if (hscale > 1) or (wscale > 1):
+        if hscale > wscale:
+            new_h = IMG_MAX_HEIGHT
+            new_w = int(width / hscale)
+        else:
+            new_h = int(height / wscale)
+            new_w = IMG_MAX_WIDTH
+    else:
+        new_h, new_w = height, width
+
+    filename = '%s%s' % (field_name, ext)
+    return render_to_response("review/doc_view.html",
+                              { 'applicant': applicant,
+                                'field_name': field_name,
+                                'filename': filename,
+                                'height': new_h,
+                                'width': new_w, })
 
 @login_required
 def doc_img_view(request, applicant_id, filename):
-    #print applicant_id, filename
-
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     docs = applicant.get_applicant_docs_or_none()
 
-
     if docs!=None:
-        #print filename
-
         field_name, ext = os.path.splitext(filename)
 
         if not AppDocs.valid_field_name(field_name):
