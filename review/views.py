@@ -327,7 +327,7 @@ def review_document(request, applicant_id, return_to_manual=False):
                 return HttpResponseRedirect(reverse('manual-index'))
     elif 'cancel' in request.POST:
         request.session['notice'] = 'ยกเลิกการตรวจสอบ ผลตรวจทุกอย่างคงเดิม'
-        print return_to_manual
+        #print return_to_manual
         if not return_to_manual:
             return HttpResponseRedirect(reverse('review-ticket'))
         else:
@@ -376,14 +376,14 @@ def list_applicant(request, reviewed=True):
 
 @login_required
 def doc_img_view(request, applicant_id, filename):
-    print applicant_id, filename
+    #print applicant_id, filename
 
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     docs = applicant.get_applicant_docs_or_none()
 
 
     if docs!=None:
-        print filename
+        #print filename
 
         field_name, ext = os.path.splitext(filename)
 
