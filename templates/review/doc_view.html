@@ -12,7 +12,7 @@
 <body>
 <center>
   <b>ผู้สมัคร: {{ applicant.ticket_number}}  {{ applicant.full_name }}</b><br/>
-  <img height="{{ height }}" width="{{ width }}" src="{% url review-doc-img-view applicant.id filename %}"/>
+  <img height="{{ height }}" width="{{ width }}" src="{% url review-doc-img-view applicant.id filename %}"/><br/>
   {% if zoomable %}<a target="_blank" href="{% url review-doc-img-view applicant.id filename %}">ดูภาพขนาดเต็ม</a>{% endif %}
 </center>
 </body>
