@@ -355,7 +355,7 @@ def list_applicant(request, reviewed=True):
     if reviewed:
         submission_infos = submission_infos.order_by('-doc_reviewed_at')
     else:
-        submission_infos = submission_infos.order_by('-doc_received_at')
+        submission_infos = submission_infos.order_by('doc_received_at')
 
     applicant_count = submission_infos.count()
 
