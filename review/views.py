@@ -351,7 +351,12 @@ def review_document(request, applicant_id, return_to_manual=False):
 def list_applicant(request, reviewed=True):
     applicants = []
     display = {}
-    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=reviewed).select_related(depth=1).order_by('-doc_reviewed_at')
+    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=reviewed).select_related(depth=1)
+    if reviewed:
+        submission_infos = submission_infos.order_by('-doc_reviewed_at')
+    else:
+        submission_infos = submission_infos.order_by('-doc_received_at')
+
     applicant_count = submission_infos.count()
 
     submission_infos = submission_infos.all()[:200]

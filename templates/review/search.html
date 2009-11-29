@@ -58,10 +58,8 @@
 	{% endif %}
 	{% if force_review_link %}
 	  <td>
-	    {% if not applicant.online_doc_submission %}
-	      {% if applicant.submission_info.can_be_reviewed %}
-    	        [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
-	      {% endif %}
+            {% if applicant.submission_info.can_be_reviewed %}
+              [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]</td>
 	    {% endif %}
 	  </td>
         {% endif %}
