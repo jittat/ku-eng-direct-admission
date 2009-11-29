@@ -401,6 +401,7 @@ def doc_view(request, applicant_id, field_name):
     wscale = float(width) / IMG_MAX_WIDTH
 
     if (hscale > 1) or (wscale > 1):
+        zoomable = True
         if hscale > wscale:
             new_h = IMG_MAX_HEIGHT
             new_w = int(width / hscale)
@@ -408,6 +409,7 @@ def doc_view(request, applicant_id, field_name):
             new_h = int(height / wscale)
             new_w = IMG_MAX_WIDTH
     else:
+        zoomable = False
         new_h, new_w = height, width
 
     filename = '%s%s' % (field_name, ext)
@@ -416,7 +418,8 @@ def doc_view(request, applicant_id, field_name):
                                 'field_name': field_name,
                                 'filename': filename,
                                 'height': new_h,
-                                'width': new_w, })
+                                'width': new_w,
+                                'zoomable': zoomable })
 
 @login_required
 def doc_img_view(request, applicant_id, filename):
