@@ -78,13 +78,19 @@
       </div>
     </div>
     <div id="app-doc-education-preview" style="display: none">
-      <h2>ข้อมูลการศึกษา</h2>
-      <div class="section">
+      <h2>ข้อมูลการศึกษา
+	[<a target="_blank" href="{% url manual-edu-popup applicant.id %}" id="id_education_edit_button">แก้ไขข้อมูล</a>] [<a href="#" id="id_education_refresh_button">refresh</a>]
+      </h2>
+      <div id="id_applicant_education_info" class="section">
 	{% include "application/include/applicant_edu.html" %}
       </div>
     </div>
   </div>
   <script type="text/javascript">
+    function close_popup_and_refresh(win) {
+      $("#id_education_refresh_button").click();
+      win.close();
+    }
     function show_personal_info() {
       $("#app-doc-personal-preview").show();
       $("#app-doc-education-preview").hide();
@@ -115,6 +121,20 @@
       $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";
       $.facebox.settings.closeImage = "{% media_url %}/facebox/closelabel.gif";
       $('a[rel*=facebox]').facebox();
+
+      $("#id_education_edit_button").click(function() {
+        href = $(this).attr("href");
+        var win = window.open(href,'แก้ไขข้อมูลการศึกษา',
+                              'height=480,width=800,resizable=yes,scrollbars=yes'); 
+        win.focus();
+        return false;
+      });
+      $("#id_education_refresh_button").click(function(event) {
+        event.preventDefault();
+        $.get("{% url manual-show-edu applicant.id %}", function(data) {
+          $("#id_applicant_education_info").html(data);
+        });
+      });
     });
   </script>
 {% endblock %}

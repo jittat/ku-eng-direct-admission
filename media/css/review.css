@@ -1,6 +1,7 @@
 .title-bar h1 {
   height: 20px;
-  font-size: 100%; }
+  font-size: 100%;
+  overflow: hidden; }
 
 .admin-bar {
   text-align: center;
@@ -47,6 +48,8 @@ table.applicants {
   #doc-preview h2 {
     font-size: 100%;
     margin: 0; }
+    #doc-preview h2 a {
+      color: #f0f0f0; }
   #doc-preview .section {
     line-height: 120%; }
 

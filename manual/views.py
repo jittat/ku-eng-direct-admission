@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django import forms
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.core.urlresolvers import reverse
 from commons.local import APP_TITLE_FORM_CHOICES
 
@@ -85,6 +85,8 @@ def create(request):
 @login_required
 def personal_form(request,applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if applicant.is_submitted:
+        return HttpResponseForbidden()
     old_info = applicant.get_personal_info_or_none()
     result, form = handle_personal_info_form(request, old_info, applicant)
     if result:
@@ -97,6 +99,8 @@ def personal_form(request,applicant_id):
 @login_required
 def address_form(request, applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if applicant.is_submitted:
+        return HttpResponseForbidden()
     result, hform, cform = handle_address_form(request, applicant)
     if result:
         return HttpResponseRedirect(reverse('manual-edu',
@@ -110,21 +114,36 @@ def address_form(request, applicant_id):
 
 
 @login_required
-def edu_form(request, applicant_id):
+def show_edu(request, applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
+    return render_to_response("application/include/applicant_edu.html",
+                              {'applicant': applicant})
+
+
+@login_required
+def edu_form(request, applicant_id, edit=False, popup=False):
+    applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if applicant.is_submitted and not edit:
+        return HttpResponseForbidden()
     old_info = applicant.get_educational_info_or_none()
     result, form = handle_education_form(request, old_info, applicant)
     if result:
-        return HttpResponseRedirect(reverse('manual-majors',
-                                            args=[applicant.id]))
+        if not popup:
+            return HttpResponseRedirect(reverse('manual-majors',
+                                                args=[applicant.id]))
+        else:
+            return HttpResponse('<script type="text/javascript">opener.close_popup_and_refresh(window);</script>')
     return render_to_response('manual/education.html',
                               { 'applicant': applicant,
-                                'show_navigation': True,
+                                'show_navigation': not popup,
+                                'no_menu': popup,
                                 'form': form })
 
 @login_required
 def major_form(request, applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if applicant.is_submitted:
+        return HttpResponseForbidden()
 
     if (request.method == 'POST') and ('cancel' not in request.POST):
 
@@ -156,6 +175,8 @@ def major_form(request, applicant_id):
 @login_required
 def manual_confirm(request, applicant_id):
     applicant = get_object_or_404(Applicant,pk=applicant_id)
+    if applicant.is_submitted:
+        return HttpResponseForbidden()
 
     if request.method == 'POST':
         if 'submit' in request.POST:
