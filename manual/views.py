@@ -137,6 +137,7 @@ def edu_form(request, applicant_id, edit=False, popup=False):
                               { 'applicant': applicant,
                                 'show_navigation': not popup,
                                 'no_menu': popup,
+                                'confirm': edit and popup,
                                 'form': form })
 
 @login_required
