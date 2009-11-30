@@ -18,6 +18,8 @@ from application.forms.handlers import handle_major_form
 
 from commons.utils import random_string
 
+from models import AdminEditLog
+
 class NewAppForm(forms.Form):
     title = forms.ChoiceField(choices=APP_TITLE_FORM_CHOICES)
     first_name = forms.CharField(label=u'ชื่อ')
@@ -128,6 +130,14 @@ def edu_form(request, applicant_id, edit=False, popup=False):
     old_info = applicant.get_educational_info_or_none()
     result, form = handle_education_form(request, old_info, applicant)
     if result:
+        if edit:
+            # save edit log
+            admin_log = AdminEditLog()
+            admin_log.applicant = applicant
+            admin_log.message = ('Educational info edited on %s' %
+                                 (str(datetime.now()),))
+            admin_log.save()
+            
         if not popup:
             return HttpResponseRedirect(reverse('manual-majors',
                                                 args=[applicant.id]))
