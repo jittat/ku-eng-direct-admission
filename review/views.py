@@ -5,6 +5,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseNotFound
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
@@ -386,7 +387,7 @@ def doc_view(request, applicant_id, field_name):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     docs = applicant.get_applicant_docs_or_none()
     if not AppDocs.valid_field_name(field_name):
-        return HttpResponseServerError('Invalid field')
+        return HttpResponseNotFound()
 
     field = docs.__getattribute__(field_name)
 
@@ -398,7 +399,7 @@ def doc_view(request, applicant_id, field_name):
         if filename:
             name, ext = os.path.splitext(filename)
     if ext=='':
-        ext = 'png'
+        ext = '.png'
         height = 1
         width = 1
 
@@ -435,13 +436,16 @@ def doc_img_view(request, applicant_id, filename):
         field_name, ext = os.path.splitext(filename)
 
         if not AppDocs.valid_field_name(field_name):
-            return HttpResponseServerError('Invalid field')
+            return HttpResponseNotFound()
 
-        full_path = docs.__getattribute__(field_name).path
+        try:
+            full_path = docs.__getattribute__(field_name).path
 
-        if os.path.exists(full_path):
-            return serve_file(full_path)
-        else:
+            if os.path.exists(full_path):
+                return serve_file(full_path)
+            else:
+                return HttpResponseNotFound()
+        except ValueError:
             return HttpResponseNotFound()
     else:
         return HttpResponseNotFound()

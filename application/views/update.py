@@ -10,7 +10,7 @@ from application.views.form_views import prepare_major_form
 from application.forms.handlers import handle_major_form
 from application.forms.handlers import handle_education_form
 from application.forms import EducationForm
-from application.models import Applicant
+from application.models import Applicant, MajorPreference
 
 from commons.email import send_sub_method_change_notice_by_email
 
