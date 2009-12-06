@@ -1,0 +1,2 @@
+from upload_form import UploadTestCase
+from upload_form import ResubmissionTestCase

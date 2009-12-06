@@ -188,6 +188,11 @@ class Applicant(models.Model):
     def online_doc_submission(self):
         return self.doc_submission_method == Applicant.SUBMITTED_ONLINE
 
+    def can_resubmit_online_doc(self):
+        return (self.online_doc_submission() and
+                self.submission_info.is_doc_needs_resubmission())
+
+
     ######################
     # methods for authentication
 
@@ -344,11 +349,11 @@ class SubmissionInfo(models.Model):
         except:
             return None
 
-    def has_received_doc(self):
-        return self.doc_received_at != None
-
     def random_salt(self):
         self.salt = random_string(10)
+
+    def has_received_doc(self):
+        return self.doc_received_at != None
 
     def can_update_info(self):
         if self.has_been_reviewed:
@@ -363,6 +368,10 @@ class SubmissionInfo(models.Model):
         return (datetime.now() > 
                 self.submitted_at + 
                 settings.SUBMISSION_CHANGE_GRACE_PERIOD)
+
+    def is_doc_needs_resubmission(self):
+        return (self.has_been_reviewed and
+                (not self.doc_reviewed_complete))
 
     def set_doc_received_at_now_if_not(self, save=True):
         if self.doc_received_at==None:

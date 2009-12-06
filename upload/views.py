@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.http import HttpResponseNotFound, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django import forms
 from django.core.files.uploadhandler import FileUploadHandler, StopUpload
 from django.conf import settings
 
-from commons.decorators import applicant_required
+from commons.decorators import applicant_required, active_applicant_required
 from commons.email import send_submission_confirmation_by_email
 from commons.utils import random_string, serve_file
 
@@ -95,7 +94,7 @@ def upload_progress(request):
         #print data
         return HttpResponse(simplejson.dumps(data))
     else:
-        return HttpResponseServerError(
+        return HttpResponseNotFound(
             'Server Error: You must provide X-Progress-ID header or query param.')
 
 
@@ -133,7 +132,7 @@ UPLOAD_FORM_STEPS = [
     ('แก้ข้อมูลการสมัคร','apply-personal-info'),
     ]
 
-@applicant_required
+@active_applicant_required
 def index(request, missing_fields=None):
     notice = ''
     if 'notice' in request.session:
@@ -175,6 +174,10 @@ def index(request, missing_fields=None):
                                 'missing_fields': missing_fields,
                                 'uploaded_field_error': uploaded_field_error })
 
+@submitted_applicant_required
+def update(request):
+    pass
+        
 
 def save_as_temp_file(f):
     """
@@ -228,7 +231,7 @@ def create_thumbnail(applicant, field_name, filename):
 @applicant_required
 def doc_get_img(request, field_name, thumbnail=True):
     if not AppDocs.valid_field_name(field_name):
-        return HttpResponseServerError('Invalid field')
+        return HttpResponseNotFound('Invalid field')
 
     docs = request.applicant.get_applicant_docs_or_none()
     if docs!=None:
@@ -249,15 +252,15 @@ def upload_error(request, msg):
     return HttpResponseRedirect(reverse('upload-index'))
 
 
-@applicant_required
+@active_applicant_required
 def upload(request, field_name):
     if request.method!="POST":
-        return HttpResponseServerError('Bad request method')
+        return HttpResponseForbidden('Bad request method')
 
     fields = AppDocs.FormMeta.upload_fields
 
     if not AppDocs.valid_field_name(field_name):
-        return HttpResponseServerError('Invalid field')
+        return HttpResponseNotFound('Invalid field')
 
     applicant = request.applicant
 
@@ -335,7 +338,7 @@ def upload(request, field_name):
     else:
         return upload_error(request, uploaded_field_error)
 
-@applicant_required
+@active_applicant_required
 def submit(request):
     applicant = request.applicant
     if request.method!='POST':
@@ -352,7 +355,7 @@ def submit(request):
         return index(request, missing_field_names)
 
 
-@applicant_required
+@active_applicant_required
 def confirm(request):
     applicant = request.applicant
     if ((not applicant.has_online_docs()) or

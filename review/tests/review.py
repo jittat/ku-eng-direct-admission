@@ -17,7 +17,7 @@ SOMYING_PASSWORD = "bgchp"
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'testadmin'
 
-ALL_PASSED_REVIEW_FORM_DATA = {
+BASE_REVIEW_FORM_DATA = {
     'abroad_edu_certificate-applicant_note':'',
     'abroad_edu_certificate-internal_note':'',
     'app_fee_doc-applicant_note':'',
@@ -32,36 +32,62 @@ ALL_PASSED_REVIEW_FORM_DATA = {
     'picture-applicant_note':'',
     'picture-internal_note':'',
     'picture-is_passed':'on',
-    'anet_score-applicant_note':'',
-    'anet_score-internal_note':'',
-    'anet_score-is_passed':'on',
     'submit':'เก็บข้อมูล',
     }
 
-DEPOSITE_MISSING_REVIEW_FORM_DATA = {
-    'abroad_edu_certificate-applicant_note':'',
-    'abroad_edu_certificate-internal_note':'',
-    'app_fee_doc-applicant_note':'หมายเลขไม่มี',
-    'app_fee_doc-internal_note':'',
-    'edu_certificate-applicant_note':'',
-    'edu_certificate-internal_note':'',
-    'edu_certificate-is_passed':'on',
-    'nat_id-applicant_note':'',
-    'nat_id-internal_note':'',
-    'nat_id-is_passed':'on',
-    'picture-applicant_note':'',
-    'picture-internal_note':'',
-    'picture-is_passed':'on',
-    'anet_score-applicant_note':'',
-    'anet_score-internal_note':'',
-    'anet_score-is_passed':'on',
-    'submit':'เก็บข้อมูล',
-    }
+ALL_PASSED_REVIEW_FORM_DATA_ANET = dict(BASE_REVIEW_FORM_DATA)
+ALL_PASSED_REVIEW_FORM_DATA_ANET.update({
+        'anet_score-applicant_note':'',
+        'anet_score-internal_note':'',
+        'anet_score-is_passed':'on',
+        })
 
-class ReviewTestCase(TransactionTestCase):
+ALL_PASSED_REVIEW_FORM_DATA_GATPAT = dict(BASE_REVIEW_FORM_DATA)
+ALL_PASSED_REVIEW_FORM_DATA_GATPAT.update({
+        'gat_score-applicant_note':'',
+        'gat_score-internal_note':'',
+        'gat_score-is_passed':'on',
+        'pat1_score-applicant_note':'',
+        'pat1_score-internal_note':'',
+        'pat1_score-is_passed':'on',
+        'pat3_score-applicant_note':'',
+        'pat3_score-internal_note':'',
+        'pat3_score-is_passed':'on',
+        })
+
+DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT = dict(ALL_PASSED_REVIEW_FORM_DATA_GATPAT)
+DEPOSITE_MISSING_REVIEW_FORM_DATA_ANET = dict(ALL_PASSED_REVIEW_FORM_DATA_GATPAT)
+
+for form_data in [DEPOSITE_MISSING_REVIEW_FORM_DATA_ANET, DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT]:
+    del form_data['app_fee_doc-is_passed']
+    form_data.update({
+            'app_fee_doc-applicant_note':'หมายเลขไม่มี',
+            'app_fee_doc-internal_note':'',
+            })
+
+
+class ReviewTestCaseBase(TransactionTestCase):
 
     fixtures = ['submissions', 'admin_user', 'review_field']
 
+    def _login_required(self,email, password):
+        response = self.client.post('/apply/login/',
+                                    {'email': email,
+                                     'password': password })
+        
+        self.assertRedirects(response,'/apply/status/')
+        return response
+
+    def _admin_login_required(self):
+        response = self.client.post('/accounts/login/',
+                                    {'username': ADMIN_USERNAME,
+                                     'password': ADMIN_PASSWORD,
+                                     'next': '/review/'})
+        self.assertRedirects(response, '/review/')
+
+
+
+class ReviewTestCase(ReviewTestCaseBase):
 
     def setUp(self):
         # make sure the when testing, the app is using django's email
@@ -97,7 +123,7 @@ class ReviewTestCase(TransactionTestCase):
         self._admin_login_required()
 
         self.client.post('/review/show/2/',
-                         ALL_PASSED_REVIEW_FORM_DATA)
+                         ALL_PASSED_REVIEW_FORM_DATA_ANET)
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
@@ -109,7 +135,7 @@ class ReviewTestCase(TransactionTestCase):
         self._admin_login_required()
 
         self.client.post('/review/show/2/',
-                         ALL_PASSED_REVIEW_FORM_DATA)
+                         ALL_PASSED_REVIEW_FORM_DATA_ANET)
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
@@ -127,7 +153,7 @@ class ReviewTestCase(TransactionTestCase):
         self._admin_login_required()
 
         self.client.post('/review/show/2/',
-                         ALL_PASSED_REVIEW_FORM_DATA)
+                         ALL_PASSED_REVIEW_FORM_DATA_ANET)
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
@@ -144,7 +170,7 @@ class ReviewTestCase(TransactionTestCase):
         self._admin_login_required()
 
         response = self.client.post('/review/show/2/',
-                                    DEPOSITE_MISSING_REVIEW_FORM_DATA)
+                                    DEPOSITE_MISSING_REVIEW_FORM_DATA_ANET)
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 
@@ -154,19 +180,3 @@ class ReviewTestCase(TransactionTestCase):
         self.assertContains(response, "หลักฐานใบนำฝาก")
         self.assertContains(response, "หมายเลขไม่มี")
 
-    # ---------------------------------
-
-    def _login_required(self,email, password):
-        response = self.client.post('/apply/login/',
-                                    {'email': email,
-                                     'password': password })
-        
-        self.assertRedirects(response,'/apply/status/')
-        return response
-
-    def _admin_login_required(self):
-        response = self.client.post('/accounts/login/',
-                                    {'username': ADMIN_USERNAME,
-                                     'password': ADMIN_PASSWORD,
-                                     'next': '/review/'})
-        self.assertRedirects(response, '/review/')

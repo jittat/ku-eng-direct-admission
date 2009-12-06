@@ -11,4 +11,6 @@ urlpatterns = patterns(
     url(r'^submit/', 'submit', name='upload-submit'),
     url(r'^show/', 'show', name='upload-show'),
     url(r'^confirm/', 'confirm', name='upload-confirm'),
+
+    url(r'^update/$', 'update', name='upload-update'),
 )

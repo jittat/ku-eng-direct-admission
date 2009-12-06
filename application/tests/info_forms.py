@@ -10,7 +10,8 @@ from commons import email
 
 from helpers import ApplicantPreparation
 
-class InfoFormsTestCase(TransactionTestCase):
+
+class FormsTestCaseBase(TransactionTestCase):
 
     fixtures = ['major', 'gatpat-dates']
 
@@ -25,11 +26,6 @@ class InfoFormsTestCase(TransactionTestCase):
 
         self.org_email_setting = settings.FAKE_SENDING_EMAIL
         settings.FAKE_SENDING_EMAIL = False
-
-
-    def test_user_can_login(self):
-        self._login_required()
-        settings.FAKE_SENDING_EMAIL = self.org_email_setting
 
 
     PERSONAL_FORM_DATA = {
@@ -115,6 +111,77 @@ class InfoFormsTestCase(TransactionTestCase):
         'submit':'เก็บข้อมูล',
         }
 
+    # helpers method
+
+    def _login_required(self, check=True):
+        response = self.client.post('/apply/login/',
+                                    {'email': self.email,
+                                     'password': self.password})
+        if check:
+            self.assertRedirects(response,'/apply/personal/')
+        return response
+
+    def _personal_info_required(self):
+        response = self.client.post('/apply/personal/',
+                                    InfoFormsTestCase.PERSONAL_FORM_DATA)
+        self.assertRedirects(response,'/apply/address/')
+                
+    def _address_info_required(self):
+        response = self.client.post('/apply/address/',
+                                    InfoFormsTestCase.ADDRESS_FORM_DATA)
+        self.assertRedirects(response,'/apply/education/')
+        
+    def _edu_info_required(self):
+        response = self.client.post('/apply/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT)
+        self.assertRedirects(response,'/apply/majors/')
+
+    def _major_ranks_info_required(self):
+        response = self.client.post('/apply/majors/',
+                                    InfoFormsTestCase.MAJOR_RANK_FORM_DATA)
+        self.assertRedirects(response,'/apply/doc_menu/')
+
+    def _submit_postal_doc_confirm_required(self):
+        response = self.client.get('/apply/confirm/')
+        self.assertEqual(response.status_code, 200)
+
+    def _online_doc_upload_form_required(self):
+        response = self.client.get('/doc/')
+        self.assertEqual(response.status_code, 200)
+        return response
+
+    def _submit_postal_confirm_required(self):
+        response = self.client.post('/apply/confirm/',
+                                    {'submit': 'ยืนยัน'})
+        self.assertRedirects(response,'/apply/ticket/')
+        self.assertEquals(len(mail.outbox),1)       
+
+    def _edu_update_required(self):
+        response = self.client.post('/apply/update/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT_UPDATED)
+        self.assertRedirects(response,'/apply/status/')
+
+        response = self.client.get('/apply/update/education/')
+        self.assertContains(response,'237')
+        self.assertContains(response,'123')
+        self.assertContains(response,'นครปฐม')
+
+    def _fill_forms_upto_online_doc_upload_form(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        self._edu_info_required()
+        self._major_ranks_info_required()
+        return self._online_doc_upload_form_required()
+
+
+
+class InfoFormsTestCase(FormsTestCaseBase):
+
+    def test_user_can_login(self):
+        self._login_required()
+        settings.FAKE_SENDING_EMAIL = self.org_email_setting
+
     def _test_personal_form(self):
         self._login_required()
         self._personal_info_required()
@@ -177,57 +244,4 @@ class InfoFormsTestCase(TransactionTestCase):
         self._personal_info_required()
         response = self.client.get('/doc/')
         self.assertNotEqual(response.status_code, 200)
-
-    # helpers method
-
-    def _login_required(self):
-        response = self.client.post('/apply/login/',
-                                    {'email': self.email,
-                                     'password': self.password})
-        
-        self.assertRedirects(response,'/apply/personal/')
-
-    def _personal_info_required(self):
-        response = self.client.post('/apply/personal/',
-                                    InfoFormsTestCase.PERSONAL_FORM_DATA)
-        self.assertRedirects(response,'/apply/address/')
-                
-    def _address_info_required(self):
-        response = self.client.post('/apply/address/',
-                                    InfoFormsTestCase.ADDRESS_FORM_DATA)
-        self.assertRedirects(response,'/apply/education/')
-        
-    def _edu_info_required(self):
-        response = self.client.post('/apply/education/',
-                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT)
-        self.assertRedirects(response,'/apply/majors/')
-
-    def _major_ranks_info_required(self):
-        response = self.client.post('/apply/majors/',
-                                    InfoFormsTestCase.MAJOR_RANK_FORM_DATA)
-        self.assertRedirects(response,'/apply/doc_menu/')
-
-    def _submit_postal_doc_confirm_required(self):
-        response = self.client.get('/apply/confirm/')
-        self.assertEqual(response.status_code, 200)
-
-    def _online_doc_upload_form_required(self):
-        response = self.client.get('/doc/')
-        self.assertEqual(response.status_code, 200)
-
-    def _submit_postal_confirm_required(self):
-        response = self.client.post('/apply/confirm/',
-                                    {'submit': 'ยืนยัน'})
-        self.assertRedirects(response,'/apply/ticket/')
-        self.assertEquals(len(mail.outbox),1)       
-
-    def _edu_update_required(self):
-        response = self.client.post('/apply/update/education/',
-                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT_UPDATED)
-        self.assertRedirects(response,'/apply/status/')
-
-        response = self.client.get('/apply/update/education/')
-        self.assertContains(response,'237')
-        self.assertContains(response,'123')
-        self.assertContains(response,'นครปฐม')
 

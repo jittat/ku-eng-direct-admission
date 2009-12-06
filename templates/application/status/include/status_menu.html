@@ -1,0 +1,41 @@
+<div class="login-box">
+  <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
+    <div class="button">
+      ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว{% if not applicant.online_doc_submission %}<br/>และพิมพ์ใบนำส่งหลักฐาน{% endif %}
+    </div>
+  </a>
+  <div class="small-vert-sept"></div>
+  {% if applicant.can_resubmit_online_doc %}
+    <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
+    <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
+      <div class="button">
+	ส่งหลักฐานแบบออนไลน์เพิ่มเติม
+      </div>
+    </a>
+    <div class="small-vert-sept"></div>
+  {% endif %}
+  <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
+  {% if submission_info.can_update_info %}
+    <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
+      <div class="button">
+        แก้ไขข้อมูลการศึกษาและคะแนนสอบ
+      </div>
+    </a>
+    <div class="small-vert-sept"></div>
+  {% endif %}	
+  <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
+    <div class="button">
+      แก้ไขอันดับสาขาวิชา
+    </div>
+  </a>
+  {% if not applicant.online_doc_submission %}
+  {% if not submission_info.has_received_doc %}
+  <div class="small-vert-sept"></div>
+  <a class="in-button" href="{% url update-postal-sub %}">
+    <div class="button">
+      เปลี่ยนวิธีการส่งหลักฐานเป็นแบบออนไลน์
+    </div>
+  </a>
+  {% endif %}
+  {% endif %}
+</div>
