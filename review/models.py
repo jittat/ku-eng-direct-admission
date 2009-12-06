@@ -109,3 +109,11 @@ class ReviewFieldResult(models.Model):
         ReviewFieldResult.build_ref_to_review_field(results)
         return results
 
+    @staticmethod
+    def is_field_with_error_result(applicant, field_name):
+        results = ReviewFieldResult.get_applicant_review_error_results(applicant)
+        for r in results:
+            if r.review_field.short_name == field_name:
+                return True
+        return False
+

@@ -34,7 +34,11 @@
     </small>
   </div>
   <p>
-    คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
+    {% if not submission_info.is_resubmitted %}
+      คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
+    {% else %}
+      คุณได้ส่งใบสมัครโดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} และคุณได้ส่งหลักฐานเพิ่มเติมแล้ว
+    {% endif %}
   </p>
   <p>
     <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
@@ -67,6 +71,9 @@
 	          <li>{{ result.review_field }} : {{ result.applicant_note }}</li>
 		{% endfor %}
 	      </ul>
+              {% if submission_info.is_resubmitted %}
+	        ขณะนี้ได้ส่งเอกสารเพิ่มเติมแล้ว และกำลังรอการตรวจสอบใหม่
+              {% endif %}
 	    {% endif %}  
 	  {% else %}
 	    ยังไม่ได้ตรวจสอบ
@@ -80,12 +87,17 @@
     {% if not submission_info.doc_reviewed_complete %}
       <div class="normal-msg" style="width: 510px">
 	<img src="{% media_url %}/image/Info.png"/>
-	เพื่อให้การสมัครสมบูรณ์ <b>คุณจะต้องส่งหลักฐานเพิ่มเติมเพื่อแก้ไขข้อผิดพลาดข้างต้น</b>
-	{% if applicant.online_doc_submission %}
-	  อย่างไรก็ตามระบบส่งเอกสารเพิ่มเติมแบบออนไลน์กำลังอยู่ระหว่างการพัฒนา
-	  คาดว่าจะส่งได้ภายใน 1-2 วันนี้ ต้องขออภัยไว้ ณ ที่นี้ด้วย ที่ต้องให้ผู้สมัครรออีกสักนิด
-	{% else %}
-	  ในการส่งเอกสารทางไปรษณีย์ อย่าลืมแนบใบนำส่งหลักฐานมาด้วย
+        {% if submission_info.is_resubmitted %}
+          คณะได้รับการยื่นหลักฐานเพิ่มเติมของคุณแล้ว และจะรีบตรวจสอบต่อไป<br/>
+	  เมื่อตรวจสอบเรียบร้อยแล้วจะส่งเมล์ยืนยันให้กับคุณอีกครั้ง
+        {% else %}
+  	  เพื่อให้การสมัครสมบูรณ์ <b>คุณจะต้องส่งหลักฐานเพิ่มเติมเพื่อแก้ไขข้อผิดพลาดข้างต้น</b>
+	  {% if applicant.online_doc_submission %}
+            สำหรับผู้สมัครที่เลือกส่งหลักฐานแบบออนไลน์ สามารถเข้าไปอัพโหลดหลักฐานเพิ่มเติมได้ 
+	    โดยเลือกที่เมนูด้านขวา
+	  {% else %}
+	    ในการส่งเอกสารทางไปรษณีย์ อย่าลืมแนบใบนำส่งหลักฐานมาด้วย
+          {% endif %}
         {% endif %}
       </div>
     {% endif %}

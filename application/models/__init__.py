@@ -81,6 +81,9 @@ class Applicant(models.Model):
     class DuplicateSubmissionError(Exception):
         pass
 
+    class ResubmissionError(Exception):
+        pass
+
     ###################
     # class accessor methods
 
@@ -189,7 +192,8 @@ class Applicant(models.Model):
         return self.doc_submission_method == Applicant.SUBMITTED_ONLINE
 
     def can_resubmit_online_doc(self):
-        return (self.online_doc_submission() and
+        return (self.is_submitted and 
+                self.online_doc_submission() and
                 self.submission_info.is_doc_needs_resubmission())
 
 
@@ -306,6 +310,10 @@ class Applicant(models.Model):
                 submission_info.doc_received_at = datetime.now()
             submission_info.save()
             if submitted_at!=None:
+                # to reassign submitted_at, we have to do it after the
+                # object has been saved, otherwise the auto_now_add in
+                # submitted_at would override our value.  this is why
+                # we need to call submission_info.save() twice.
                 submission_info.submitted_at = submitted_at
                 submission_info.save()
         except:
@@ -315,6 +323,14 @@ class Applicant(models.Model):
         self.is_submitted = True
         self.save()
 
+
+    def resubmit(self):
+        if not self.is_submitted:
+            raise Applicant.ResubmissionError('Resubmission on applicant who is not submitted')
+        submission_info = self.submission_info
+        submission_info.is_resubmitted = True
+        submission_info.resubmitted_at = datetime.now()
+        submission_info.save()
 
 class SubmissionInfo(models.Model):
     """
@@ -336,6 +352,10 @@ class SubmissionInfo(models.Model):
     doc_reviewed_at = models.DateTimeField(blank=True,
                                            null=True,
                                            default=None)
+
+    is_resubmitted = models.BooleanField(default=False)
+    resubmitted_at = models.DateTimeField(blank=True, null=True,
+                                          default=None)
 
     @staticmethod
     def find_by_ticket_number(ticket):
@@ -371,7 +391,8 @@ class SubmissionInfo(models.Model):
 
     def is_doc_needs_resubmission(self):
         return (self.has_been_reviewed and
-                (not self.doc_reviewed_complete))
+                (not self.doc_reviewed_complete) and
+                (not self.is_resubmitted))
 
     def set_doc_received_at_now_if_not(self, save=True):
         if self.doc_received_at==None:

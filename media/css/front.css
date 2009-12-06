@@ -60,6 +60,26 @@ div.button {
     vertical-align: middle;
     border: none; }
 
+div.button-blue {
+  background: green;
+  color: white;
+  text-align: center;
+  margin: 2px;
+  font-weight: bold;
+  font-size: 120%;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px double gray;
+  vertical-align: middle;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: darkblue;
+  border: 1px double black; }
+  div.button-blue img {
+    vertical-align: middle;
+    border: none; }
+
 #reg-button {
   padding-left: 45px; }
 

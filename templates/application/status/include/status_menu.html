@@ -1,19 +1,19 @@
 <div class="login-box">
+  {% if applicant.can_resubmit_online_doc %}
+    <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
+    <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
+      <div class="button-blue">
+	แก้ไขหลักฐานที่ไม่ผ่านการตรวจ
+      </div>
+    </a>
+    <div class="small-vert-sept"></div>
+  {% endif %}
   <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
     <div class="button">
       ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว{% if not applicant.online_doc_submission %}<br/>และพิมพ์ใบนำส่งหลักฐาน{% endif %}
     </div>
   </a>
   <div class="small-vert-sept"></div>
-  {% if applicant.can_resubmit_online_doc %}
-    <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
-    <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
-      <div class="button">
-	ส่งหลักฐานแบบออนไลน์เพิ่มเติม
-      </div>
-    </a>
-    <div class="small-vert-sept"></div>
-  {% endif %}
   <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
   {% if submission_info.can_update_info %}
     <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">

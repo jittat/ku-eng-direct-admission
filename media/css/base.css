@@ -128,6 +128,8 @@ ul.errorlist {
     float: left; }
   .doc-upload-forms .optional {
     background: white; }
+  .doc-upload-forms .with-comment {
+    height: 75px; }
   .doc-upload-forms small {
     font-size: 70%; }
   .doc-upload-forms .thumbnail {

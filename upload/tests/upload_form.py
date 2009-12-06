@@ -83,7 +83,7 @@ class UploadTestCase(UploadTestCaseBase):
         response = self.client.post('/doc/confirm/',
                                     {'submit': 'ยืนยัน'})
         self.assertTemplateUsed(response,'upload/submission_success.html')
-
+        self.assertEquals(len(mail.outbox),1)
 
     def test_upload_on_submitted_applicant(self):
         self._fill_forms_upto_online_doc_upload_form()
@@ -105,7 +105,7 @@ class UploadTestCase(UploadTestCaseBase):
                                     {'uploaded_file': 
                                      get_uploading_file('data/image.png'),
                                      'submit': 'Upload'})
-        self.assertRedirects(response, '/')
+        self.assertEquals(response.status_code, 403)
 
 
 class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
@@ -134,17 +134,68 @@ class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
         self.assertContains(response, '/doc/update/')
 
 
-    def test_doc_updata_page_available(self):
+    def test_doc_update_page_inaccessible_for_complete_review(self):
+        self._review_somchai(ALL_PASSED_REVIEW_FORM_DATA_GATPAT)
         response = self._goto_update_page()
-        self.asssertEqual(response.status, 200)
+        self.assertNotEquals(response.status_code, 200)
+
+
+    def test_doc_update_page_inaccessible_for_unreview(self):
+        response = self._goto_update_page()
+        self.assertNotEquals(response.status_code, 200)
+
+
+    def test_doc_updata_page_shows_only_incomplete_fields(self):
+        self._review_somchai()
+        response = self._goto_update_page()
+        self.assertContains(response, 'app_fee_doc')
+        self.assertNotContains(response, 'nat_id')
+        self.assertNotContains(response, 'picture')
+        self.assertNotContains(response, 'edu_certificate')
+
+
+    def test_upload_for_resubmitted_field(self):
+        self._review_somchai()
+        self._goto_update_page()
+        response = self.client.post('/doc/upload/app_fee_doc/',
+                                    {'uploaded_file': 
+                                     get_uploading_file('data/image.png'),
+                                     'submit': 'Upload'})
+        self.assertRedirects(response, '/doc/update/')
+
+
+    def test_upload_for_completed_field(self):
+        self._review_somchai()
+        self._goto_update_page()
+        response = self.client.post('/doc/upload/nat_id/',
+                                    {'uploaded_file': 
+                                     get_uploading_file('data/image.png'),
+                                     'submit': 'Upload'})
+        self.assertEquals(response.status_code, 403)
+
+
+    def test_resubmision(self):
+        self._review_somchai()
+        self.assertEquals(len(mail.outbox),1)
+        self._goto_update_page()
+        response = self.client.post('/doc/upload/app_fee_doc/',
+                                    {'uploaded_file': 
+                                     get_uploading_file('data/image.png'),
+                                     'submit': 'Upload'})
+        response = self.client.post('/doc/update/')
+        self.assertEquals(len(mail.outbox),2)
+        self.assertRedirects(response, '/apply/status/')
+
+        response = self.client.get('/apply/status/')
+        self.assertContains(response, 'คุณได้ส่งหลักฐานเพิ่มเติมแล้ว')
+        self.assertNotContains(response, '/doc/update/')
 
     # -------- helpers
 
-    def _review_somchai(self):
+    def _review_somchai(self, form_data=DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT):
         self._admin_login_required()
         self.client.post('/review/show/1/',
-                         DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT)
-        
+                         form_data)
         
     def _goto_update_page(self, check=True):
         self._login_required(SOMCHAI_EMAIL, SOMCHAI_PASSWORD)

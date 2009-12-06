@@ -9,13 +9,16 @@ from django.core.files.uploadhandler import FileUploadHandler, StopUpload
 from django.conf import settings
 
 from commons.decorators import applicant_required, active_applicant_required
-from commons.email import send_submission_confirmation_by_email
+from commons.email import send_submission_confirmation_by_email, send_resubmission_confirmation_by_email
 from commons.utils import random_string, serve_file
 
 from application.views.status import submitted_applicant_required
 from application.views.form_views import redirect_to_applicant_first_page
 
 from application.models import Applicant
+
+from review.models import ReviewField, ReviewFieldResult
+
 from models import AppDocs
 from models import get_field_thumbnail_filename, get_field_preview_filename
 from models import get_doc_fullpath
@@ -132,15 +135,25 @@ UPLOAD_FORM_STEPS = [
     ('แก้ข้อมูลการสมัคร','apply-personal-info'),
     ]
 
+def extract_variable_from_session_or_none(session, name):
+    value = None
+    if name in session:
+        try:
+            value = session['errors']
+            del session['errors']
+        except KeyError:
+            pass
+    return value
+
+
 @active_applicant_required
 def index(request, missing_fields=None):
-    notice = ''
-    if 'notice' in request.session:
-        notice = request.session['notice']
-        del request.session['notice']
-
     if not request.applicant.has_major_preference():
         return redirect_to_applicant_first_page(request.applicant)
+
+    notice = extract_variable_from_session_or_none(request.session, 'notice')
+    uploaded_field_error = extract_variable_from_session_or_none(
+        request.session, 'error')
 
     docs = request.applicant.get_applicant_docs_or_none()
     if docs==None:
@@ -154,15 +167,6 @@ def index(request, missing_fields=None):
                                               fields,
                                               docs.get_required_fields())
 
-    if 'errors' in request.session:
-        try:
-            uploaded_field_error = request.session['errors']
-            del request.session['errors']
-        except KeyError:
-            uploaded_field_error = None
-    else:
-        uploaded_field_error = None
-
     form_step_info = { 'steps': UPLOAD_FORM_STEPS,
                        'current_step': 0,
                        'max_linked_step': 1 }
@@ -174,9 +178,56 @@ def index(request, missing_fields=None):
                                 'missing_fields': missing_fields,
                                 'uploaded_field_error': uploaded_field_error })
 
+
+UPDATE_FORM_STEPS = [
+    ('อัพโหลดหลักฐาน','upload-index'),
+    ]
+
 @submitted_applicant_required
-def update(request):
-    pass
+def update(request, missing_fields=None):
+    if not request.applicant.can_resubmit_online_doc():
+        return HttpResponseForbidden()
+
+    notice = extract_variable_from_session_or_none(request.session, 'notice')
+    uploaded_field_error = extract_variable_from_session_or_none(
+        request.session, 'error')
+
+    applicant = request.applicant
+
+    if request.method=='POST':
+        applicant.resubmit()
+        send_resubmission_confirmation_by_email(applicant)
+        return HttpResponseRedirect(reverse('status-index'))
+
+    docs = applicant.get_applicant_docs_or_none()
+    review_results = ReviewFieldResult.get_applicant_review_results(applicant)
+
+    error_fields, error_results, passed_fields = [], [], []
+    for result in review_results:
+        if result.is_passed:
+            passed_fields.append(result.review_field.name)
+        else:
+            error_fields.append(result.review_field.short_name)
+            error_results.append(result)
+
+    field_forms = populate_upload_field_forms(docs, 
+                                              error_fields)
+
+    # add reviewer comments
+    for field, result in zip(error_fields, error_results):
+        field_forms[field]['comment'] = result.applicant_note
+
+    form_step_info = { 'steps': UPDATE_FORM_STEPS,
+                       'current_step': 0,
+                       'max_linked_step': 0 }
+    return render_to_response("upload/update.html",
+                              { 'applicant': request.applicant,
+                                'field_forms': field_forms,
+                                'passed_fields': passed_fields,
+                                'form_step_info': form_step_info,
+                                'notice': notice,
+                                'missing_fields': missing_fields,
+                                'uploaded_field_error': uploaded_field_error })
         
 
 def save_as_temp_file(f):
@@ -247,22 +298,30 @@ def doc_get_img(request, field_name, thumbnail=True):
         return HttpResponseNotFound()
 
 
-def upload_error(request, msg):
+def upload_error(request, msg, update=False):
     request.session['errors'] = msg
-    return HttpResponseRedirect(reverse('upload-index'))
+    if not update:
+        return HttpResponseRedirect(reverse('upload-index'))
+    else:
+        return HttpResponseRedirect(reverse('upload-update'))
 
 
-@active_applicant_required
+@applicant_required
 def upload(request, field_name):
     if request.method!="POST":
         return HttpResponseForbidden('Bad request method')
+
+    applicant = request.applicant
+    if applicant.is_submitted:
+        if not applicant.can_resubmit_online_doc():
+            return HttpResponseForbidden('You have already submitted')
+        if not ReviewFieldResult.is_field_with_error_result(applicant, field_name):
+            return HttpResponseForbidden('You resubmitted on the wrong field')            
 
     fields = AppDocs.FormMeta.upload_fields
 
     if not AppDocs.valid_field_name(field_name):
         return HttpResponseNotFound('Invalid field')
-
-    applicant = request.applicant
 
     docs = applicant.get_applicant_docs_or_none()
     request.upload_handlers.insert(0, UploadProgressSessionHandler(request))
@@ -334,9 +393,14 @@ def upload(request, field_name):
             os.remove(temp_filename)
 
     if uploaded_field_error==None:
-        return HttpResponseRedirect(reverse('upload-index'))
+        if not applicant.is_submitted:
+            return HttpResponseRedirect(reverse('upload-index'))
+        else:
+            return HttpResponseRedirect(reverse('upload-update'))
     else:
-        return upload_error(request, uploaded_field_error)
+        return upload_error(request, 
+                            uploaded_field_error,
+                            applicant.is_submitted)
 
 @active_applicant_required
 def submit(request):

@@ -1,4 +1,4 @@
-<div class="upload-item{% if not upload_field.required %} optional{% endif %}">
+<div class="upload-item{% if not upload_field.required %} optional{% endif %}{% if upload_field.comment %} with-comment{% endif %}">
   {% if upload_field.has_thumbnail %}
     <div class="thumbnail">
       <a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% url upload-thumbnail upload_field.name %}?{{ upload_field.random_string }}"/></a>
@@ -9,7 +9,13 @@
 	action="{% url upload-form field_name=upload_field.name %}" 
 	method="post" 
         enctype="multipart/form-data">
-    {{ upload_field.field.verbose_name }}{% if not upload_field.required %}<small> (หลักฐานเพิ่มเติม ไม่จำเป็นต้องยื่น)</small>{% endif %}{% if upload_field.has_thumbnail %} <span class="upload-doc-view"><a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% load adm_media %}{% media_url %}/image/Search.png"/></a></span>{% endif %}<br/>
+    {{ upload_field.field.verbose_name }}
+    {% if not upload_field.required %}<small> (หลักฐานเพิ่มเติม ไม่จำเป็นต้องยื่น)</small>{% endif %}
+    {% if upload_field.has_thumbnail %} <span class="upload-doc-view"><a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% load adm_media %}{% media_url %}/image/Search.png"/></a></span>{% endif %}
+    <br/>
+    {% if upload_field.comment %}
+      <small><b>ข้อผิดพลาดหลักฐานที่ยื่นครั้งแรก:</b> {{ upload_field.comment }}</small><br/>
+    {% endif %}
     {{ upload_field.form.uploaded_file }}
     <input type="submit" value="Upload"/>
     <div id="upload-progress-{{ upload_field.name }}">

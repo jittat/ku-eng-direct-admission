@@ -134,6 +134,40 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     adm_send_mail(applicant.email, subject, message, force)
 
 
+def send_resubmission_confirmation_by_email(applicant, force=False):
+    """
+    sends submission confirmation
+    """
+    subject = 'ยืนยันการยื่นหลักฐานเพิ่มเติม การสมัครตรงคณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
+
+    greeting = u"จดหมายอิเล็กทรอนิกส์ฉบับนี้ ยืนยันว่าคณะวิศวกรรมศาสตร์ได้รับการยื่นหลักฐานเพิ่มเติมของคุณแล้ว ใบสมัครของคุณจะเข้าสู่กระบวนการตรวจสอบหลักฐานซ้ำอีกครั้ง เมื่อการตรวจเรียบร้อยแล้วคณะจะส่งอีเมล์ยืนยันให้กับคุณอีกครั้ง"
+
+    message = (
+u"""เรียนคุณ %(firstname)s %(lastname)s
+
+%(greeting)s
+
+เลขประจำตัวผู้สมัครของคุณคือ %(ticket)s
+รหัสยืนยันคือ %(verification)s
+โดยการสมัครได้สมัครโดยใช้อีเมล์ %(email)s
+
+คุณสามารถเข้าสู่ระบบรับสมัครเพื่อตรวจสอบสถานะใบสมัครได้โดยใช้อีเมล์ %(email)s 
+
+ขอบคุณ
+โครงการรับตรง คณะวิศวกรรมศาสตร์"""
+% { 'greeting': greeting,
+    'firstname': applicant.first_name, 
+    'lastname': applicant.last_name,
+    'email': applicant.email, 
+    'ticket': applicant.ticket_number(),
+    'verification': applicant.verification_number(),
+    'submission_method': applicant.get_doc_submission_method_display(),
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicant.email, subject, message, force)
+
+
+
 def send_sub_method_change_notice_by_email(applicant, force=False):
     """
     sends doc submission method change notice
@@ -204,10 +238,7 @@ def send_validation_error_by_email(applicant, failed_fields, force=False):
 ในการส่งหลักฐานให้ระบุให้ชัดเจนว่าเป็นการส่งหลักฐานเพิ่มเติม
 และให้ระบุหมายเลขประจำตัวผู้สมัครว่า %(ticket_number)s ด้วย""" % {'ticket_number': applicant.ticket_number()}
     elif applicant.online_doc_submission():
-        extra_msg = u"""คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบออนไลน์เช่นเดิม
-อย่างไรก็ตามระบบส่งเอกสารเพิ่มเติมแบบออนไลน์กำลังอยู่ระหว่างการพัฒนา 
-คาดว่าจะส่งได้ภายใน 1-2 วันนี้ 
-ต้องขออภัยไว้ ณ ที่นี้ด้วย รบกวนผู้สมัครรออีกสักนิด"""
+        extra_msg = u"""คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งแบบออนไลน์เช่นเดิม"""
     else:
         extra_msg = u"""คุณจะต้องส่งหลักฐานเพิ่มเติม ภายในวันที่ 15 ธ.ค. นี้  โดยใช้วิธีส่งทางไปรษณีย์เช่นเดิม
 ถ้าคุณใช้การส่งหลักฐานทางไปรษณีย์ อย่าลืมพิมพ์ใบนำส่งแนบมาด้วย (สามารถพิมพ์ได้จากเว็บรับสมัคร)"""

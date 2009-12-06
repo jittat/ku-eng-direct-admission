@@ -48,7 +48,7 @@ a.in-button
   &:hover
     text-decoration: none
 
-div.button
+=button
   background: green
   color: white
   text-align: center
@@ -67,6 +67,13 @@ div.button
     vertical-align: middle
     border: none
 
+div.button
+  +button
+
+div.button-blue
+  +button
+  background: darkblue
+  border: 1px double black
 
 #reg-button
   padding-left: 45px
