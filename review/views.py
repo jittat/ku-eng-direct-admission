@@ -361,6 +361,12 @@ def list_applicant(request, reviewed=True):
     applicant_count = submission_infos.count()
 
     submission_infos = submission_infos.all()[:200]
+
+    if not reviewed:
+        resubmitted_submission_infos = SubmissionInfo.get_unreviewed_resubmitted_submissions().select_related(depth=1).all()
+        applicant_count += resubmitted_submission_infos.count()
+        submission_infos = list(resubmitted_submission_infos) + list(submission_infos)
+
     applicants = []
     for s in submission_infos:
         app = s.applicant

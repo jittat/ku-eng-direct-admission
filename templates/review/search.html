@@ -45,7 +45,13 @@
 	{% if display.edu %}
 	  <td>{{ applicant.education.school_name }}</td>
         {% endif %}
-	<td>{% if applicant.is_submitted %}ยื่นใบสมัครแล้ว{% else %}ยังไม่ยื่น{% endif %}</td>
+	<td>
+	  {% if applicant.is_submitted %}
+	    {% if applicant.submission_info.is_resubmitted %}<img src="{% media_url %}/image/Backup.png"/>ยื่นหลักฐานเพิ่ม{% else %}ยื่นใบสมัครแล้ว{% endif %} 
+	  {% else %}
+	    ยังไม่ยื่น
+	  {% endif %}
+	</td>
 	<td>{{ applicant.get_doc_submission_method_display }}</td>
 	{% if display.doc_reviewed_at %}
 	  <td>{{ applicant.submission_info.doc_reviewed_at|date:"H:i, j N" }}</td>

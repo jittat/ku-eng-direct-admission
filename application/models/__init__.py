@@ -374,6 +374,11 @@ class SubmissionInfo(models.Model):
 
     def has_received_doc(self):
         return self.doc_received_at != None
+    
+    def is_reviewed_after_resubmitted(self):
+        return (self.is_resubmitted) and (
+            self.doc_reviewed_at > self.resubmitted_at)
+
 
     def can_update_info(self):
         if self.has_been_reviewed:
@@ -392,7 +397,8 @@ class SubmissionInfo(models.Model):
     def is_doc_needs_resubmission(self):
         return (self.has_been_reviewed and
                 (not self.doc_reviewed_complete) and
-                (not self.is_resubmitted))
+                ((not self.is_resubmitted) or 
+                 (self.is_reviewed_after_resubmitted())))
 
     def set_doc_received_at_now_if_not(self, save=True):
         if self.doc_received_at==None:
@@ -407,6 +413,12 @@ class SubmissionInfo(models.Model):
             self.doc_received_at = datetime.now()
         if save:
             self.save()
+
+    @staticmethod
+    def get_unreviewed_resubmitted_submissions():
+        submission_infos = SubmissionInfo.objects.extra(
+            where=['(is_resubmitted) AND (doc_reviewed_at < resubmitted_at)'])
+        return submission_infos
 
     class Meta:
         ordering = ['applicantion_id']
