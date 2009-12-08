@@ -175,20 +175,41 @@ class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
 
 
     def test_resubmision(self):
-        self._review_somchai()
-        self.assertEquals(len(mail.outbox),1)
-        self._goto_update_page()
-        response = self.client.post('/doc/upload/app_fee_doc/',
-                                    {'uploaded_file': 
-                                     get_uploading_file('data/image.png'),
-                                     'submit': 'Upload'})
-        response = self.client.post('/doc/update/')
-        self.assertEquals(len(mail.outbox),2)
-        self.assertRedirects(response, '/apply/status/')
+        self._review_somchai_and_resubmit()
 
         response = self.client.get('/apply/status/')
         self.assertContains(response, 'คุณได้ส่งหลักฐานเพิ่มเติมแล้ว')
         self.assertNotContains(response, '/doc/update/')
+
+    def test_review_success_after_resubmision(self):
+        self._review_somchai_and_resubmit()
+
+        response = self.client.get('/apply/status/')
+        self.assertContains(response, 'คุณได้ส่งหลักฐานเพิ่มเติมแล้ว')
+        self.assertNotContains(response, '/doc/update/')
+
+        import time
+        time.sleep(2)
+        self._review_somchai(ALL_PASSED_REVIEW_FORM_DATA_GATPAT)
+
+        response = self.client.get('/apply/status/')
+        self.assertContains(response, 'ตรวจสอบเรียบร้อย')
+        self.assertNotContains(response, '/doc/update/')
+
+    def test_review_failed_after_resubmision(self):
+        self._review_somchai_and_resubmit()
+
+        response = self.client.get('/apply/status/')
+        self.assertContains(response, 'คุณได้ส่งหลักฐานเพิ่มเติมแล้ว')
+        self.assertNotContains(response, '/doc/update/')
+
+        import time
+        time.sleep(2)
+        self._review_somchai(DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT)
+
+        response = self.client.get('/apply/status/')
+        self.assertContains(response, 'แต่ยังมีข้อผิดพลาดอยู่')
+        self.assertContains(response, '/doc/update/')
 
     # -------- helpers
 
@@ -204,4 +225,18 @@ class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
         
         return self.client.get('/doc/update/')
 
-
+    def _review_somchai_and_resubmit(self, check=True):
+        self._review_somchai()
+        if check:
+            self.assertEquals(len(mail.outbox),1)
+        self._goto_update_page()
+        response = self.client.post('/doc/upload/app_fee_doc/',
+                                    {'uploaded_file': 
+                                     get_uploading_file('data/image.png'),
+                                     'submit': 'Upload'})
+        response = self.client.post('/doc/update/')
+        if check:
+            self.assertEquals(len(mail.outbox),2)
+            self.assertRedirects(response, '/apply/status/')
+        return response
+        
