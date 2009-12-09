@@ -16,7 +16,12 @@
   {% endif %}
 
   {% if applicant_count %}
-    <p>ผลลัพธ์ทั้งหมด {{ applicant_count }} รายการ แสดงผลแค่ 200 รายการแรก</p>
+    <p>
+      ผลลัพธ์ทั้งหมด {{ applicant_count }} รายการ แสดงผลรายการที่ {{ display_start }} ถึงรายการที่ {{ display_end }} ({{ display_count }} รายการ) | 
+      <small>
+	{% ifnotequal page 1 %}<a href="?page=1">หน้าแรก</a> - <a href="?page={{ page|add:"-1" }}">หน้าก่อนหน้า</a> - {% endifnotequal %}หน้าที่ {{ page }}{% ifnotequal page max_page %} - <a href="?page={{ page|add:"1" }}">หน้าถัดไป</a>{% endifnotequal %}
+      </small>
+    </p>
   {% endif %}
 
   <div class="small-vert-sept"></div>

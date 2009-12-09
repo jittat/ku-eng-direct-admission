@@ -348,6 +348,8 @@ def review_document(request, applicant_id, return_to_manual=False):
                                 'review_data': data })
 
 
+APPLICANTS_PER_PAGE = 200
+
 @login_required
 def list_applicant(request, reviewed=True):
     applicants = []
@@ -360,12 +362,27 @@ def list_applicant(request, reviewed=True):
 
     applicant_count = submission_infos.count()
 
-    submission_infos = submission_infos.all()[:200]
+    max_page = (applicant_count + APPLICANTS_PER_PAGE -1) / APPLICANTS_PER_PAGE
+    page = 1
+    if 'page' in request.GET:
+        try:
+            page = int(request.GET['page'])
+        except:
+            page = 1
+    if page < 1 or page > max_page:
+        page = 1
+
+    display_start = APPLICANTS_PER_PAGE * (page - 1) + 1
+    display_end = APPLICANTS_PER_PAGE * page
+    submission_infos = submission_infos.all()[display_start-1:display_end]
+    display_count = len(submission_infos)
 
     if not reviewed:
-        resubmitted_submission_infos = SubmissionInfo.get_unreviewed_resubmitted_submissions().select_related(depth=1).all()
-        applicant_count += resubmitted_submission_infos.count()
+        resubmitted_submission_infos = list(SubmissionInfo.get_unreviewed_resubmitted_submissions().select_related(depth=1).all())
+        applicant_count += len(resubmitted_submission_infos)
         submission_infos = list(resubmitted_submission_infos) + list(submission_infos)
+        display_count = len(submission_infos)
+        display_end += len(resubmitted_submission_infos)
 
     applicants = []
     for s in submission_infos:
@@ -383,6 +400,11 @@ def list_applicant(request, reviewed=True):
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
                                 'force_review_link': True,
+                                'display_start': display_start,
+                                'display_end': display_end,
+                                'display_count': display_count,
+                                'page': page,
+                                'max_page': max_page,
                                 'display': display })
 
 IMG_MAX_HEIGHT = 450
