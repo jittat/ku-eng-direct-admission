@@ -335,7 +335,7 @@ class Applicant(models.Model):
 class SubmissionInfo(models.Model):
     """
     associates Applicant who have submitted the applicaiton with a
-    unique applicantion_id.
+    unique application_id.
     """
     applicantion_id = models.AutoField(unique=True, primary_key=True)
     applicant = models.OneToOneField(Applicant, 

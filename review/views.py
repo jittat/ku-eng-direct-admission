@@ -351,7 +351,7 @@ def review_document(request, applicant_id, return_to_manual=False):
 APPLICANTS_PER_PAGE = 200
 
 @login_required
-def list_applicant(request, reviewed=True):
+def list_applicant(request, reviewed=True, pagination=True):
     applicants = []
     display = {}
     submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=reviewed).select_related(depth=1)
@@ -362,14 +362,18 @@ def list_applicant(request, reviewed=True):
 
     applicant_count = submission_infos.count()
 
-    max_page = (applicant_count + APPLICANTS_PER_PAGE -1) / APPLICANTS_PER_PAGE
-    page = 1
-    if 'page' in request.GET:
-        try:
-            page = int(request.GET['page'])
-        except:
+    if pagination:
+        max_page = (applicant_count + APPLICANTS_PER_PAGE -1) / APPLICANTS_PER_PAGE
+        page = 1
+        if 'page' in request.GET:
+            try:
+                page = int(request.GET['page'])
+            except:
+                page = 1
+        if page < 1 or page > max_page:
             page = 1
-    if page < 1 or page > max_page:
+    else:
+        max_page = 1
         page = 1
 
     display_start = APPLICANTS_PER_PAGE * (page - 1) + 1
@@ -377,6 +381,7 @@ def list_applicant(request, reviewed=True):
     submission_infos = submission_infos.all()[display_start-1:display_end]
     display_count = len(submission_infos)
 
+    # add resubmitted applicants
     if not reviewed:
         resubmitted_submission_infos = list(SubmissionInfo.get_unreviewed_resubmitted_submissions().select_related(depth=1).all())
         applicant_count += len(resubmitted_submission_infos)
@@ -400,6 +405,7 @@ def list_applicant(request, reviewed=True):
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
                                 'force_review_link': True,
+                                'pagination': pagination,
                                 'display_start': display_start,
                                 'display_end': display_end,
                                 'display_count': display_count,
