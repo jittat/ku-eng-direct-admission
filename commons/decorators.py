@@ -1,18 +1,15 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 
-from utils import redirect_to_index, verify_submission_deadline
+from utils import redirect_to_index, submission_deadline_passed
 from application.models import Applicant
 
 from django.conf import settings
-from datetime import datetime
 
 def within_submission_deadline(view_function):
     def decorate(request, *args, **kwargs):
         if submission_deadline_passed():
             return render_to_response("commons/closed.html")
-        except:
-            pass
         return view_function(request, *args, **kwargs)
 
     return decorate
