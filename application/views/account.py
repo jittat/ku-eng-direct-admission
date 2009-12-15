@@ -17,6 +17,7 @@ from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm, ActivationNameForm
 from commons.email import send_password_by_email, send_activation_by_email
 from commons.models import Announcement
+from commons.decorators import within_submission_deadline
 
 ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 
@@ -92,6 +93,7 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
                                 'new_registration': new_registration,
                                 'step_name': "อีเมล์นี้มีการลงทะเบียนไว้แล้ว ต้องมีการยืนยันอีเมล์" })
 
+@within_submission_deadline
 def register(request):
     if request.method == 'POST':
         if 'cancel' in request.POST:
@@ -147,6 +149,7 @@ def register(request):
                               { 'form': form })
 
 
+@within_submission_deadline
 def activate(request, activation_key):
     try:
         registration = Registration.objects.get(activation_key=activation_key)

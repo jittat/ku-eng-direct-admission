@@ -12,6 +12,13 @@ def redirect_to_index(request):
     # go back to front page, will be changed later
     return HttpResponseRedirect(reverse(settings.INDEX_PAGE))
 
+def submission_deadline_passed():
+    try:
+        deadline = settings.SUBMISSION_DEADLINE
+        return datetime.now() >= deadline:
+    except:
+        pass
+    return False
 
 def admin_email():
     admin = settings.ADMINS[0]
