@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
+
 from django.template import Library
 
-from commons.utils import admin_email
+from commons.utils import admin_email, time_to_submission_deadline
 
 register = Library()
 
+def adm_submission_deadline_warning():
+    time_left = time_to_submission_deadline()
+    if (time_left > timedelta(0)) and (time_left < timedelta(hours=3)):
+        return ('<div class="deadline-bar"><span class="deadline">เหลือเวลาอีก %d ชั่วโมง %d นาที ก่อนหมดเวลารับสมัคร</span></div>' %
+                (time_left.seconds/3600, time_left.seconds%3600/60))
+    else:
+        return ''
+adm_submission_deadline_warning = register.simple_tag(adm_submission_deadline_warning)
 
 def adm_admin_email():
     """

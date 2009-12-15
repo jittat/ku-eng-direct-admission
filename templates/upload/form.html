@@ -1,6 +1,7 @@
 {% extends "commons/base.html" %}
 
 {% load adm_steps %}
+{% load adm_info %}
 
 {% block extra-head %}
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/jquery.js"></script>
@@ -13,6 +14,8 @@
 
 {% block body %}
   {% form_steps %}
+
+  {% adm_submission_deadline_warning %}
 
   {% if missing_fields %}
     <div class="doc-error">

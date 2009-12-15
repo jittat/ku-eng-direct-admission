@@ -1,10 +1,14 @@
 {% extends "commons/base.html" %}
 
 {% load adm_steps %}
+{% load adm_info %}
 
 {% block body %}
   <div class="main">
     {% form_steps %}
+
+    {% adm_submission_deadline_warning %}
+
     <div class="form-body">
       {% block form-body %}
       {% endblock %}

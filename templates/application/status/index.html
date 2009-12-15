@@ -1,5 +1,7 @@
 {% extends "application/status/base.html" %}
 
+{% load adm_info %}
+
 {% block extra-head %}
 <link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
 <script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
@@ -7,6 +9,8 @@
 
 {% block body %}
   {% load adm_steps %}{% step_bar "ตรวจสอบสถานะใบสมัคร" %}
+
+  {% adm_submission_deadline_warning %}
 
   {% if notice %}
     <div class="notice-bar">

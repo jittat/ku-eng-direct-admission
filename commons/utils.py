@@ -4,7 +4,7 @@ import os
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def redirect_to_index(request):
     # clear user session
@@ -15,6 +15,15 @@ def redirect_to_index(request):
 
 def redirect_to_deadline_error():
     return HttpResponseRedirect(reverse('commons-deadline-error'))
+
+def time_to_submission_deadline():
+    try:
+        deadline = settings.SUBMISSION_DEADLINE
+        return deadline - datetime.now()
+    except:
+        pass
+    return timedelta(1)  # default is 1 day
+
 
 def submission_deadline_passed():
     try:

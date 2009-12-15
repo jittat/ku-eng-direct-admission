@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load adm_info %}
+
 {% block title %}Applying{% endblock %}
 
 {% block extra-head %}
@@ -10,6 +12,8 @@
 {% block body %}
 <div class="front-body">
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+
+  {% adm_submission_deadline_warning %}
 
   <div class="right-box">
     {% if submission_deadline_passed %}
