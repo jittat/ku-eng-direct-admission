@@ -20,6 +20,10 @@ urlpatterns = patterns(
     (r'^review/', include('adm.review.urls')),
     (r'^manual/', include('adm.manual.urls')),
 
+    url(r'^deadline_passed/$', 
+        'commons.views.deadline_passed_error',
+        name='commons-deadline-error'),
+
     # authentication
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout',

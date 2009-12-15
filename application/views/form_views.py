@@ -12,6 +12,8 @@ from commons.utils import redirect_to_index
 from commons.email import send_submission_confirmation_by_email
 
 from application.decorators import init_applicant
+from commons.decorators import within_submission_deadline
+from commons.utils import submission_deadline_passed, redirect_to_deadline_error
 
 from application.models import Applicant
 from application.models import PersonalInfo
@@ -61,9 +63,12 @@ def build_form_step_info(current_step, applicant):
              'current_step': current_step,
              'max_linked_step': get_allowed_form_steps(applicant) }
 
-
 def redirect_to_first_form():
-    return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
+    if not submission_deadline_passed():
+        return HttpResponseRedirect(reverse(FORM_STEPS[0][1]))
+    else:
+        return redirect_to_deadline_error()
+
 
 def redirect_to_applicant_first_page(applicant):
     """
@@ -84,7 +89,7 @@ def redirect_to_applicant_first_page(applicant):
     else:
         return HttpResponseRedirect(reverse('status-index'))
 
-
+@within_submission_deadline
 @active_applicant_required
 def applicant_personal_info(request):
     applicant = request.applicant
@@ -100,6 +105,7 @@ def applicant_personal_info(request):
                                 'form': form,
                                 'form_step_info': form_step_info })
 
+@within_submission_deadline
 @active_applicant_required
 def applicant_address(request):
     result, hform, cform = handle_address_form(request)
@@ -113,6 +119,7 @@ def applicant_address(request):
                                 'form_step_info': form_step_info })
 
 
+@within_submission_deadline
 @active_applicant_required
 def applicant_education(request):
     applicant = request.applicant
@@ -142,6 +149,7 @@ def prepare_major_form(applicant, pref_ranks=None, errors=None):
              'errors': errors }
 
 
+@within_submission_deadline
 @active_applicant_required
 def applicant_major(request):
     applicant = request.applicant
@@ -171,6 +179,7 @@ def applicant_major(request):
                               form_data)
 
 
+@within_submission_deadline
 @active_applicant_required
 def applicant_doc_menu(request):
     applicant = request.applicant
@@ -183,6 +192,7 @@ def applicant_doc_menu(request):
                                'chosen': chosen })
 
 
+@within_submission_deadline
 @active_applicant_required
 def info_confirm(request):
     applicant = request.applicant

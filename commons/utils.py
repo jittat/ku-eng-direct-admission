@@ -13,6 +13,9 @@ def redirect_to_index(request):
     # go back to front page, will be changed later
     return HttpResponseRedirect(reverse(settings.INDEX_PAGE))
 
+def redirect_to_deadline_error():
+    return HttpResponseRedirect(reverse('commons-deadline-error'))
+
 def submission_deadline_passed():
     try:
         deadline = settings.SUBMISSION_DEADLINE

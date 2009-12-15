@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 
 from commons.decorators import submitted_applicant_required
+from commons.decorators import within_submission_deadline
+from commons.utils import submission_deadline_passed, redirect_to_deadline_error
 
 from application.views.form_views import prepare_major_form
 from application.forms.handlers import handle_major_form
@@ -14,6 +16,7 @@ from application.models import Applicant, MajorPreference
 
 from commons.email import send_sub_method_change_notice_by_email
 
+@within_submission_deadline
 @submitted_applicant_required
 def update_majors(request):
     applicant = request.applicant
@@ -49,7 +52,7 @@ def update_majors(request):
     return render_to_response('application/update/majors.html',
                               form_data)
 
-
+@within_submission_deadline
 @submitted_applicant_required
 def update_education(request):
     applicant = request.applicant
@@ -73,6 +76,7 @@ def update_education(request):
                                'applicant': applicant })
 
 
+@within_submission_deadline
 @submitted_applicant_required
 def update_to_postal_submission(request):
 

@@ -9,6 +9,8 @@ from django.core.files.uploadhandler import FileUploadHandler, StopUpload
 from django.conf import settings
 
 from commons.decorators import applicant_required, active_applicant_required
+from commons.decorators import within_submission_deadline
+
 from commons.email import send_submission_confirmation_by_email, send_resubmission_confirmation_by_email
 from commons.utils import random_string, serve_file
 
@@ -146,6 +148,7 @@ def extract_variable_from_session_or_none(session, name):
     return value
 
 
+@within_submission_deadline
 @active_applicant_required
 def index(request, missing_fields=None):
     if not request.applicant.has_major_preference():
@@ -183,6 +186,7 @@ UPDATE_FORM_STEPS = [
     ('อัพโหลดหลักฐาน','upload-index'),
     ]
 
+@within_submission_deadline
 @submitted_applicant_required
 def update(request, missing_fields=None):
     if not request.applicant.can_resubmit_online_doc():
@@ -306,6 +310,7 @@ def upload_error(request, msg, update=False):
         return HttpResponseRedirect(reverse('upload-update'))
 
 
+@within_submission_deadline
 @applicant_required
 def upload(request, field_name):
     if request.method!="POST":
@@ -402,6 +407,7 @@ def upload(request, field_name):
                             uploaded_field_error,
                             applicant.is_submitted)
 
+@within_submission_deadline
 @active_applicant_required
 def submit(request):
     applicant = request.applicant
@@ -419,6 +425,7 @@ def submit(request):
         return index(request, missing_field_names)
 
 
+@within_submission_deadline
 @active_applicant_required
 def confirm(request):
     applicant = request.applicant
