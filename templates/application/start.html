@@ -12,24 +12,34 @@
   <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
 
   <div class="right-box">
-    <div class="login-box">
-      <center>
-	เริ่มต้นสมัครโดยการ
-      </center>
-      <a class="in-button" href="{% url apply-register %}">
-	<div id="reg-button" class="button big">
-	  ลงทะเบียนเข้าใช้ระบบ
-	  <img src="{% media_url %}/image/Next.png"/>
-	</div>
-      </a>
-    </div>
-
+    {% if submission_deadline_passed %}
+      <div class="login-box">
+        <center><b>หมดเวลารับสมัครออนไลน์แล้ว</b></center>
+      </div>
+    {% else %}
+      <div class="login-box">
+        <center>
+  	  เริ่มต้นสมัครโดยการ
+	</center>
+	<a class="in-button" href="{% url apply-register %}">
+	  <div id="reg-button" class="button big">
+	    ลงทะเบียนเข้าใช้ระบบ
+	    <img src="{% media_url %}/image/Next.png"/>
+	  </div>
+	</a>
+      </div>
+    {% endif %}
     <br/>
 
     <div class="login-box">
       <center>
-	หลังจากลงทะเบียนแล้ว<br/>
-	เริ่มกรอกใบสมัคร/กรอกใบสมัครที่ค้างไว้
+	{% if not submission_deadline_passed %}
+  	  หลังจากลงทะเบียนแล้ว<br/>
+	  เริ่มกรอกใบสมัคร กรอกใบสมัครที่ค้างไว้<br/>
+	  หรือตรวจสอบสถานะการสมัคร
+	{% else %}
+	  เข้าสู่ระบบเพื่อตรวจสอบสถานะการสมัคร
+	{% endif %}
 	<form action="{% url apply-login %}" method="post">
 	  <table class="header-left">
 	    {{ form.as_table }}
@@ -63,6 +73,25 @@
     </div>
 
   </div>
+
+  {% if submission_deadline_passed %}
+    <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px; margin-bottom:10px;" class="normal-msg">
+      <center><h2>การส่งหลักฐานเพิ่มเติม</h2></center>
+      <ul>
+	<li>
+	  ผู้สมัครที่ส่งหลักฐานแบบออนไลน์ที่หลักฐานไม่ผ่านการตรวจสามารถส่งหลักฐานได้จนถึงวันที่
+	  18 ธ.ค. 52
+	</li>
+	<li>
+	  ระบบสำหรับส่งหลักฐานเพิ่มเติมแบบออนไลน์
+	  สำหรับผู้สมัครแบบออนไลน์ที่เลือกส่งหลักฐานทางไปรษณีย์
+	  และผู้สมัครที่เลือกส่งแบบออนไลน์แต่ยังไม่ได้รับการตรวจ จะเปิดให้ใช้ในวันที่ 17
+	  ธ.ค. 52 และสามารถส่งหลักฐานเพิ่มเติมได้จนถึงวันที่ 18 ธ.ค. 52
+	  (<a href="http://admission.eng.ku.ac.th/node/1109">อ่านรายละเอียดเพิ่มเติม</a>)
+	</li>
+      </ul>
+    </div>
+  {% endif %}
 
   {% if announcements %}
     <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px;" class="normal-msg">

@@ -7,7 +7,7 @@ from django import forms
 
 from MySQLdb import IntegrityError
 
-from commons.utils import redirect_to_index
+from commons.utils import redirect_to_index, submission_deadline_passed
 from application.views import redirect_to_first_form
 from application.views import redirect_to_applicant_first_page
 
@@ -59,6 +59,8 @@ def login(request):
         form = LoginForm()
     return render_to_response('application/start.html',
                               { 'form': form,
+                                'submission_deadline_passed':
+                                    submission_deadline_passed(),
                                 'errors': error_messages,
                                 'announcements': announcements })
 

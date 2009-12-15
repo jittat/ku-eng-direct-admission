@@ -14,20 +14,24 @@
     </div>
   </a>
   <div class="small-vert-sept"></div>
-  <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
-  {% if submission_info.can_update_info %}
-    <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
+  {% if submission_deadline_passed %}
+    <center>การแก้ไขข้อมูลต่าง ๆ ไม่สามารถทำได้แล้ว<br/>เนื่องจากหมดเขตรับสมัคร</center>
+  {% else %}
+    <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
+    {% if submission_info.can_update_info %}
+      <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
+        <div class="button">
+          แก้ไขข้อมูลการศึกษาและคะแนนสอบ
+        </div>
+      </a>
+      <div class="small-vert-sept"></div>
+    {% endif %}	
+    <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
       <div class="button">
-        แก้ไขข้อมูลการศึกษาและคะแนนสอบ
+        แก้ไขอันดับสาขาวิชา
       </div>
     </a>
-    <div class="small-vert-sept"></div>
-  {% endif %}	
-  <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
-    <div class="button">
-      แก้ไขอันดับสาขาวิชา
-    </div>
-  </a>
+  {% endif %}
   {% if not applicant.online_doc_submission %}
   {% if not submission_info.has_received_doc %}
   <div class="small-vert-sept"></div>

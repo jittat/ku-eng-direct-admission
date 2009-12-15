@@ -18,7 +18,6 @@
     <br/>
     {% include "application/status/include/status_menu.html" %}
 
-
     <small>
       <ul>
 	<li>
@@ -33,6 +32,22 @@
       </ul>
     </small>
   </div>
+  {% if submission_deadline_passed %}
+  <div class="normal-msg" style="width: 510px; margin-top:5px;">
+    <center><b>ขณะนี้หมดเวลารับสมัครแล้ว</b></center>
+    <p>
+      ผู้สมัครจะไม่สามารถแก้ไขใบสมัครและข้อมูลได้อีกแล้ว
+      อย่างไรก็ตามทางคณะยังเปิดให้ผู้ที่ส่งหลักฐานผิดพลาดได้ส่งหลักฐานเพิ่มเติมใหม่ได้ระหว่างวันที่
+      17 - 18 ธ.ค. 52
+      (<a href="http://admission.eng.ku.ac.th/node/1109">อ่านรายละเอียดเพิ่มเติม</a>)
+    </p>
+    <p>
+      ระบบสำหรับส่งหลักฐานเพิ่มเติมแบบออนไลน์สำหรับผู้ที่ต้องการเพิ่มเติมหลักฐานก่อนการตรวจ
+      และรวมถึงผู้ที่เลือกส่งหลักฐานทางไปรษณีย์จะใช้งานได้ในวันที่ 17 ธ.ค. 52
+      และจะเปิดให้ส่งหลักฐานแก้ไขได้จนถึงวันที่ 18 ธ.ค. 52
+    </p>
+  </div>
+  {% endif %}
   <p>
     {% if not submission_info.is_resubmitted %}
       คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
