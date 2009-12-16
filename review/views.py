@@ -23,13 +23,19 @@ from commons.email import send_validation_error_by_email
 from models import ReviewField, ReviewFieldResult
 
 def find_basic_statistics():
+    manual_app_count = Applicant.objects.filter(is_offline=True).count()
+    submitted_manual_app_count = Applicant.get_submitted_offline_applicants().count()
     stat = {
-        'app_registered': Applicant.objects.count(),
-        'app_submitted': SubmissionInfo.objects.count(),
+        'online_app_registered': 
+        Applicant.objects.count() - manual_app_count,
+        'online_app_submitted': 
+        SubmissionInfo.objects.count() - submitted_manual_app_count,
         'app_submitted_postal': 
         Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_BY_MAIL).count(),
         'app_submitted_online': 
         Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_ONLINE).count(),
+        'app_submitted_offline':
+            submitted_manual_app_count,
         'app_received': {
             'reviewed': SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=True).count(),
             'not_reviewed': SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=False).count(),

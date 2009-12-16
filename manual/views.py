@@ -47,7 +47,7 @@ def get_notice_message_and_clear(request):
 def index(request):
     notice = get_notice_message_and_clear(request)
 
-    active_applicants = Applicant.get_active_offline_applicant()
+    active_applicants = Applicant.get_active_offline_applicants()
 
     new_app_form = NewAppForm()
 

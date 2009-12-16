@@ -96,8 +96,12 @@ class Applicant(models.Model):
             return applicants[0]
 
     @staticmethod
-    def get_active_offline_applicant():
+    def get_active_offline_applicants():
         return Applicant.objects.filter(is_offline=True).filter(is_submitted=False)
+
+    @staticmethod
+    def get_submitted_offline_applicants():
+        return Applicant.objects.filter(is_offline=True).filter(is_submitted=True)
 
     # accessor methods
 
