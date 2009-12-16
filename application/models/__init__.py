@@ -357,6 +357,9 @@ class SubmissionInfo(models.Model):
     resubmitted_at = models.DateTimeField(blank=True, null=True,
                                           default=None)
 
+    last_updated_at = models.DateTimeField(blank=True, null=True,
+                                           default=None)
+
     @staticmethod
     def find_by_ticket_number(ticket):
         if len(ticket)>8:
