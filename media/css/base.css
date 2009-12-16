@@ -262,3 +262,27 @@ table#doc-status-table td {
     -moz-border-radius: 2px;
     -webkit-border-radius: 5px;
     border-radius: 5px; }
+
+table#supplement-list th {
+  background: #000070;
+  color: white;
+  padding-left: 5px;
+  padding-right: 5px; }
+table#supplement-list tr.odd {
+  background: #e0e0e0; }
+table#supplement-list tr.even {
+  background: #d0d0d0; }
+table#supplement-list td {
+  padding-left: 10px;
+  padding-right: 10px; }
+
+#supplement-form {
+  margin-top: 10px;
+  background: #e0ffe0;
+  border: 1px solid gray;
+  padding: 10px; }
+
+.supplement-msg {
+  border: 1px solid red;
+  background: #fff0f0;
+  margin-bottom: 5px; }

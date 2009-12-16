@@ -141,6 +141,8 @@ EMAIL_SENDER = ''
 
 TEST_DATABASE_COLLATION = 'utf8_general_ci'
 
+MAX_SUPPLEMENTS = 10
+
 try:
     from settings_local import *
 except ImportError:

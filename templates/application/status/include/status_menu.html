@@ -18,8 +18,15 @@
     <center>
       การแก้ไขข้อมูลต่าง ๆ ในใบสมัครไม่สามารถทำได้แล้ว<br/>
       เนื่องจากหมดเขตรับสมัคร<br/>
-      ระบบสำหรับการอัพโหลดหลักฐานเพิ่มเติม<br/>
-      จะเปิดให้ใช้ในวันที่ 17 - 18 ธ.ค. 52
+      {% if applicant.can_submit_supplements %}
+        อย่างไรก็ตาม ผู้สมัครสามารถส่งหลักฐานเพิ่มเติมออนไลน์ได้จนถึงวันที่ 18 ธ.ค. 52
+        <div class="small-vert-sept"></div>
+        <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
+          <div class="button-blue">
+            ส่งหลักฐานเพิ่มเติม
+          </div>
+        </a>
+      {% endif %}
     </center>
   {% else %}
     <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>

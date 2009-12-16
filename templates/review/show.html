@@ -16,6 +16,9 @@
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
   {% include "review/include/doc_received_status.html" %}<br/>
+  {% if applicant.has_supplements %}
+    {% include "review/include/supplements.html" %}
+  {% endif %}
   <form action="" method="post">
     <table class="applicants">
       <tr>

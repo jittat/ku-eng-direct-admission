@@ -1,0 +1,89 @@
+{% extends "commons/base.html" %}
+
+{% block title %}ส่งหลักฐานเพิ่มเติม{% endblock %}
+
+{% block extra-head %}
+{{ block.super }}
+<link href="{% load adm_media %}{% media_url %}/facebox/facebox.css" media="screen" rel="stylesheet" type="text/css"/>
+<script src="{% media_url %}/facebox/facebox.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+  {% load adm_steps %}{% form_steps %}
+  <b>ผู้สมัคร:</b> {{ applicant.full_name }} <b>หมายเลขผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+
+  <b>ขั้นตอนการอัพโหลดหลักฐานเพิ่มเติม:</b> <small>สแกนหรือถ่ายภาพเอกสาร<b>ที่ไม่ผ่านการตรวจ
+    หรือคาดว่าจะไม่ผ่านการตรวจ</b> โดยไม่จำเป็นต้องรับรองสำเนาถูกต้อง
+    จากนั้นเลือกประเภทหลักฐานและเลือกแฟ้มข้อมูลที่ต้องการ แล้วกดปุ่ม 'อัพโหลด'
+    ในการสแกนหรือถ่ายภาพจะต้องปรับแต่งแฟ้มภาพให้มีความละเอียดตามที่ระบบต้องการ
+    <a id="upload-detail-link" href="#">กดที่นี่เพื่ออ่านรายละเอียด</a><br/>
+    ผู้สมัครสามารถตรวจสอบแฟ้มที่อัพโหลดไปได้ โดยกดที่ลิงก์ <b>[ดูภาพตัวอย่าง]</b>
+    ระบบจะแสดงภาพย่อขนาดจากที่ผู้สมัครได้อัพโหลดไป
+    ถ้าผู้สมัครต้องการอัพโหลดหลักฐานอื่นแทนหลักฐานเดิมสามารถกด <b>[ลบ]</b>
+    เพื่อลบหลักฐานเดิมทิ้งได้
+    <b>ผู้สมัครไม่ต้องอัพโหลดหลักฐานอื่น ๆ ที่ผ่านการตรวจแล้วมาใหม่</b>
+  </small>
+  <div id="upload-detail-box" class="normal-msg" style="display:none">
+    {% include "upload/include/upload_detail.html" %}
+    [<a id="hide-upload-detail-link" href="#">ซ่อนส่วนนี้</a>]
+  </div>
+
+  {% if upload_error %}
+    <div class="doc-error">
+      <b>เกิดข้อผิดพลาด</b> {{ upload_error }}
+    </div>
+  {% endif %}
+  
+  <table id="supplement-list">
+    <tr>
+      <th>ลำดับที่</th>
+      <th>ประเภทหลักฐาน</th>
+      <th>รายละเอียด</th>
+    </tr>
+    {% for supplement in supplements.all %}
+      <tr class="{% cycle 'odd' 'even' %}">
+	<td>{{ forloop.counter }}</td>
+	<td>{{ supplement.supplement_type.name }}</td>
+	<td>[<a href="{% url supplement-preview supplement.id %}?{{ supplement.random_string }}" rel="facebox">ดูภาพตัวอย่าง</a>] [<a class="supp-delete-link" href="{% url supplement-delete supplement.id %}">ลบ</a>]</td>
+      </tr>
+    {% empty %}
+      <tr class="{% cycle 'odd' 'even' %}">
+	<td></td>
+	<td>ยังไม่มีเอกสาร</td>
+	<td></td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <form id="supplement-form" 
+	action="{% url supplement-upload %}" 
+	method="post" 
+	enctype="multipart/form-data">
+    <b>อัพโหลดหลักฐาน</b>: 
+    ประเภทหลักฐาน {{ form.supplement_type }}
+    เลือกแฟ้มรูป {{ form.uploaded_file }}
+    <input type="submit" value="อัพโหลด"/>
+  </form>
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".supp-delete-link").click(function() {
+        return confirm("คุณต้องการลบหลักฐานนี้จริงหรือไม่\nถ้าต้องการจริงกด OK ถ้าไม่ต้องการกด Cancel");
+      });
+
+      $("#upload-detail-link").click(function() {
+        $("#upload-detail-link").html("กดที่นี่เพื่อเปิด/ปิดรายละเอียด");
+        $("#upload-detail-box").slideToggle("fast");
+        return false;
+      });
+      $("#hide-upload-detail-link").click(function() {
+        $("#upload-detail-box").slideToggle("fast");
+      });
+
+      $.facebox.settings.loadingImage = "{% media_url %}/facebox/loading.gif";
+      $.facebox.settings.closeImage = "{% media_url %}/facebox/closelabel.gif";
+      $('a[rel*=facebox]').facebox()
+    });
+  </script>
+{% endblock %}

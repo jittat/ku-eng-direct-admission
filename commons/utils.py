@@ -64,4 +64,15 @@ def serve_file(filename):
     response["Content-Length"] = len(contents)
     return response
 
+def extract_variable_from_session_or_none(session, name):
+    value = None
+    if name in session:
+        try:
+            value = session[name]
+            del session[name]
+        except KeyError:
+            pass
+    return value
+
+
 

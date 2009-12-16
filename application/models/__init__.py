@@ -188,6 +188,12 @@ class Applicant(models.Model):
     def has_online_docs(self):
         return self.get_applicant_docs_or_none()!=None
 
+    def has_supplements(self):
+        try:
+            return self.supplements != None
+        except Supplement.DoesNotExist:
+            return False        
+
     def can_choose_major(self):
         return (self.has_educational_info() and 
                 not self.education.uses_anet_score)
@@ -199,6 +205,10 @@ class Applicant(models.Model):
         return (self.is_submitted and 
                 self.online_doc_submission() and
                 self.submission_info.is_doc_needs_resubmission())
+
+    def can_submit_supplements(self):
+        return (self.is_submitted and 
+                (not self.submission_info.doc_reviewed_complete))
 
 
     ######################
@@ -385,7 +395,6 @@ class SubmissionInfo(models.Model):
     def is_reviewed_after_resubmitted(self):
         return (self.is_resubmitted) and (
             self.doc_reviewed_at > self.resubmitted_at)
-
 
     def can_update_info(self):
         if self.has_been_reviewed:

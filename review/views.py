@@ -21,6 +21,7 @@ from commons.email import send_validation_successful_by_email
 from commons.email import send_validation_error_by_email
 
 from models import ReviewField, ReviewFieldResult
+from supplement.models import Supplement
 
 def find_basic_statistics():
     manual_app_count = Applicant.objects.filter(is_offline=True).count()
@@ -424,24 +425,11 @@ def list_applicant(request, reviewed=True, pagination=True):
 IMG_MAX_HEIGHT = 450
 IMG_MAX_WIDTH = 800
 
-@login_required
-def doc_view(request, applicant_id, field_name):
-    applicant = get_object_or_404(Applicant, pk=applicant_id)
-    docs = applicant.get_applicant_docs_or_none()
-    if not AppDocs.valid_field_name(field_name):
-        return HttpResponseNotFound()
-
-    field = docs.__getattribute__(field_name)
-
-    ext = ''
+def cal_zoom_size(field):
     if field:
         height = field.height
         width = field.width
-        filename = docs.__getattribute__(field_name).name
-        if filename:
-            name, ext = os.path.splitext(filename)
-    if ext=='':
-        ext = '.png'
+    else:
         height = 1
         width = 1
 
@@ -460,6 +448,28 @@ def doc_view(request, applicant_id, field_name):
         zoomable = False
         new_h, new_w = height, width
 
+    return new_h, new_w, zoomable
+
+
+@login_required
+def doc_view(request, applicant_id, field_name):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    docs = applicant.get_applicant_docs_or_none()
+    if not AppDocs.valid_field_name(field_name):
+        return HttpResponseNotFound()
+
+    field = docs.__getattribute__(field_name)
+
+    ext = ''
+    if field:
+        filename = docs.__getattribute__(field_name).name
+        if filename:
+            name, ext = os.path.splitext(filename)
+    if ext=='':
+        ext = '.png'
+
+    new_h, new_w, zoomable = cal_zoom_size(field)
+
     filename = '%s%s' % (field_name, ext)
     return render_to_response("review/doc_view.html",
                               { 'applicant': applicant,
@@ -468,6 +478,24 @@ def doc_view(request, applicant_id, field_name):
                                 'height': new_h,
                                 'width': new_w,
                                 'zoomable': zoomable })
+
+@login_required
+def supplement_view(request, supplement_id):
+    supplement = get_object_or_404(Supplement, pk=supplement_id)
+
+    name, ext = os.path.splitext(supplement.image.name)
+    filename = '%s%s' % (supplement_id, ext)
+
+    new_h, new_w, zoomable = cal_zoom_size(supplement.image)
+
+    return render_to_response("review/supplement_view.html",
+                              { 'applicant': supplement.applicant,
+                                'supplement': supplement,
+                                'filename': filename,
+                                'height': new_h,
+                                'width': new_w,
+                                'zoomable': zoomable })
+
 
 @login_required
 def doc_img_view(request, applicant_id, filename):
@@ -490,4 +518,26 @@ def doc_img_view(request, applicant_id, filename):
         except ValueError:
             return HttpResponseNotFound()
     else:
+        return HttpResponseNotFound()
+
+
+@login_required
+def supplement_img_view(request, filename):
+    fname, ext = os.path.splitext(filename)
+
+    try:
+        supplement_id = int(fname)
+    except:
+        return HttpResponseForbidden()
+
+    supplement = get_object_or_404(Supplement, pk=supplement_id)
+
+    try:
+        full_path = supplement.image.path
+        
+        if os.path.exists(full_path):
+            return serve_file(full_path)
+        else:
+            return HttpResponseNotFound()
+    except ValueError:
         return HttpResponseNotFound()

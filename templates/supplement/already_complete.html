@@ -1,0 +1,12 @@
+{% extends "commons/base.html" %}
+
+{% block title %}ส่งหลักฐานเพิ่มเติม{% endblock %}
+{% block body %}
+  {% load adm_steps %}{% step_bar "ไม่สามารถส่งหลักฐานเพิ่มได้" %}
+  <b>ผู้สมัคร:</b> {{ applicant.full_name }} <b>หมายเลขผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+  
+  <p>
+    ผู้สมัครไม่สามารถส่งหลักฐานเพิ่มเติมได้อีก เนื่องจากผู้สมัครส่งหลักฐานครบถ้วนและผ่านการตรวจแล้ว<br/>
+    กลับไปหน้า<a href="{% url status-index %}">สถานะการสมัคร</a> | กลับไปเว็บ <a href="http://admission.eng.ku.ac.th">admission.eng.ku.ac.th</a>
+  </p>
+{% endblock %}

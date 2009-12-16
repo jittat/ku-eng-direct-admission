@@ -12,7 +12,7 @@ from commons.decorators import applicant_required, active_applicant_required
 from commons.decorators import within_submission_deadline
 
 from commons.email import send_submission_confirmation_by_email, send_resubmission_confirmation_by_email
-from commons.utils import random_string, serve_file
+from commons.utils import random_string, serve_file, extract_variable_from_session_or_none
 
 from application.views.status import submitted_applicant_required
 from application.views.form_views import redirect_to_applicant_first_page
@@ -136,17 +136,6 @@ UPLOAD_FORM_STEPS = [
     ('อัพโหลดหลักฐาน','upload-index'),
     ('แก้ข้อมูลการสมัคร','apply-personal-info'),
     ]
-
-def extract_variable_from_session_or_none(session, name):
-    value = None
-    if name in session:
-        try:
-            value = session['errors']
-            del session['errors']
-        except KeyError:
-            pass
-    return value
-
 
 @within_submission_deadline
 @active_applicant_required

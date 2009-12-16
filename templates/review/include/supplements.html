@@ -1,0 +1,7 @@
+<div class="supplement-msg">
+  <img src="{% load adm_media %}{% media_url %}/image/PlayBlue.png"/>
+  <b>ผู้สมัครได้ยื่นหลักฐานเพิ่มเติม:</b>
+  {% for supplement in applicant.supplements.all %}
+    [<a href="{% url review-supplement-view supplement.id %}" rel="facebox">{{ supplement.supplement_type.name }}</a>]
+  {% endfor %}
+</div>
