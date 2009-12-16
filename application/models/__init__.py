@@ -190,7 +190,6 @@ class Applicant(models.Model):
 
     def has_supplements(self):
         supplements = self.supplements.all()
-        print supplements
         return len(supplements)!=0
 
     def can_choose_major(self):
