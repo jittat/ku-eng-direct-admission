@@ -189,10 +189,9 @@ class Applicant(models.Model):
         return self.get_applicant_docs_or_none()!=None
 
     def has_supplements(self):
-        try:
-            return self.supplements != None
-        except Supplement.DoesNotExist:
-            return False        
+        supplements = self.supplements.all()
+        print supplements
+        return len(supplements)!=0
 
     def can_choose_major(self):
         return (self.has_educational_info() and 
