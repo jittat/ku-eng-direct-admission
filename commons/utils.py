@@ -19,16 +19,22 @@ def redirect_to_deadline_error():
 def time_to_submission_deadline():
     try:
         deadline = settings.SUBMISSION_DEADLINE
-        return deadline - datetime.now()
+        if deadline != None:
+            return deadline - datetime.now()
+        else:
+            return timedelta.max
     except:
         pass
-    return timedelta(1)  # default is 1 day
+    return timedelta.max  # no deadline
 
 
 def submission_deadline_passed():
     try:
         deadline = settings.SUBMISSION_DEADLINE
-        return datetime.now() >= deadline
+        if deadline != None:
+            return datetime.now() >= deadline
+        else:
+            return False
     except:
         pass
     return False

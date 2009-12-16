@@ -32,6 +32,8 @@ class RegistrationTestCase(TransactionTestCase):
         self.org_email_setting = settings.FAKE_SENDING_EMAIL
         settings.FAKE_SENDING_EMAIL = False
 
+        # remove submission dealine
+        settings.SUBMISSION_DEADLINE = None
 
     def tearDown(self):
         settings.FAKE_SENDING_EMAIL = self.org_email_setting
@@ -185,13 +187,6 @@ class RegistrationTestCase(TransactionTestCase):
         for k in keys:
             self.assertFalse(applicant.verify_activation_key('1'+k))
         
-
-    def test_user_can_activate_their_account(self):
-        """
-        TODO later
-        """
-        self.assertEquals(True,False)
-
 
     def test_user_can_request_password(self):
         """

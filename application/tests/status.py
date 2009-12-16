@@ -13,11 +13,19 @@ class StatusTestCase(TransactionTestCase):
 
     fixtures = ['submissions']
 
+    def setUp(self):
+        # remove submission dealine
+        settings.SUBMISSION_DEADLINE = None
+
     def test_app_can_see_link_edu_info_change_before_grace_period(self):
+        old_grace_period_end = settings.SUBMISSION_CHANGE_GRACE_PERIOD_END
+        settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = (
+            datetime.now() + timedelta(1))
+
         applicant = Applicant.get_applicant_by_email(SOMCHAI_EMAIL)
         applicant.submission_info.submitted_at = (
-            datetime.now() - settings.SUBMISSION_CHANGE_GRACE_PERIOD
-            + timedelta(1)
+            settings.SUBMISSION_CHANGE_GRACE_PERIOD_END
+            - timedelta(1)
             )
         applicant.submission_info.save()
 
@@ -27,6 +35,7 @@ class StatusTestCase(TransactionTestCase):
         self.assertContains(response, "id_edu-update-button")
         self.assertContains(response, "id_majors-update-button")
 
+        settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = old_grace_period_end
 
     def test_app_cannot_view_edu_info_change_after_grace_period(self):
         old_grace_period_end = settings.SUBMISSION_CHANGE_GRACE_PERIOD_END

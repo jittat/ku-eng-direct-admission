@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
 
 from django.core import mail
 from django.test import TestCase, TransactionTestCase
@@ -27,6 +28,8 @@ class FormsTestCaseBase(TransactionTestCase):
         self.org_email_setting = settings.FAKE_SENDING_EMAIL
         settings.FAKE_SENDING_EMAIL = False
 
+        # remove submission dealine
+        settings.SUBMISSION_DEADLINE = None
 
     PERSONAL_FORM_DATA = {
         'national_id': '1234567890123',
@@ -156,16 +159,6 @@ class FormsTestCaseBase(TransactionTestCase):
         self.assertRedirects(response,'/apply/ticket/')
         self.assertEquals(len(mail.outbox),1)       
 
-    def _edu_update_required(self):
-        response = self.client.post('/apply/update/education/',
-                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT_UPDATED)
-        self.assertRedirects(response,'/apply/status/')
-
-        response = self.client.get('/apply/update/education/')
-        self.assertContains(response,'237')
-        self.assertContains(response,'123')
-        self.assertContains(response,'นครปฐม')
-
     def _fill_forms_upto_online_doc_upload_form(self):
         self._login_required()
         self._personal_info_required()
@@ -222,6 +215,10 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._submit_postal_confirm_required()
 
     def test_edu_info_update(self):
+        old_grace_period_end = settings.SUBMISSION_CHANGE_GRACE_PERIOD_END
+        settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = (
+            datetime.now() + timedelta(1))
+
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
@@ -230,6 +227,8 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._submit_postal_doc_confirm_required()
         self._submit_postal_confirm_required()
         self._edu_update_required()
+
+        settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = old_grace_period_end
 
     def test_online_submission_form(self):
         self._login_required()
@@ -244,4 +243,15 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._personal_info_required()
         response = self.client.get('/doc/')
         self.assertNotEqual(response.status_code, 200)
+
+    # helper methods
+    def _edu_update_required(self):
+        response = self.client.post('/apply/update/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_GATPAT_UPDATED)
+        self.assertRedirects(response,'/apply/status/')
+
+        response = self.client.get('/apply/update/education/')
+        self.assertContains(response,'237')
+        self.assertContains(response,'123')
+        self.assertContains(response,'นครปฐม')
 
