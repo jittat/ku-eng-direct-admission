@@ -20,21 +20,34 @@
       เนื่องจากหมดเขตรับสมัคร<br/>
       {% if applicant.can_submit_supplements %}
         อย่างไรก็ตาม ผู้สมัครสามารถส่งหลักฐานเพิ่มเติมออนไลน์ได้จนถึงวันที่ 18 ธ.ค. 52
-        <div class="small-vert-sept"></div>
-        <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
-          <div class="button-blue">
-            ส่งหลักฐานเพิ่มเติม
-          </div>
-        </a>
-        {% if applicant.online_doc_submission and applicant.can_resubmit_online_doc %}
-	  <center>
-	    สำหรับผู้ที่ส่งหลักฐานแบบออนไลน์
-	    สามารถเลือกส่งหลักฐานที่ไม่ผ่านการตรวจกลับมาให้คณะใหม่
-	    ผ่านทางการแก้ไขหลักฐานที่ส่งไปแล้ว (ลิงก์อันบนสุด)
-	    หรือผ่านทางการส่งหลักฐานเพิ่มเติมก็ได้ (ลิงก์อันนี้)
-	    หลักฐานที่ส่งจากทั้งสองวิธีจะถูกเก็บแยกกัน
-	    แต่ทีมงานจะดูหลักฐานจากทั้งสองวิธีเสมอเมื่อตรวจเอกสาร
-	  </center>
+      
+        {% if not applicant.online_doc_submission %}
+          <div class="small-vert-sept"></div>
+          <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
+            <div class="button-blue">
+              ส่งหลักฐานเพิ่มเติม
+            </div>
+          </a>
+	{% else %}
+          {% if not applicant.can_resubmit_online_doc or applicant.has_supplements %}
+            <div class="small-vert-sept"></div>
+            <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
+              <div class="button-blue">
+                ส่งหลักฐานเพิ่มเติม
+              </div>
+            </a>
+
+	    {% if applicant.can_resubmit_online_doc %}
+  	      <center>
+		สำหรับผู้ที่ส่งหลักฐานแบบออนไลน์
+		สามารถเลือกส่งหลักฐานที่ไม่ผ่านการตรวจกลับมาให้คณะใหม่
+		ผ่านทางการแก้ไขหลักฐานที่ส่งไปแล้ว (ลิงก์อันบนสุด)
+		หรือผ่านทางการส่งหลักฐานเพิ่มเติมก็ได้ (ลิงก์อันนี้)
+		หลักฐานที่ส่งจากทั้งสองวิธีจะถูกเก็บแยกกัน
+		แต่ทีมงานจะดูหลักฐานจากทั้งสองวิธีเสมอเมื่อตรวจเอกสาร
+	      </center>
+	    {% endif %}
+	  {% endif %}
         {% endif %}
       {% endif %}
     </center>
