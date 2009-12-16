@@ -25,11 +25,13 @@ from models import ReviewField, ReviewFieldResult
 def find_basic_statistics():
     manual_app_count = Applicant.objects.filter(is_offline=True).count()
     submitted_manual_app_count = Applicant.get_submitted_offline_applicants().count()
+    total_submitted_app_count = SubmissionInfo.objects.count()
     stat = {
         'online_app_registered': 
         Applicant.objects.count() - manual_app_count,
+        'app_submitted': total_submitted_app_count,
         'online_app_submitted': 
-        SubmissionInfo.objects.count() - submitted_manual_app_count,
+        total_submitted_app_count - submitted_manual_app_count,
         'app_submitted_postal': 
         Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_BY_MAIL).count(),
         'app_submitted_online': 
