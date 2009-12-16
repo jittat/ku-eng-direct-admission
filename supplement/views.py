@@ -17,8 +17,6 @@ SUPPLEMENT_TYPE_CHOICES = [(s.id, s.name)
                            in SupplementType.objects.all()]
 SUPPLEMENTS = dict([(s.id, s) for s in SupplementType.objects.all()])
 
-print SUPPLEMENTS
-
 class SupplementForm(forms.Form):
     supplement_type = forms.ChoiceField(choices=SUPPLEMENT_TYPE_CHOICES)
     uploaded_file = forms.ImageField()
