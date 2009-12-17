@@ -428,6 +428,14 @@ class SubmissionInfo(models.Model):
         if save:
             self.save()
 
+    def update_last_updated_timestamp_to_now(self):
+        from django.db import connection, transaction
+        cursor = connection.cursor()
+
+        sql = ("UPDATE application_submissioninfo SET `last_updated_at`=NOW() WHERE applicantion_id = %s")
+        cursor.execute(sql, [str(self.applicantion_id)])
+        transaction.commit_unless_managed()
+
     @staticmethod
     def get_unreviewed_resubmitted_submissions():
         submission_infos = SubmissionInfo.objects.extra(

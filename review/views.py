@@ -422,6 +422,10 @@ def list_applicant(request, reviewed=True, pagination=True):
                                 'max_page': max_page,
                                 'display': display })
 
+@login_required
+def list_applicant_with_supplements(request):
+    pass
+
 IMG_MAX_HEIGHT = 450
 IMG_MAX_WIDTH = 800
 

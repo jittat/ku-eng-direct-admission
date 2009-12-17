@@ -118,6 +118,9 @@ def upload(request):
         supplement.image = f
         supplement.save()
 
+        submission_info = request.applicant.submission_info
+        submission_info.update_last_updated_timestamp_to_now()
+
         return HttpResponseRedirect(reverse('supplement-index'))
 
     return upload_error(request, form.error_message())

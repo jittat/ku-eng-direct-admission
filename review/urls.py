@@ -15,6 +15,8 @@ urlpatterns = patterns(
         { 'reviewed': True }, name='review-list-complete'),
     url(r'^list/wait/$', 'list_applicant',
         { 'reviewed': False }, name='review-list-wait'),
+    url(r'^list/supplements/$', 'list_applicant_with_supplements',
+        name='review-list-supplements'),
     url(r'^view/(\d+)/(\w+)/', 'doc_view', name='review-doc-view'),
     url(r'^supplement/view/(\w+)/', 
         'supplement_view', name='review-supplement-view'),
