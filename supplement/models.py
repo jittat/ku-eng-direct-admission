@@ -46,7 +46,11 @@ class Supplement(models.Model):
                  self.supplement_type_id))
 
     def random_string(self):
-        return random_string(5)
+        try:
+            return self._random_string
+        except:
+            self._random_string = random_string(5)
+            return self._random_string
 
     def render_view_link(self):
         full_name = self.image.path
