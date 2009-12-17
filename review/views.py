@@ -431,7 +431,9 @@ def list_applicant(request, reviewed=True, pagination=True):
 def list_applicants_with_supplements(request):
     submission_infos = (SubmissionInfo
                         .objects
-                        .extra(where=["TIMEDIFF(`last_updated_at`,`doc_reviewed_at`) >= '-00:10:00.000000'"]))
+                        .filter(doc_reviewed_complete=False)
+                        .extra(where=["TIMEDIFF(`last_updated_at`,`doc_reviewed_at`) >= '-00:10:00.000000'"])
+                        .select_related(depth=1))
 
     applicants = get_applicants_from_submission_infos(submission_infos)
     applicant_count = len(applicants)
