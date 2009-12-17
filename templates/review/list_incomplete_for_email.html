@@ -1,0 +1,8 @@
+{% extends "review/search.html" %}
+
+{% block list_summary %}
+<form method="post">
+  จำนวนผู้สมัครที่มีปัญหา {{ applicant_count }} คน 
+  <input type="submit" value="ส่งอีเมล์เตือน"/>
+</form>
+{% endblock %}

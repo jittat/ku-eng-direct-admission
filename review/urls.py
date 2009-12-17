@@ -11,12 +11,17 @@ urlpatterns = patterns(
         { 'return_to_manual': True }, name='review-show-after-manual'),
     url(r'^received/toggle/(\d+)/$', 'toggle_received_status', 
         name='review-toggle-received-status'),
+
     url(r'^list/complete/$', 'list_applicant',
         { 'reviewed': True }, name='review-list-complete'),
     url(r'^list/wait/$', 'list_applicant',
         { 'reviewed': False }, name='review-list-wait'),
-    url(r'^list/supplements/$', 'list_applicant_with_supplements',
+    url(r'^list/supplements/$', 'list_applicants_with_supplements',
         name='review-list-supplements'),
+    url(r'^list/incomplete/postal$', 'list_incomplete_applicants',
+        { 'submission_method': 'postal' },
+        name='review-list-incomplete-postal'),
+
     url(r'^view/(\d+)/(\w+)/', 'doc_view', name='review-doc-view'),
     url(r'^supplement/view/(\w+)/', 
         'supplement_view', name='review-supplement-view'),

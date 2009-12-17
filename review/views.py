@@ -19,6 +19,7 @@ from upload.models import AppDocs
 
 from commons.email import send_validation_successful_by_email
 from commons.email import send_validation_error_by_email
+from commons.email import send_resubmission_reminder_by_email
 
 from models import ReviewField, ReviewFieldResult
 from supplement.models import Supplement
@@ -423,8 +424,46 @@ def list_applicant(request, reviewed=True, pagination=True):
                                 'display': display })
 
 @login_required
-def list_applicant_with_supplements(request):
+def list_applicants_with_supplements(request):
     pass
+
+@login_required
+def list_incomplete_applicants(request, submission_method=None):
+    submission_infos = (SubmissionInfo
+                        .get_incomplete_submissions()
+                        .select_related(depth=1))
+
+    # set related fields
+    applicants = []
+    for s in submission_infos:
+        s.applicant.submission_info = s
+        applicants.append(s.applicant)
+
+    if submission_method=='postal':
+        applicants = [a for a in applicants 
+                      if a.doc_submission_method==Applicant.SUBMITTED_BY_MAIL]
+
+    applicant_count = len(applicants)
+
+    notice = ''
+
+    if request.method=='POST':
+        # form submission, now send e-mail
+        for app in applicants:
+            send_resubmission_reminder_by_email(app)
+        notice = ("ส่งอีเมล์เตือน %d ฉบับแล้ว" % (applicant_count,))
+
+    return render_to_response("review/list_incomplete_for_email.html",
+                              { 'form': None,
+                                'notice': notice,
+                                'applicant_count': applicant_count,
+                                'applicants': applicants,
+                                'force_review_link': True,
+                                'display': 
+                                { 'ticket_number': True,
+                                  'doc_reviewed_at': True,
+                                  'doc_reviewed_complete': True }})
+
 
 IMG_MAX_HEIGHT = 450
 IMG_MAX_WIDTH = 800

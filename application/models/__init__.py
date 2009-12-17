@@ -442,6 +442,13 @@ class SubmissionInfo(models.Model):
             where=['(is_resubmitted) AND (doc_reviewed_at < resubmitted_at)'])
         return submission_infos
 
+    @staticmethod
+    def get_incomplete_submissions():
+        return (SubmissionInfo
+                .objects
+                .filter(has_been_reviewed=True)
+                .filter(doc_reviewed_complete=False))
+
     class Meta:
         ordering = ['applicantion_id']
 
