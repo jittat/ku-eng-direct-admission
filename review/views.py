@@ -360,6 +360,14 @@ def review_document(request, applicant_id, return_to_manual=False):
 
 APPLICANTS_PER_PAGE = 200
 
+def get_applicants_from_submission_infos(submission_infos):
+    applicants = []
+    for s in submission_infos:
+        app = s.applicant
+        app.submission_info = s
+        applicants.append(app)
+    return applicants
+
 @login_required
 def list_applicant(request, reviewed=True, pagination=True):
     applicants = []
@@ -399,11 +407,7 @@ def list_applicant(request, reviewed=True, pagination=True):
         display_count = len(submission_infos)
         display_end += len(resubmitted_submission_infos)
 
-    applicants = []
-    for s in submission_infos:
-        app = s.applicant
-        app.submission_info = s
-        applicants.append(app)
+    applicants = get_applicants_from_submission_infos(submission_infos)
 
     display['ticket_number']=True
     if reviewed==True:
@@ -425,7 +429,23 @@ def list_applicant(request, reviewed=True, pagination=True):
 
 @login_required
 def list_applicants_with_supplements(request):
-    pass
+    submission_infos = (SubmissionInfo
+                        .objects
+                        .extra(where=["TIMEDIFF(`last_updated_at`,`doc_reviewed_at`) >= '-00:10:00.000000'"]))
+
+    applicants = get_applicants_from_submission_infos(submission_infos)
+    applicant_count = len(applicants)
+
+    return render_to_response("review/list_applicants_with_supplements.html",
+                              { 'form': None,
+                                'applicant_count': applicant_count,
+                                'applicants': applicants,
+                                'force_review_link': True,
+                                'display': 
+                                { 'ticket_number': True,
+                                  'doc_reviewed_at': True,
+                                  'doc_reviewed_complete': True }})
+
 
 @login_required
 def list_incomplete_applicants(request, submission_method=None):
@@ -433,11 +453,7 @@ def list_incomplete_applicants(request, submission_method=None):
                         .get_incomplete_submissions()
                         .select_related(depth=1))
 
-    # set related fields
-    applicants = []
-    for s in submission_infos:
-        s.applicant.submission_info = s
-        applicants.append(s.applicant)
+    applicants = get_applicants_from_submission_infos(submission_infos)
 
     if submission_method=='postal':
         applicants = [a for a in applicants 
