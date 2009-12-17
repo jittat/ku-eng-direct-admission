@@ -447,7 +447,9 @@ def list_incomplete_applicants(request, submission_method=None):
 
     notice = ''
 
-    if request.method=='POST':
+    can_send_reminder_emails = request.user.is_superuser
+
+    if (request.method=='POST') and (can_send_reminder_emails):
         # form submission, now send e-mail
         for app in applicants:
             send_resubmission_reminder_by_email(app)
@@ -456,6 +458,8 @@ def list_incomplete_applicants(request, submission_method=None):
     return render_to_response("review/list_incomplete_for_email.html",
                               { 'form': None,
                                 'notice': notice,
+                                'can_send_reminder_emails': 
+                                can_send_reminder_emails,
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
                                 'force_review_link': True,
