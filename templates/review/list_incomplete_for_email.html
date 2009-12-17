@@ -4,7 +4,7 @@
 <form method="post">
     จำนวนผู้สมัครที่มีปัญหา {{ applicant_count }} คน 
     {% if can_send_reminder_emails %}
-      <input type="submit" value="ส่งอีเมล์เตือน"/>
+      <input type="submit" value="ส่งอีเมล์เตือน" onclick="return confirm('คุณแน่ใจที่จะส่งอีเมล์แจ้งเตือน (จำนวน {{ applicant_count }} ฉบับ) หรือไม่?\nถ้าแน่ใจกรุณากด OK ถ้าไม่แน่ใจกด Cancel');"/>
     {% endif %}
 </form>
 {% endblock %}
