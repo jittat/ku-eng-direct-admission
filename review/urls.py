@@ -24,6 +24,9 @@ urlpatterns = patterns(
     url(r'^list/incomplete/offline$', 'list_incomplete_applicants',
         { 'submission_method': 'offline' },
         name='review-list-incomplete-offline'),
+    url(r'^list/incomplete/online$', 'list_incomplete_applicants',
+        { 'submission_method': 'online' },
+        name='review-list-incomplete-online'),
 
     url(r'^view/(\d+)/(\w+)/', 'doc_view', name='review-doc-view'),
     url(r'^supplement/view/(\w+)/', 

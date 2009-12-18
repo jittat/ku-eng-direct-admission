@@ -457,6 +457,7 @@ def list_incomplete_applicants(request, submission_method=None):
 
     applicants = get_applicants_from_submission_infos(submission_infos)
 
+    submission_method_name = ''
     if submission_method=='postal':
         submission_method_name = 'ที่สมัครออนไลน์แต่ส่งหลักฐานทางไปรษณีย์'
         applicants = [a for a in applicants 
@@ -465,6 +466,10 @@ def list_incomplete_applicants(request, submission_method=None):
         submission_method_name = 'ที่สมัครและส่งหลักฐานทางไปรษณีย์ (offline)'
         applicants = [a for a in applicants 
                       if a.doc_submission_method==Applicant.SUBMITTED_OFFLINE]
+    elif submission_method=='online':
+        submission_method_name = 'ที่สมัครและส่งหลักฐานออนไลน์ทั้งหมด'
+        applicants = [a for a in applicants 
+                      if a.doc_submission_method==Applicant.SUBMITTED_ONLINE]
         
 
     applicant_count = len(applicants)
