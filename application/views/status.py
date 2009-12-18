@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 
 from commons.decorators import applicant_required
 from commons.decorators import submitted_applicant_required
-from commons.utils import submission_deadline_passed
+from commons.utils import submission_deadline_passed, supplement_submission_deadline_passed
 
 from application.models import Applicant
 from application.views import redirect_to_applicant_first_page
@@ -28,8 +28,10 @@ def index(request):
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
                                 'review_results': review_results,
-                                'submission_deadline_passed': 
-                                submission_deadline_passed(),
+                                'submission_deadline_passed':
+                                    submission_deadline_passed(),
+                                'supplement_submission_deadline_passed':
+                                    supplement_submission_deadline_passed(),
                                 'notice': notice,
                                 'can_log_out': True })
 

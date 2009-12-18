@@ -10,6 +10,9 @@
 
 {% block body %}
   {% load adm_steps %}{% form_steps %}
+
+  {% load adm_info %}{% adm_submission_deadline_warning %}
+
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} <b>หมายเลขผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
 
   <b>ขั้นตอนการอัพโหลดหลักฐานเพิ่มเติม:</b> <small>สแกนหรือถ่ายภาพเอกสาร<b>ที่ไม่ผ่านการตรวจ

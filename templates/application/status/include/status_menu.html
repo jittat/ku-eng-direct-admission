@@ -1,12 +1,14 @@
 <div class="login-box">
   {% if applicant.can_resubmit_online_doc %}
-    <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
-    <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
-      <div class="button-blue">
-	แก้ไขหลักฐานที่ไม่ผ่านการตรวจ
-      </div>
-    </a>
-    <div class="small-vert-sept"></div>
+    {% if not supplement_submission_deadline_passed %}
+      <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
+      <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
+	<div class="button-blue">
+	  แก้ไขหลักฐานที่ไม่ผ่านการตรวจ
+	</div>
+      </a>
+      <div class="small-vert-sept"></div>
+    {% endif%}
   {% endif %}
   <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
     <div class="button">
