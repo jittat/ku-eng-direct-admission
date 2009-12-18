@@ -10,6 +10,7 @@ from django.conf import settings
 
 from commons.decorators import applicant_required, active_applicant_required
 from commons.decorators import within_submission_deadline
+from commons.utils import supplement_submission_deadline_passed
 
 from commons.email import send_submission_confirmation_by_email, send_resubmission_confirmation_by_email
 from commons.utils import random_string, serve_file, extract_variable_from_session_or_none
@@ -179,6 +180,9 @@ UPDATE_FORM_STEPS = [
 def update(request, missing_fields=None):
     if not request.applicant.can_resubmit_online_doc():
         return HttpResponseForbidden()
+
+    if supplement_submission_deadline_passed():
+        return HttpResponseRedirect(reverse('commons-deadline-error'))
 
     notice = extract_variable_from_session_or_none(request.session, 'notice')
     uploaded_field_error = extract_variable_from_session_or_none(
