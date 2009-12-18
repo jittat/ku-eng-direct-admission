@@ -4,7 +4,7 @@ from datetime import timedelta, datetime, date
 from django.db import models
 from django.conf import settings
 
-from commons.utils import random_string
+from commons.utils import random_string, supplement_submission_deadline_passed
 from commons.local import PROVINCE_CHOICES, APP_TITLE_CHOICES
 from application.fields import IntegerListField
 
@@ -206,7 +206,8 @@ class Applicant(models.Model):
 
     def can_submit_supplements(self):
         return (self.is_submitted and 
-                (not self.submission_info.doc_reviewed_complete))
+                (not self.submission_info.doc_reviewed_complete) and
+                (not supplement_submission_deadline_passed()))
 
 
     ######################

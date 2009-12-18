@@ -27,10 +27,31 @@ def time_to_submission_deadline():
         pass
     return timedelta.max  # no deadline
 
+def time_to_supplement_submission_deadline():
+    try:
+        deadline = settings.SUPPLEMENT_DEADLINE
+        if deadline != None:
+            return deadline - datetime.now()
+        else:
+            return timedelta.max
+    except:
+        pass
+    return timedelta.max  # no deadline
 
 def submission_deadline_passed():
     try:
         deadline = settings.SUBMISSION_DEADLINE
+        if deadline != None:
+            return datetime.now() >= deadline
+        else:
+            return False
+    except:
+        pass
+    return False
+
+def supplement_submission_deadline_passed():
+    try:
+        deadline = settings.SUPPLEMENT_DEADLINE
         if deadline != None:
             return datetime.now() >= deadline
         else:

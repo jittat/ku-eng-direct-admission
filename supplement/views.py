@@ -9,6 +9,7 @@ from django.conf import settings
 
 from commons.decorators import submitted_applicant_required
 from commons.utils import extract_variable_from_session_or_none, serve_file
+from commons.utils import supplement_submission_deadline_passed
 
 from models import SupplementType, Supplement
 
@@ -39,6 +40,16 @@ def allowed_applicant_required(view_function):
 
     return decorate
 
+def within_deadline_required(view_function):
+    def decorate(request, *args, **kwargs):
+        if supplement_submission_deadline_passed():
+            return HttpResponseRedirect(reverse('commons-deadline-error'))
+        else:
+            return view_function(request, *args, **kwargs)
+
+    return decorate
+
+    
 
 # this is for showing step bar
 SUPPLEMENTS_FORM_STEPS = [
@@ -46,6 +57,7 @@ SUPPLEMENTS_FORM_STEPS = [
     ('กลับไปหน้าแสดงสถานะการสมัคร','status-index'),
     ]
 
+@within_deadline_required
 @allowed_applicant_required
 def index(request):
     applicant = request.applicant
@@ -70,6 +82,7 @@ def upload_error(request, error):
     request.session['error'] = error
     return HttpResponseRedirect(reverse('supplement-index'))
 
+@within_deadline_required
 @allowed_applicant_required
 def supp_get_img(request, supplement_id):
     supplement = get_object_or_404(Supplement, pk=supplement_id)
@@ -85,6 +98,7 @@ def supp_get_img(request, supplement_id):
     else:
         return HttpResponseNotFound()
 
+@within_deadline_required
 @allowed_applicant_required
 def delete_supplement(request, supplement_id):
     supplement = get_object_or_404(Supplement, pk=supplement_id)
@@ -100,12 +114,16 @@ def upload(request):
         return HttpResponseForbidden()
 
     try:
-        if request.applicant.supplements.count() > settings.MAX_SUPPLEMENTS:
+        if request.applicant.supplements.count() >= settings.MAX_SUPPLEMENTS:
             return upload_error(request, 'คุณได้อัพโหลดหลักฐานเป็นจำนวนมากเกินไป')
     except:
         pass
 
     form = SupplementForm(request.POST, request.FILES)
+
+    if supplement_submission_deadline_passed():
+        return HttpResponseRedirect(reverse('commons-deadline-error'))        
+
     if form.is_valid():
         f = request.FILES['uploaded_file']
 
