@@ -432,7 +432,7 @@ def list_applicants_with_supplements(request):
     submission_infos = (SubmissionInfo
                         .objects
                         .filter(doc_reviewed_complete=False)
-                        .extra(where=["TIMEDIFF(`last_updated_at`,`doc_reviewed_at`) >= '-00:10:00.000000'"])
+                        .extra(where=["ADDTIME(`last_updated_at`,'00:01:00') >= `doc_reviewed_at`"])
                         .select_related(depth=1))
 
     applicants = get_applicants_from_submission_infos(submission_infos)
