@@ -458,14 +458,21 @@ def list_incomplete_applicants(request, submission_method=None):
     applicants = get_applicants_from_submission_infos(submission_infos)
 
     if submission_method=='postal':
+        submission_method_name = 'ที่สมัครออนไลน์แต่ส่งหลักฐานทางไปรษณีย์'
         applicants = [a for a in applicants 
                       if a.doc_submission_method==Applicant.SUBMITTED_BY_MAIL]
+    elif submission_method=='offline':
+        submission_method_name = 'ที่สมัครและส่งหลักฐานทางไปรษณีย์ (offline)'
+        applicants = [a for a in applicants 
+                      if a.doc_submission_method==Applicant.SUBMITTED_OFFLINE]
+        
 
     applicant_count = len(applicants)
 
     notice = ''
 
-    can_send_reminder_emails = request.user.is_superuser
+    can_send_reminder_emails = (request.user.is_superuser and 
+                                submission_method != 'offline')
 
     if (request.method=='POST') and (can_send_reminder_emails):
         # form submission, now send e-mail
@@ -476,15 +483,17 @@ def list_incomplete_applicants(request, submission_method=None):
     return render_to_response("review/list_incomplete_for_email.html",
                               { 'form': None,
                                 'notice': notice,
-                                'can_send_reminder_emails': 
-                                can_send_reminder_emails,
+                                'submission_method_name':
+                                    submission_method_name,
+                                'can_send_reminder_emails':
+                                    can_send_reminder_emails,
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
                                 'force_review_link': True,
-                                'display': 
-                                { 'ticket_number': True,
-                                  'doc_reviewed_at': True,
-                                  'doc_reviewed_complete': True }})
+                                'display':
+                                    { 'ticket_number': True,
+                                      'doc_reviewed_at': True,
+                                      'doc_reviewed_complete': True }})
 
 
 IMG_MAX_HEIGHT = 450

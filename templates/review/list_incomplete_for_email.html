@@ -1,7 +1,7 @@
 {% extends "review/search.html" %}
 
 {% block list_summary %}
-<b>รายชื่อผู้สมัครที่หลักฐานไม่ผ่านที่ส่งทางไปรษณีย์</b>
+<b>รายชื่อผู้สมัคร{{ submission_method_name }} ที่หลักฐานไม่ผ่านการตรวจ</b>
 <form method="post">
     จำนวนผู้สมัครที่มีปัญหา {{ applicant_count }} คน 
     {% if can_send_reminder_emails %}
