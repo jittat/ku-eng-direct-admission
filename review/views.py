@@ -278,14 +278,14 @@ def review_document(request, applicant_id, return_to_manual=False):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
     submission_info = applicant.submission_info
 
-    # auto set received flag
-    submission_info.set_doc_received_at_now_if_not()
-
     if not submission_info.can_be_reviewed():
         request.session['notice'] = 'ยังไม่สามารถตรวจสอบเอกสารได้เนื่องจากยังไม่พ้นช่วงเวลาสำหรับการแก้ไข'
         return HttpResponseRedirect(reverse('review-ticket'))
 
     if (request.method=='POST') and ('submit' in request.POST):
+        # auto set received flag
+        submission_info.set_doc_received_at_now_if_not()
+
         field_names = get_applicant_doc_name_list(applicant)
         fields = prepare_applicant_review_fields(field_names)
         results = prepare_applicant_review_results(applicant, field_names)
@@ -425,9 +425,10 @@ def list_applicant(request, reviewed=True, pagination=True):
     applicants = get_applicants_from_submission_infos(submission_infos)
 
     display['ticket_number']=True
+    display['doc_reviewed_at']=True
     if reviewed==True:
-        display['doc_reviewed_at']=True
         display['doc_reviewed_complete']=True
+
 
     return render_to_response("review/search.html",
                               { 'form': None,
