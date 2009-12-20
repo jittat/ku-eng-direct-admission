@@ -45,7 +45,10 @@
       <th>ชื่อ</th>
       {% if display.edu %}<th>โรงเรียน</th>{% endif %}
       <th>สถานะการยื่นใบสมัคร</th>
-      <th>วิธีการส่งหลักฐาน</th>
+      <th>วิธีส่ง</th>
+      {% if display.doc_received_at %}
+        <th>ได้รับหลักฐาน</th>
+      {% endif %}
       {% if display.update_info %}
         <th>เวลาที่แก้ไข</th>
         <th>แก้ไขโดยคณะ</th>
@@ -78,6 +81,9 @@
 	</td>
 
 	<td>{{ applicant.get_doc_submission_method_display }}</td>
+	{% if display.doc_received_at %}
+	  <td>{{ applicant.submission_info.doc_received_at|date:"H:i, j N" }}</td>
+	{% endif %}
 
 	{% if display.update_info %}
 	  <td>{{ applicant.update_info.updated_at|date:"H:i, j N" }}</td>

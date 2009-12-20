@@ -425,8 +425,9 @@ def list_applicant(request, reviewed=True, pagination=True):
     applicants = get_applicants_from_submission_infos(submission_infos)
 
     display['ticket_number']=True
-    display['doc_reviewed_at']=True
+    display['doc_received_at']=True
     if reviewed==True:
+        display['doc_reviewed_at']=True
         display['doc_reviewed_complete']=True
 
 
