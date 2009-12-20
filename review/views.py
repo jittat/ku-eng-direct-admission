@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 from django.contrib.auth.decorators import login_required
@@ -16,6 +16,7 @@ from commons.utils import serve_file
 from application.models import Applicant, Education
 from application.models import SubmissionInfo
 from upload.models import AppDocs
+from manual.models import AdminEditLog
 
 from commons.email import send_validation_successful_by_email
 from commons.email import send_validation_error_by_email
@@ -369,14 +370,16 @@ def get_applicants_from_submission_infos(submission_infos):
     return applicants
 
 
-def get_applicants_using_update_review_time_diff(time_diff):
+def get_applicants_using_update_review_time_diff(time_diff, review_status=None):
     where_condition = ("ADDTIME(`last_updated_at`,'%s') >= `doc_reviewed_at`" 
                        % time_diff)
     submission_infos = (SubmissionInfo
                         .objects
-                        .filter(doc_reviewed_complete=False)
                         .extra(where=[where_condition])
                         .select_related(depth=1))
+    if review_status!=None:
+        submission_infos = (
+            submission_infos.filter(doc_reviewed_complete=review_status))
     return get_applicants_from_submission_infos(submission_infos)
 
 
@@ -440,15 +443,22 @@ def list_applicant(request, reviewed=True, pagination=True):
                                 'display': display })
 
 @login_required
-def list_applicants_with_supplements(request, time_diff=None):
+def list_applicants_with_supplements(request, time_diff=None, review_status=False):
     if time_diff == None:
         time_diff = '00:01:00'
 
-    applicants = get_applicants_using_update_review_time_diff('00:01:00')
+    applicants = get_applicants_using_update_review_time_diff('00:01:00',
+                                                              review_status)
     applicant_count = len(applicants)
+
+    if review_status == None: 
+        title = "รายชื่อผู้สมัครที่ยื่นหลักฐานเพิ่มหลังจากตรวจสอบแล้ว"
+    elif review_status == False:
+        title = "รายชื่อผู้สมัครที่หลักฐานไม่ผ่านที่ยื่นหลักฐานเพิ่มหลังจากตรวจสอบแล้ว"
 
     return render_to_response("review/list_applicants_with_supplements.html",
                               { 'form': None,
+                                'list_title': title,
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
                                 'force_review_link': True,
@@ -509,6 +519,62 @@ def list_incomplete_applicants(request, submission_method=None):
                                       'doc_reviewed_at': True,
                                       'doc_reviewed_complete': True }})
 
+@login_required
+def list_applicants_with_potential_edu_update_hazard(request):
+    update_timestamps = {}
+    review_timestamps = {}
+
+    for education in Education.objects.all():
+        update_timestamps[education.applicant_id] = education.updated_at
+
+    for submission_info in SubmissionInfo.objects.all():
+        review_timestamps[submission_info.applicant_id] = (
+            submission_info.doc_reviewed_at)
+
+    ten_minutes = timedelta(minutes=10)
+
+    potential_list = []
+
+    for app_id, review_timestamp in review_timestamps.iteritems():
+        if app_id in update_timestamps:
+            update_timestamp = update_timestamps[app_id]
+            if ((update_timestamp != None) and (review_timestamp != None)
+                and (update_timestamp + ten_minutes > review_timestamp)):
+                potential_list.append((app_id, update_timestamp))
+
+    all_applicants = [(Applicant.objects.get(pk=app_id), update_timestamp) 
+                      for app_id, update_timestamp in potential_list]
+
+    applicants = []
+    for app, update_timestamp in all_applicants:
+        if app.doc_submission_method != Applicant.SUBMITTED_OFFLINE:
+            admin_log = AdminEditLog.objects.filter(applicant=app)
+            is_manual_update = (len(admin_log) != 0)
+
+            app.update_info = {
+                'updated_at': update_timestamp,  # HACK: add field to display
+                'is_manual_update': is_manual_update,
+                }
+            applicants.append(app)
+
+    applicant_count = len(applicants)
+
+    return render_to_response(
+        "review/list_applicants_with_potential_edu_update_hazard.html",
+        { 'form': None,
+          'applicant_count': applicant_count,
+          'applicants': applicants,
+          'force_review_link': True,
+          'display': 
+          { 'ticket_number': True,
+            'update_info': True,
+            'doc_reviewed_at': True,
+            'doc_reviewed_complete': True }})
+
+
+############################################################
+# views for displaying documents and supplements
+#
 
 IMG_MAX_HEIGHT = 450
 IMG_MAX_WIDTH = 800
