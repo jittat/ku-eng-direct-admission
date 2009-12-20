@@ -16,8 +16,13 @@ urlpatterns = patterns(
         { 'reviewed': True }, name='review-list-complete'),
     url(r'^list/wait/$', 'list_applicant',
         { 'reviewed': False }, name='review-list-wait'),
+
     url(r'^list/supplements/$', 'list_applicants_with_supplements',
         name='review-list-supplements'),
+    url(r'^list/supplements/inspect/$', 'list_applicants_with_supplements',
+        { 'time_diff': '00:10:00' },
+        name='review-list-supplements-inspect'),
+
     url(r'^list/incomplete/postal$', 'list_incomplete_applicants',
         { 'submission_method': 'postal' },
         name='review-list-incomplete-postal'),

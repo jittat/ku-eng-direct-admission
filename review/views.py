@@ -368,6 +368,18 @@ def get_applicants_from_submission_infos(submission_infos):
         applicants.append(app)
     return applicants
 
+
+def get_applicants_using_update_review_time_diff(time_diff):
+    where_condition = ("ADDTIME(`last_updated_at`,'%s') >= `doc_reviewed_at`" 
+                       % time_diff)
+    submission_infos = (SubmissionInfo
+                        .objects
+                        .filter(doc_reviewed_complete=False)
+                        .extra(where=[where_condition])
+                        .select_related(depth=1))
+    return get_applicants_from_submission_infos(submission_infos)
+
+
 @login_required
 def list_applicant(request, reviewed=True, pagination=True):
     applicants = []
@@ -428,14 +440,11 @@ def list_applicant(request, reviewed=True, pagination=True):
                                 'display': display })
 
 @login_required
-def list_applicants_with_supplements(request):
-    submission_infos = (SubmissionInfo
-                        .objects
-                        .filter(doc_reviewed_complete=False)
-                        .extra(where=["ADDTIME(`last_updated_at`,'00:01:00') >= `doc_reviewed_at`"])
-                        .select_related(depth=1))
+def list_applicants_with_supplements(request, time_diff=None):
+    if time_diff == None:
+        time_diff = '00:01:00'
 
-    applicants = get_applicants_from_submission_infos(submission_infos)
+    applicants = get_applicants_using_update_review_time_diff('00:01:00')
     applicant_count = len(applicants)
 
     return render_to_response("review/list_applicants_with_supplements.html",
