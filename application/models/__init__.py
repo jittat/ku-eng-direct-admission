@@ -450,6 +450,12 @@ class SubmissionInfo(models.Model):
                 .filter(has_been_reviewed=True)
                 .filter(doc_reviewed_complete=False))
 
+    @staticmethod
+    def get_qualified_submissions():
+        return (SubmissionInfo
+                .objects
+                .filter(doc_reviewed_complete=True))
+
     class Meta:
         ordering = ['applicantion_id']
 
