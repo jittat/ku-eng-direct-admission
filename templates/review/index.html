@@ -7,7 +7,7 @@
   สถิติพื้นฐาน:
   <ul>
     <li>จำนวนผู้สมัครที่ส่งใบสมัครแล้วทั้งหมด {{ stat.app_submitted }} คน (รวมทั้งแบบออนไลน์และที่ส่งทางไปรษณีย์)</li>
-    <li>จำนวนผู้สมัครที่ตรวจสอบหลักฐานผ่าน {{ stat.app_qualified }} คน</li>
+    <li>จำนวนผู้สมัครที่ตรวจสอบหลักฐานผ่าน {{ stat.app_qualified }} คน | ดาวน์โหลดรายชื่อ: [<a href="{% url review-download-list-qualified %}">csv</a>]</li>
     <li>ได้รับใบสมัครพร้อมหลักฐานแล้ว {{ stat.app_received.total }} คน (จากผู้สมัครที่ยืนยันทั้งหมด {{ stat.app_submitted }} คน)
       <ul>
 	<li>
