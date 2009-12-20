@@ -17,6 +17,9 @@ urlpatterns = patterns(
     url(r'^list/wait/$', 'list_applicant',
         { 'reviewed': False }, name='review-list-wait'),
 
+    url(r'^list/qualified/$', 'list_qualified_applicants',
+        { 'download': True }, name='review-download-list-qualified'),
+
     url(r'^list/incomplete/postal$', 'list_incomplete_applicants',
         { 'submission_method': 'postal' },
         name='review-list-incomplete-postal'),

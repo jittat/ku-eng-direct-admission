@@ -4,6 +4,7 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseRedirect
@@ -14,7 +15,7 @@ from django import forms
 from commons.utils import serve_file
 
 from application.models import Applicant, Education
-from application.models import SubmissionInfo
+from application.models import SubmissionInfo, PersonalInfo
 from upload.models import AppDocs
 from manual.models import AdminEditLog
 
@@ -576,6 +577,54 @@ def list_applicants_with_potential_edu_update_hazard(request):
             'update_info': True,
             'doc_reviewed_at': True,
             'doc_reviewed_complete': True }})
+
+def build_model_dict(join_model):
+    d = {}
+    for data in join_model.objects.all():
+        d[data.applicant_id] = data
+    return d
+
+def dump_fields(applicant, fields):
+    items = []
+    for f in fields:
+        fdata = applicant.__getattribute__(f)
+        if hasattr(fdata,'__call__'):
+            items.append(unicode(fdata()))
+        else:
+            items.append(unicode(fdata))
+    return u','.join(items)
+            
+@login_required
+def list_qualified_applicants(request, download=True):
+    submission_infos = (SubmissionInfo
+                        .get_qualified_submissions()
+                        .select_related(depth=1)
+                        .all())
+    applicants = get_applicants_from_submission_infos(submission_infos)
+
+    personal_infos = build_model_dict(PersonalInfo)
+    # added more info to applicants
+    for a in applicants:
+        if a.id in personal_infos:
+            a.national_id = personal_infos[a.id].national_id
+    
+    FIELD_LIST = [
+        'ticket_number', 
+        'first_name', 
+        'last_name', 
+        'get_doc_submission_method_display', 
+        'national_id' ]
+
+    output_list = []
+    for a in applicants:
+        output_list.append(dump_fields(a, FIELD_LIST))
+    output = u'\n'.join(output_list)
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=applicants.csv'
+    response.write(output)
+
+    return response
 
 
 ############################################################
