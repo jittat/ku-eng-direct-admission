@@ -50,6 +50,9 @@ def find_basic_statistics():
     stat['app_received']['total'] = (
         stat['app_received']['reviewed'] +
         stat['app_received']['not_reviewed'])
+    stat['app_received']['online'] = (
+        stat['app_received']['total'] -
+        manual_app_count)
     return stat
 
 @login_required

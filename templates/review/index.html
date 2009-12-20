@@ -6,9 +6,9 @@
 <p>
   สถิติพื้นฐาน:
   <ul>
-    <li>จำนวนผู้สมัครที่ได้รับใบสมัครแล้วทั้งหมด {{ stat.app_submitted }} คน (รวมทั้งแบบออนไลน์และที่ส่งทางไปรษณีย์)</li>
+    <li>จำนวนผู้สมัครที่ส่งใบสมัครแล้วทั้งหมด {{ stat.app_submitted }} คน (รวมทั้งแบบออนไลน์และที่ส่งทางไปรษณีย์)</li>
     <li>จำนวนผู้สมัครที่ตรวจสอบหลักฐานผ่าน {{ stat.app_qualified }} คน</li>
-    <li>ได้รับใบสมัครพร้อมหลักฐานแล้ว {{ stat.app_received.total }} คน
+    <li>ได้รับใบสมัครพร้อมหลักฐานแล้ว {{ stat.app_received.total }} คน (จากผู้สมัครที่ยืนยันทั้งหมด {{ stat.app_submitted }} คน)
       <ul>
 	<li>
 	  ตรวจสอบแล้ว: {{ stat.app_received.reviewed }}
@@ -21,7 +21,9 @@
       </ul>
     </li>
     <li>จำนวนผู้ลงทะเบียนเว็บไซต์ {{ stat.online_app_registered }} คน</li>
-    <li>จำนวนผู้ส่งใบสมัครออนไลน์ {{ stat.online_app_submitted }} คน (ส่งหลักฐานทางไปรษณีย์ {{ stat.app_submitted_postal }} คน, ส่งหลักฐานออนไลน์ {{ stat.app_submitted_online }} คน)</li>
+    <li>จำนวนผู้ส่งใบสมัครออนไลน์ {{ stat.online_app_submitted }} คน (ส่งหลักฐานทางไปรษณีย์ {{ stat.app_submitted_postal }} คน, ส่งหลักฐานออนไลน์ {{ stat.app_submitted_online }} คน)
+      <ul><li>ได้รับหลักฐานแล้ว {{ stat.app_received.online }} คน</li></ul>
+    </li>
     <li>จำนวนผู้ส่งใบสมัครทางไปรษณีย์ที่ป้อนข้อมูลแล้ว {{ stat.app_submitted_offline }} คน</li>
   </ul>
   <b>รายการผู้สมัคร:</b>
