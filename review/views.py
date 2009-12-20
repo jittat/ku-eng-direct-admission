@@ -32,13 +32,14 @@ def find_basic_statistics():
     stat = {
         'online_app_registered': 
         Applicant.objects.count() - manual_app_count,
+        'app_qualified': SubmissionInfo.get_qualified_submissions().count(),
         'app_submitted': total_submitted_app_count,
-        'online_app_submitted': 
-        total_submitted_app_count - submitted_manual_app_count,
-        'app_submitted_postal': 
-        Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_BY_MAIL).count(),
-        'app_submitted_online': 
-        Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_ONLINE).count(),
+        'online_app_submitted':
+            total_submitted_app_count - submitted_manual_app_count,
+        'app_submitted_postal':
+            Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_BY_MAIL).count(),
+        'app_submitted_online':
+            Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_ONLINE).count(),
         'app_submitted_offline':
             submitted_manual_app_count,
         'app_received': {
