@@ -20,6 +20,7 @@ urlpatterns = patterns(
     (r'^review/', include('adm.review.urls')),
     (r'^manual/', include('adm.manual.urls')),
     (r'^supplement/', include('adm.supplement.urls')),
+    (r'^result/', include('adm.result.urls')),
 
     url(r'^deadline_passed/$', 
         'commons.views.deadline_passed_error',

@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'adm.commons',
     'adm.manual',
     'adm.supplement',
+    'adm.result',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -143,6 +144,8 @@ EMAIL_SENDER = ''
 TEST_DATABASE_COLLATION = 'utf8_general_ci'
 
 MAX_SUPPLEMENTS = 10
+
+CACHE_BACKEND = 'locmem:///'
 
 try:
     from settings_local import *
