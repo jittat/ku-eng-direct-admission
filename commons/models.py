@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Announcement(models.Model):
     body = models.TextField()
@@ -19,4 +20,21 @@ class Announcement(models.Model):
     @staticmethod
     def get_all_enabled_annoucements():
         return Announcement.objects.filter(is_enabled=True).all()
+
+class Log(models.Model):
+    user = models.CharField(max_length=20)
+    message = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def create(message, user=''):
+        if isinstance(user,User):
+            user = user.username
+        log = Log(user=user, message=message)
+        log.save()
+    
+    def __unicode__(self):
+        return u'%s: %s' % (self.user, self.message)
 
