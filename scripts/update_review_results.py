@@ -4,6 +4,7 @@ bootstrap(__file__)
 
 from application.models import Applicant, SubmissionInfo
 from review.models import ReviewField, ReviewFieldResult
+from commons.models import Log
 
 def main():
     REMOVED_FIELDS = ['picture', 
@@ -15,22 +16,45 @@ def main():
                       'abroad_edu_certificat']
 
     for applicant in Applicant.objects.all():
-        if not applicant.is_submitted:
-            continue
-        if applicant.submission_info.doc_reviewed_complete:
+        if ((not applicant.is_submitted) or 
+            (applicant.submission_info.doc_reviewed_complete)):
             continue
         else:
-            print applicant.ticket_number(), applicant.full_name(), 'FAILED:',
             review_results = ReviewFieldResult.objects.filter(applicant=applicant)
             if len(review_results)==0:
-                print 'Not reviewed'
+                # have no reviews
                 continue
 
+            print applicant.ticket_number(), applicant.full_name(),
+
+            passed = True
+            changed = False
             for r in review_results:
                 if not r.is_passed:
                     f = ReviewField.get_field_by_id(r.review_field_id)
-                    print f.short_name,
-            print 
+                    if f.short_name in REMOVED_FIELDS:
+                        print f.short_name, '(fixed)',
+                        r.is_passed = True
+                        r.internal_note = r.internal_note + '(fixed by admin)'
+                        r.save()
+                        msg = ('Updated ReviewFieldResult (id:%d) %s for %d, set to passed' %
+                               (r.id, f.short_name, applicant.id))
+                        Log.create(msg, 'console', 
+                                   applicant_id=applicant.id,
+                                   applicantion_id=applicant.submission_info.applicantion_id)
+                        changed = True
+                    else:
+                        passed = False
+            if changed and passed:
+                print 'PASSED'
+                applicant.submission_info.doc_reviewed_complete = True
+                applicant.submission_info.save()
+                msg = ('Updated SubmissionInfo (id:%d) for %d, set doc_reviewed_complete to True' % (applicant.submission_info.applicantion_id, applicant.id))
+                Log.create(msg, 'console',
+                           applicant_id=applicant.id,
+                           applicantion_id=applicant.submission_info.applicantion_id)
+            else:
+                print 'FAILED'
 
 if __name__ == '__main__':
     main()
