@@ -336,7 +336,7 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 """
 % { 'email': email,
     'admin_email': admin_email() }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(email, subject, message, force)
 
 
@@ -366,7 +366,7 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 % { 'email': email,
     'applicant_names': applicant_names,
     'admin_email': admin_email() }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(email, subject, message, force)
 
 
@@ -447,7 +447,7 @@ u"""เรียนคุณ %(first_name)s %(last_name)s
     'status': summarize_applicant_status(applicant), 
     'admin_email': admin_email()
     }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicant.get_email(), subject, message, force)
 
 
@@ -488,5 +488,5 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
     'statuses': statuses,
     'admin_email': admin_email()
     }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicants[0].get_email(), subject, message, force)
