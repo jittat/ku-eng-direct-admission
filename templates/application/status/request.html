@@ -1,0 +1,41 @@
+{% extends "application/status/base.html" %}
+
+{% block title %}ตรวจสอบสถานะการสมัครผ่านทางอีเมล์{% endblock %}
+
+{% block body %}
+  {% load adm_steps %}{% step_bar "ตรวจสอบสถานะการสมัครผ่านทางอีเมล์" %}
+  <div class="small-vert-sept"></div>
+  <div class="normal-msg">
+    ป้อนอีเมล์ที่ใช้ในการสมัครเพื่อให้ระบบส่งสถานะการสมัคร
+    รวมถึงลำดับการเลือกสาขาวิชาเพื่อตรวจสอบ<br/><br/>
+    ถ้าผู้สมัครไม่ได้กรอกอีเมล์หรือไม่ได้รับเมล์ตอบกลับภายในเวลา 20 นาที
+    อาจเป็นเพราะว่าข้อมูลอีเมล์ที่มีอยู่ในระบบผิดพลาด
+    ให้ผู้สมัครสอบถามสถานะการสมัครโดยการส่งอีเมล์ไปยัง {% load adm_info %}{% adm_admin_email_link %} พร้อมทั้งระบุชื่อ นามสกุล
+    และหมายเลขประจำตัวประชาชน
+    เพื่อให้ทางทีมงานสามารถตรวจสอบได้ว่าผู้สมัครเป็นเจ้าของอีเมล์จริง
+    และจะได้จัดส่งข้อมูลสถานะกลับไปให้ทางอีเมล์อีกครั้ง
+  </div>
+  <div class="small-vert-sept"></div>
+  
+  {% if notice %}
+    <div class="notice-bar">
+      <span class="notice">{{ notice }}</span>
+    </div>
+  {% endif %}
+
+  <center>
+    <form action="{% url status-request %}" method="post">
+      <table>
+	{{ form.as_table }}
+	<tr>
+	  <td></td>
+	  <td>
+	    <input type="submit" name="submit" value="ขอข้อมูลสถานะการสมัคร"/>
+	  </td>
+	</tr>
+      </table>
+    </form>
+  </center>
+  <br/>
+  กลับไป<a href="{% url apply-start %}">หน้าแรกของระบบรับสมัครออนไลน์</a>
+{% endblock %}

@@ -33,6 +33,10 @@ class ForgetPasswordForm(forms.Form):
             raise forms.ValidationError(u'ไม่มีผู้ใช้ที่ใช้อีเมล์: ' +
                                         email)
 
+class StatusRequestForm(forms.Form):
+    email = forms.EmailField()
+
+
 class RegistrationForm(forms.Form):
     title = forms.ChoiceField(choices=APP_TITLE_FORM_CHOICES)
     first_name = forms.CharField(label=u'ชื่อ')

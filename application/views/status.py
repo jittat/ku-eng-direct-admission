@@ -7,8 +7,15 @@ from commons.decorators import applicant_required
 from commons.decorators import submitted_applicant_required
 from commons.utils import submission_deadline_passed, supplement_submission_deadline_passed
 
+from commons.email import send_status_by_email_no_applicant
+from commons.email import send_status_by_email_not_submitted
+from commons.email import send_status_by_email_many_submitted_apps
+from commons.email import send_status_by_email
+
 from application.models import Applicant
 from application.views import redirect_to_applicant_first_page
+from application.forms import StatusRequestForm
+
 from review.models import ReviewFieldResult
 
 @submitted_applicant_required
@@ -77,3 +84,30 @@ def show_ticket(request):
                               { 'applicant': request.applicant,
                                 'form_step_info': form_step_info })
 
+
+def request_status(request):
+    notice = ''
+    if request.method == 'POST':
+        form = StatusRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            applicants = Applicant.objects.filter(email__endswith=email).all()
+            real_applicants = [a for a in applicants if a.get_email() == email]
+            if len(real_applicants)==0:
+                send_status_by_email_no_applicant(email)
+            else:
+                submitted_applicants = [a for a in real_applicants if a.is_submitted] 
+                if len(submitted_applicants)==1:
+                    send_status_by_email(submitted_applicants[0])
+                elif len(submitted_applicants)==0:
+                    send_status_by_email_not_submitted(email, real_applicants)
+                else:
+                    send_status_by_email_many_submitted_apps(submitted_applicants)
+            notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
+    else:
+        form = StatusRequestForm()
+
+    return render_to_response('application/status/request.html', 
+                              { 'form': form,
+                                'notice': notice })
+    
