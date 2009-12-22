@@ -54,6 +54,7 @@ def find_basic_statistics():
     stat['app_received']['online'] = (
         stat['app_received']['total'] -
         submitted_manual_app_count)
+    stat['app_online_wait'] = stat['online_app_submitted'] - stat['app_received']['online']
     return stat
 
 @login_required
