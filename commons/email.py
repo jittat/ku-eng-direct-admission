@@ -317,7 +317,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 
 
 def send_status_by_email_no_applicant(email, force=False):
-    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
     message = (
 u"""เรียนผู้ใช้อีเมล์ %(email)s
 
@@ -336,12 +336,12 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 """
 % { 'email': email,
     'admin_email': admin_email() }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(email, subject, message, force)
 
 
 def send_status_by_email_not_submitted(email, applicants, force=False):
-    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
 
     applicant_names = '\n'.join([a.full_name() for a in applicants])
 
@@ -366,7 +366,7 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 % { 'email': email,
     'applicant_names': applicant_names,
     'admin_email': admin_email() }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(email, subject, message, force)
 
 
@@ -426,11 +426,13 @@ u"""ชื่อ: %(full_name)s
 
 
 def send_status_by_email(applicant, force=False):
-    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
     message = (
 u"""เรียนคุณ %(first_name)s %(last_name)s
 
-ด้านล่างเป็นข้อมูลการสมัครพร้อมด้วยลำดับการเลือกสาขาของคุณ
+ด้านล่างเป็นข้อมูลการสมัครเข้าศึกษาต่อแบบรับตรงประจำปีการศึกษา 2553
+คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ วิทยาเขตบางเขน
+พร้อมด้วยลำดับการเลือกสาขาของคุณ
 โปรดตรวจสอบ และถ้าพบข้อผิดพลาดให้รีบแจ้งกับทางผู้ดูแล
 ทางอีเมล์ %(admin_email)s โดยด่วน
 
@@ -445,12 +447,12 @@ u"""เรียนคุณ %(first_name)s %(last_name)s
     'status': summarize_applicant_status(applicant), 
     'admin_email': admin_email()
     }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_status_by_email_many_submitted_apps(applicants, force=False):
-    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
 
     statuses = u''
     counter = 1
@@ -470,7 +472,9 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 อย่างไรก็ตาม ถ้ามีข้อมูลผ่านหลายชุดและผู้สมัครต้องการเลือกรายการที่ต้องการ
 ให้รีบติดต่อกับทางผู้ดูแลทางอีเมล์ %(admin_email)s โดยด่วน
 
-ด้านล่างเป็นรายการของข้อมูลการสมัครพร้อมด้วยลำดับการเลือกสาขาของคุณ
+ด้านล่างเป็นข้อมูลการสมัครเข้าศึกษาต่อแบบรับตรงประจำปีการศึกษา 2553
+คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ วิทยาเขตบางเขน
+พร้อมด้วยลำดับการเลือกสาขาของคุณ
 โปรดตรวจสอบ และถ้าพบข้อผิดพลาดให้รีบแจ้งกับทางผู้ดูแล
 ทางอีเมล์ %(admin_email)s โดยด่วน
 
@@ -484,5 +488,5 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
     'statuses': statuses,
     'admin_email': admin_email()
     }
-)
+).replace('\n','<br/>\n')
     adm_send_mail(applicants[0].get_email(), subject, message, force)
