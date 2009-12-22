@@ -63,10 +63,10 @@ u"""เรียนคุณ %(firstname)s %(lastname)s<br/>
 """
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     'password': password }
 )
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_activation_by_email(applicant, activation_key, force=False):
@@ -91,11 +91,11 @@ u"""เรียน คุณ %(firstname)s %(lastname)s
 """
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     'link': base_path + reverse('apply-activate', 
                                 args=[activation_key]) }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_submission_confirmation_by_email(applicant, force=False):
@@ -125,13 +125,13 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 % { 'greeting': greeting,
     'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     'ticket': applicant.ticket_number(),
     'verification': applicant.verification_number(),
     'submission_method': applicant.get_doc_submission_method_display(),
     }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_resubmission_confirmation_by_email(applicant, force=False):
@@ -158,13 +158,13 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 % { 'greeting': greeting,
     'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     'ticket': applicant.ticket_number(),
     'verification': applicant.verification_number(),
     'submission_method': applicant.get_doc_submission_method_display(),
     }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 
@@ -192,10 +192,10 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 โครงการรับตรง คณะวิศวกรรมศาสตร์"""
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.email, 
+    'email': applicant.get_email(), 
     }
 ).replace('\n','<br/>\n')
-    adm_send_mail(applicant.email, subject, message, force)
+    adm_send_mail(applicant.get_email(), subject, message, force)
 
 
 def send_validation_successful_by_email(applicant, force=False):
@@ -315,3 +315,174 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
 ).replace('\n','<br/>\n')
     adm_send_mail(applicant.get_email(), subject, message, force)
 
+
+def send_status_by_email_no_applicant(email, force=False):
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    message = (
+u"""เรียนผู้ใช้อีเมล์ %(email)s
+
+ไม่พบข้อมูลการสมัครเข้าศึกษาแบบรับตรง ประจำปีการศึกษา 2553 
+ที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน
+
+ถ้าคุณได้ส่งสมัครมาที่คณะ อาจเป็นไปได้ที่จดหมายยังไม่ถึง
+หรือมีการกรอกข้อมูลอีเมล์ผิดพลาด  ให้รีบติดต่อที่ %(admin_email)s โดยด่วน 
+พร้อมทั้งระบุชื่อ นามสกุล และหมายเลขประจำตัวประชาชน 
+เพื่อให้ทางทีมงานตรวจสอบ
+
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'email': email,
+    'admin_email': admin_email() }
+)
+    adm_send_mail(email, subject, message, force)
+
+
+def send_status_by_email_not_submitted(email, applicants, force=False):
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+
+    applicant_names = '\n'.join([a.full_name() for a in applicants])
+
+    message = (
+u"""เรียนผู้ใช้อีเมล์ %(email)s
+
+จากการตรวจสอบพบผู้ลงทะเบียนด้วยอีเมล์นี้ แต่ไม่มีข้อมูลการยืนยันใบสมัคร
+
+โดยข้อมูลผู้ลงทะเบียนโดยใช้อีเมล์นี้มีรายชื่อดังนี้
+
+%(applicant_names)s
+
+เนื่องจากใบสมัครที่ส่งยังไม่ได้รับการยืนยัน ทางคณะจึงยังไม่ได้ประมวลผลใบสมัครของคุณ
+ถ้าคุณต้องการยืนยันการสมัคร ให้รีบติดต่อผู้ดูทางอีเมล์ %(admin_email)s 
+เพื่อให้ยืนยันและตรวจสอบหลักฐานโดยด่วน
+
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'email': email,
+    'applicant_names': applicant_names,
+    'admin_email': admin_email() }
+)
+    adm_send_mail(email, subject, message, force)
+
+
+def summarize_applicant_status(applicant):
+    if applicant.is_submitted:
+        ticket_number = applicant.ticket_number()
+        submission_status = u"สถานะใบสมัคร: ยืนยันแล้ว"
+        if applicant.submission_info.has_been_reviewed:
+            if applicant.submission_info.doc_reviewed_complete:
+                review_result = u'ผ่าน'
+            else:
+                review_result = u'ไม่ผ่าน'                
+            submission_status = submission_status + (
+u"""
+สถานะการตรวจสอบ: ตรวจสอบแล้ว เมื่อ %(doc_review_at)s
+ผลการตรวจสอบ: %(doc_review_status)s
+""" % { 'doc_review_at': applicant.submission_info.doc_reviewed_at.strftime("%H:%M, %d %b"),
+        'doc_review_status': review_result })
+            
+        else:
+            # has not been reviewed
+            if applicant.submission_info.doc_received_at != None:
+                doc_received_status = u"ได้รับเมื่อ " + applicant.submission_info.doc_received_at.strftime("%H:%M, %d %b")
+            else:
+                doc_received_status = u"ยังไม่ได้รับ"
+            submission_status = submission_status + (
+                u"""
+สถานะการตรวจสอบ: ยังไม่ได้ตรวจสอบ
+สถานะใบสมัคร: %(doc_received_status)s""" % { 'doc_received_status': doc_received_status })
+            
+    else:
+        # not submitted
+        ticket_number = u'ไม่มีหมายเลขผู้สมัคร'
+        submission_status = u"สถานะใบสมัคร: ยังไม่ได้ยืนยัน"
+
+    if not applicant.has_major_preference():
+        pref_status = u"ยังไม่ได้เลือกอันดับของสาขา"
+    else:
+        pref_status = (u"อันดับของสาขาที่เลือกคือ:\n" + 
+                       u'\n'.join([unicode(m) for m in  applicant.preference.get_major_list()]))
+    status = (
+u"""ชื่อ: %(full_name)s
+หมายเลขผู้สมัคร: %(ticket_number)s
+วิธีการส่งใบสมัคร: %(doc_submission_method)s
+
+%(submission_status)s
+%(pref_status)s
+""" % { 
+            'full_name': applicant.full_name(),
+            'ticket_number': ticket_number,
+            'doc_submission_method': applicant.get_doc_submission_method_display(),
+            'submission_status': submission_status,
+            'pref_status': pref_status
+            }
+)
+    return status
+
+
+def send_status_by_email(applicant, force=False):
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+    message = (
+u"""เรียนคุณ %(first_name)s %(last_name)s
+
+ด้านล่างเป็นข้อมูลการสมัครพร้อมด้วยลำดับการเลือกสาขาของคุณ
+โปรดตรวจสอบ และถ้าพบข้อผิดพลาดให้รีบแจ้งกับทางผู้ดูแล
+ทางอีเมล์ %(admin_email)s โดยด่วน
+
+%(status)s
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'first_name': applicant.first_name,
+    'last_name': applicant.last_name,
+    'status': summarize_applicant_status(applicant), 
+    'admin_email': admin_email()
+    }
+)
+    adm_send_mail(applicant.get_email(), subject, message, force)
+
+
+def send_status_by_email_many_submitted_apps(applicants, force=False):
+    subject = 'สถานะการสมัครตรง คณะวิศวกรรมศาสตร์'
+
+    statuses = u''
+    counter = 1
+    for a in applicants:
+        statuses = statuses + (u"รายการที่ " + unicode(counter) + u"\n\n" + 
+                               summarize_applicant_status(a) + u"\n")
+        counter += 1
+
+    message = (
+u"""เรียนผู้ใช้อีเมล์ %(email)s
+
+ระบบพบว่ามีข้อมูลของผู้ใช้หลายคนที่ใช้อีเมล์ %(email)s และมีการยื่นใบสมัครหลายครั้ง
+
+ทั้งนี้สาเหตุอาจมาจากการส่งหลักฐานซ้ำซ้อน หรือการที่ทางเจ้าหน้าที่ป้อนข้อมูลซ้ำเข้าในระบบ
+ข้อมูลซ้ำซ้อนนี้ไม่เป็นปัญหาต่อผู้สมัครแต่อย่างใด เพราะในการคัดเลือก 
+คณะจะใช้ข้อมูลของผู้สมัครที่ผ่านการตรวจสอบเท่านั้น และจะตัดข้อมูลที่ไม่ผ่านทิ้งไป
+อย่างไรก็ตาม ถ้ามีข้อมูลผ่านหลายชุดและผู้สมัครต้องการเลือกรายการที่ต้องการ
+ให้รีบติดต่อกับทางผู้ดูแลทางอีเมล์ %(admin_email)s โดยด่วน
+
+ด้านล่างเป็นรายการของข้อมูลการสมัครพร้อมด้วยลำดับการเลือกสาขาของคุณ
+โปรดตรวจสอบ และถ้าพบข้อผิดพลาดให้รีบแจ้งกับทางผู้ดูแล
+ทางอีเมล์ %(admin_email)s โดยด่วน
+
+%(statuses)s
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'email': applicants[0].get_email(),
+    'statuses': statuses,
+    'admin_email': admin_email()
+    }
+)
+    adm_send_mail(applicants[0].get_email(), subject, message, force)

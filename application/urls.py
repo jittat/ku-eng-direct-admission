@@ -27,6 +27,7 @@ urlpatterns = patterns(
     url(r'^status/$', 'status.index', name='status-index'),
     url(r'^status/show/$', 'status.show', name='status-show'),
     url(r'^status/ticket/$', 'status.show_ticket', name='status-show-ticket'),
+    url(r'^status/request/$', 'status.request_status', name='status-request'),
 
     # upadte
     url(r'^update/majors/$', 'update.update_majors', name='update-majors'),
