@@ -45,6 +45,16 @@ ul.errorlist
   img
     float: left
 
+.important-msg
+  border: 1px dashed red
+  background: #fff0f0
+  padding: 10px
+  margin-top: 5px
+  margin-bottom: 5px
+
+  img
+    float: left
+
 #step-bar
   background: green
   color: white
@@ -300,7 +310,7 @@ table#doc-status-table
     -webkit-border-radius: 5px
     border-radius: 5px
 
-table#supplement-list
+=table-black-th
   th
     background: #000070
     color: white
@@ -317,6 +327,17 @@ table#supplement-list
     padding-left: 10px
     padding-right: 10px
 
+table#supplement-list
+  +table-black-th
+
+table#applicant-result-list
+  +table-black-th
+
+  width: 80%
+
+  td.center
+    text-align: center
+
 #supplement-form
   margin-top: 10px
   background: #e0ffe0
@@ -326,4 +347,13 @@ table#supplement-list
 .supplement-msg
   border: 1px solid red
   background: #fff0f0
+  margin-bottom: 5px
+
+.alpha-list-menu
+  border: 1px solid green
+  -moz-border-radius: 5px
+  background: #e0ffe0
+  text-align: center
+  padding: 10px
+  margin-top: 5px
   margin-bottom: 5px

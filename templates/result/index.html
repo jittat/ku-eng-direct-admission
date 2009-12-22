@@ -1,0 +1,37 @@
+{% extends "commons/base.html" %}
+
+{% block title %}รายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือก{% endblock %}
+
+{% block body %}
+  <div id="step-bar">
+    <ul><li class="head">ประกาศรายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือกเข้าศึกษาต่อด้วยวิธีตรง ประจำปีการศึกษา 2553 ครั้งที่ 1</li></ul>
+  </div>
+
+  <div class="important-msg">
+    {% include "result/include/head_announcement.html" %}
+  </div>
+
+  <div class="alpha-list-menu">
+    {% include "result/include/category_menu.html" %}
+  </div>
+
+  {% if applicants %}
+    <table id="applicant-result-list">
+      <tr>
+	<th>อันดับที่</th>
+	<th>ชื่อ-นามสกุล</th>
+	<th>หมายเลขประจำตัวผู้สมัคร</th>
+      </tr>
+      {% for applicant in applicants %}
+        <tr class="{% cycle 'odd' 'even' %}">
+          <td class="center" width="20%">{{ forloop.counter }}</td>
+	  <td width="50%">{{ applicant.first_name }} {{ applicant.last_name }}</td>
+	  <td width="30%" class="center">{{ applicant.ticket_number }}</td>
+	</tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    กรุณาเลือกตัวอักษรขึ้นต้นด้านบน
+  {% endif %}
+
+{% endblock %}
