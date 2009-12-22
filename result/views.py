@@ -12,6 +12,7 @@ def list(request, page_id=None):
         qualified_applicants = category.qualifiedapplicant_set.all()
     else:
         qualified_applicants = None
+        page_id = 0
 
     return render_to_response("result/index.html",
                               { 'report_categories':
