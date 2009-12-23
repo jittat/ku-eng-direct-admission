@@ -291,22 +291,28 @@ class Applicant(models.Model):
         pass
 
     def ticket_number(self):
-        application_id = self.submission_info.applicantion_id
-        return ("%(year)d%(method)d%(id)05d" % 
-                { 'year': settings.ADMISSION_YEAR,
-                  'method': self.doc_submission_method,
-                  'id': application_id })
+        try:
+            application_id = self.submission_info.applicantion_id
+            return ("%(year)d%(method)d%(id)05d" % 
+                    { 'year': settings.ADMISSION_YEAR,
+                      'method': self.doc_submission_method,
+                      'id': application_id })
+        except SubmissionInfo.DoesNotExist:
+            return None
 
     def verification_number(self):
-        key = u"%s-%s-%s-%s" % (
-            self.submission_info.salt,
-            self.email,
-            self.first_name,
-            self.last_name)
-        import hashlib
-        h = hashlib.md5()
-        h.update(key.encode('utf-8'))
-        return h.hexdigest()
+        try:
+            key = u"%s-%s-%s-%s" % (
+                self.submission_info.salt,
+                self.email,
+                self.first_name,
+                self.last_name)
+            import hashlib
+            h = hashlib.md5()
+            h.update(key.encode('utf-8'))
+            return h.hexdigest()
+        except SubmissionInfo.DoesNotExist:
+            return None
 
 
     #######################

@@ -89,7 +89,6 @@ def find_applicants(form):
             applicants = applicants.filter(first_name__contains=items[0])
             if len(items)>1 and items[1]!='':
                 applicants = applicants.filter(last_name__contains=items[1])
-            applicants = applicants.filter(is_submitted=True)
         return applicants
     else:
         return []
@@ -142,8 +141,9 @@ def verify_ticket(request):
                                                         args=[applicants[0].id]))
 
                 for applicant in applicants:
-                    match_ticket = (applicant.ticket_number()==str(ticket))
-                    match_verinum = (
+                    match_ticket = (applicant.is_submitted and
+                                    applicant.ticket_number()==str(ticket))
+                    match_verinum = (applicant.is_submitted and
                         applicant.verification_number().startswith(verinum))
                     results.append({ 'ticket': match_ticket,
                                      'verinum': match_verinum })
