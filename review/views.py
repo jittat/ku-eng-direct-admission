@@ -23,6 +23,8 @@ from commons.email import send_validation_successful_by_email
 from commons.email import send_validation_error_by_email
 from commons.email import send_resubmission_reminder_by_email
 
+from commons.models import Log
+
 from models import ReviewField, ReviewFieldResult
 from supplement.models import Supplement
 
@@ -292,6 +294,8 @@ def review_document(request, applicant_id, return_to_manual=False):
         # auto set received flag
         submission_info.set_doc_received_at_now_if_not()
 
+        log_messages = []
+
         field_names = get_applicant_doc_name_list(applicant)
         fields = prepare_applicant_review_fields(field_names)
         results = prepare_applicant_review_results(applicant, field_names)
@@ -307,7 +311,10 @@ def review_document(request, applicant_id, return_to_manual=False):
 
             for field, result, form in zip(fields, results, forms):
                 if not result:
+                    old_value = '-'    # for logging
                     result = ReviewFieldResult()
+                else:
+                    old_value = result.is_passed
 
                 result.applicant_note = form.cleaned_data['applicant_note']
                 result.internal_note = form.cleaned_data['internal_note']
@@ -317,6 +324,7 @@ def review_document(request, applicant_id, return_to_manual=False):
 
                 if (field.required) or (form.cleaned_data['is_submitted']):
                     result.is_passed = form.cleaned_data['is_passed']
+                    new_value = str(int(form.cleaned_data['is_passed']))
                     if result.id!=None:
                         result.save(force_update=True)
                     else:
@@ -325,13 +333,23 @@ def review_document(request, applicant_id, return_to_manual=False):
                     if not result.is_passed:
                         failed_fields.append((field,result))
                 else:
+                    new_value = '-'
                     if result.id!=None:
                         result.delete()
+
+                log_messages.append('%d:%s-%s' %
+                                    (field.id, old_value, new_value))
 
             submission_info.has_been_reviewed = True
             submission_info.doc_reviewed_at = datetime.now()
             submission_info.doc_reviewed_complete = (len(failed_fields)==0)
             submission_info.save()
+
+            # add a log entry
+            log = Log.create("Review doc: " + '; '.join(log_messages),
+                             request.user.username,
+                             applicant_id=int(applicant_id),
+                             applicantion_id=submission_info.applicantion_id)
 
             if submission_info.doc_reviewed_complete:
                 send_validation_successful_by_email(applicant)
