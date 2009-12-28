@@ -1,0 +1,14 @@
+<table id="applicant-result-list">
+  <tr>
+    <th>อันดับที่</th>
+    <th>ชื่อ-นามสกุล</th>
+    <th>หมายเลขประจำตัวผู้สมัคร</th>
+  </tr>
+  {% for applicant in applicants %}
+    <tr class="{% cycle 'odd' 'even' %}">
+      <td class="center" width="20%">{{ forloop.counter }}</td>
+      <td width="50%">{{ applicant.first_name }} {{ applicant.last_name }}</td>
+      <td width="30%" class="center">{{ applicant.ticket_number }}</td>
+    </tr>
+  {% endfor %}
+</table>
