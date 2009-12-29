@@ -1,0 +1,43 @@
+List of scripts
+===============
+
+build_result_flatpage.py
+------------------------
+
+- takes a list of qualifying applicants and build flatpage for
+  displaying the list.  Each line in the file is in the format:
+
+  application_id, first_name, last_name, submission_method, national_id
+
+
+convert_score.py
+----------------
+
+- takes a csv file from NIEST, and output another csv file.  Each line
+  is in format:
+
+  national_id, first_name, last_name, [gat, pat1, pat3] * 3
+
+
+
+calculate_score.py - calculate normalized scores
+------------------------------------------------
+
+- takes a csv file in the format output by `export_score.py` and
+  produces a csv file in the format:
+
+  national_id, normalized_score
+
+
+To be documented
+----------------
+* export_score.py
+* export_applicants.py      
+* export_major_pref.py
+* import_qualifying_results.py
+* rank.py
+* set_minus.py
+* export_app_id_nat_id.py   
+* update_review_results.py
+
+
