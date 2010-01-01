@@ -36,6 +36,9 @@
     {% endif %}
   {% else %}
     อีเมล์: {{ applicant.email }}
+    {% if user and user.is_staff %}
+      [<a href="{% url admin:application_applicant_change applicant.id %}">admin</a>]
+    {% endif %}
   {% endif %}
   {% if force_review_link %}
     [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]

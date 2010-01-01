@@ -153,7 +153,8 @@ def verify_ticket(request):
     return render_to_response("review/ticket_search.html",
                               { 'form': form,
                                 'notice': notice,
-                                'applicants_results': zip(applicants,results) })
+                                'applicants_results': zip(applicants,results),
+                                'user': request.user })
 
 
 class ApplicantSearchForm(forms.Form):
