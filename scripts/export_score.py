@@ -34,6 +34,8 @@ def extract_gatpat_scores(education):
     
 
 def print_applicant(applicant):
+    if not applicant.submission_info.doc_reviewed_complete:
+        return
     if applicant.education.uses_gat_score:
         print "%s,%f,gatpat,%s" % (
             applicant.personal_info.national_id,
@@ -49,7 +51,8 @@ def print_applicant(applicant):
 applicants = get_submitted_applicant_dict({
         'preference': MajorPreference,
         'personal_info': PersonalInfo,
-        'education': Education })
+        'education': Education,
+        'submission_info': SubmissionInfo })
 
 for applicant in applicants.itervalues():
     print_applicant(applicant)

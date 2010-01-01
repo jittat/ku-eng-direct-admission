@@ -13,11 +13,26 @@ build_result_flatpage.py
 convert_score.py
 ----------------
 
-- takes a csv file from NIEST, and output another csv file.  Each line
+- takes a csv file from NIETS, and output another csv file.  Each line
   is in format:
 
   national_id, first_name, last_name, [gat, pat1, pat3] * 3
 
+
+export_score.py
+---------------
+
+- outputs list of applicants' scores enterred in the application in the
+  following format
+
+  national_id, gpax, ("gatpat"/"anet"), ([gat, pat1, pat3] * 2/anetscore)
+
+
+combine_score.py
+----------------
+
+- takes the scores from export_score.py (GPAX) and scores from NIETS
+  and produces a new score file in the same format as export_score.py.
 
 
 calculate_score.py - calculate normalized scores
