@@ -29,6 +29,12 @@ calculate_score.py - calculate normalized scores
   national_id, normalized_score
 
 
+export_anet.py
+--------------
+
+- outputs list of applicants that use A-NET scores.
+
+
 To be documented
 ----------------
 * export_score.py
