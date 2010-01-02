@@ -1,3 +1,4 @@
+import sys
 
 class ScoreStat:
 
@@ -92,6 +93,8 @@ class ApplicantScore:
         best_score = 0
         for i in range(EXAM_COUNT):
             x = self.scores[test_name][i]
+            if x>300:
+                print >> sys.stderr, "ERROR:", self.nat_id, test_name, x
             score = SCORE_STATS[i][test_name].cal_score(x)
             if score > best_score:
                 best_score = score
