@@ -50,6 +50,14 @@ export_anet.py
 - outputs list of applicants that use A-NET scores.
 
 
+comp_scores.py
+--------------
+
+- compare scores computed from applicants' submission and scores
+  computed using NIETS data.  The scripts output a list of applicants
+  whose scores are different.
+
+
 To be documented
 ----------------
 * export_score.py
