@@ -15,7 +15,8 @@
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
-  {% include "review/include/doc_received_status.html" %}<br/>
+  {% include "review/include/doc_received_status.html" %} | 
+  <a id="doc-major_pref-link" href="#">[ดูอันดับการเลือก]</a><br/>
   {% if applicant.has_supplements %}
     {% include "review/include/supplements.html" %}
   {% endif %}
@@ -88,6 +89,10 @@
 	{% include "application/include/applicant_edu.html" %}
       </div>
     </div>
+    <div id="app-doc-major-pref" style="display: none">
+      <h2>ข้อมูลการเลือก</h2>
+      {% include "application/include/applicant_ranks.html" %}
+    </div>
   </div>
   <script type="text/javascript">
     function close_popup_and_refresh(win) {
@@ -97,16 +102,26 @@
     function show_personal_info() {
       $("#app-doc-personal-preview").show();
       $("#app-doc-education-preview").hide();
+      $("#app-doc-major-pref").hide();
     }
     function show_education_info() {
-      $("#app-doc-personal-preview").hide();
       $("#app-doc-education-preview").show();
+      $("#app-doc-personal-preview").hide();
+      $("#app-doc-major-pref").hide();
+    }
+    function show_major_pref_info() {
+      $("#app-doc-major-pref").show();
+      $("#app-doc-personal-preview").hide();
+      $("#app-doc-education-preview").hide();
     }
     function register_personal_trigger(id) {
       $(id).click(function() { show_personal_info(); return false; });
     }
     function register_education_trigger(id) {
       $(id).click(function() { show_education_info(); return false; });
+    }
+    function register_major_pref_trigger(id) {
+      $(id).click(function() { show_major_pref_info(); return false; });
     }
     $(document).ready(function() {
       register_personal_trigger("#doc-nat_id-link");
@@ -115,6 +130,7 @@
       register_education_trigger("#doc-pat1_score-link");
       register_education_trigger("#doc-pat3_score-link");
       register_education_trigger("#doc-anet_score-link");
+      register_major_pref_trigger("#doc-major_pref-link");
       $("#doc-picture-link").hide();
       $("#doc-app_fee_doc-link").hide();
       $("#doc-abroad_edu_certificate-link").hide();
