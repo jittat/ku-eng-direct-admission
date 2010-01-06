@@ -14,15 +14,27 @@ if len(sys.argv)!=2:
 file_name = sys.argv[1]
 
 
-applicants = get_submitted_applicant_dict({'personal_info': PersonalInfo})
+applicants = get_submitted_applicant_dict(
+    {'personal_info': PersonalInfo,
+     'submission_info': SubmissionInfo })
 
 f = codecs.open(file_name, encoding="utf-8", mode="w")
 print >> f, "No,CITIZENID,Name,SurName"
 i = 0
+
+appeared = {}
+
 for applicant in applicants.itervalues():
-    print >> f, "%d,%s,%s,%s" % (
-        (i+1), 
-        applicant.personal_info.national_id, 
-        applicant.first_name,
-        applicant.last_name)
-    i += 1
+    if not applicant.submission_info.doc_reviewed_complete:
+        continue
+    nat_id = applicant.personal_info.national_id
+    if nat_id not in appeared:
+        print >> f, "%d,%s,%s,%s" % (
+            (i+1), 
+            applicant.personal_info.national_id, 
+            applicant.first_name,
+            applicant.last_name)
+        i += 1
+        appeared[nat_id] = True
+
+

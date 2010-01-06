@@ -1,3 +1,13 @@
+Steps
+=====
+
+python export_applicants.py data/applicants.csv 
+python export_score.py > data/raw_score.csv 
+python convert_score.py data/GPSRESULT-combine.csv data/GPSRESULT-combine.converted.csv
+python combine_score.py data/raw_score.csv data/GPSRESULT-combine.converted.csv > data/raw_score.combined.csv 
+python calculate_score.py < data/raw_score.combined.csv > data/score.csv
+
+
 List of scripts
 ===============
 
