@@ -1,0 +1,24 @@
+{% extends "commons/base.html" %}
+
+{% block title %}รายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือก{% endblock %}
+
+{% block body %}
+  <div id="step-bar">
+    <ul><li class="head">ประกาศรายชื่อผู้มีสิทธ์สอบสัมภาษณ์เข้าศึกษาต่อแบบรับตรง</li></ul>
+  </div>
+
+  <div class="important-msg">
+    {% include "result/include/admitted_head_announcement.html" %}
+  </div>
+
+  <div class="alpha-list-menu">
+    {% include "result/include/category_menu.html" %}
+  </div>
+
+  {% if applicants %}
+    {% include "result/include/applicant_list.html" %}
+  {% else %}
+    กรุณาเลือกตัวอักษรขึ้นต้นด้านบน
+  {% endif %}
+
+{% endblock %}

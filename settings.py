@@ -149,6 +149,12 @@ MAX_SUPPLEMENTS = 10
 
 CACHE_BACKEND = 'locmem:///'
 
+RESULT_SETS = [
+    (1,'eligible', True, 'result/eligible.html'),
+    (2,'admitted', False, 'result/admitted.html'),
+    (3,'waitlist', False, 'result/waitlist.html')
+    ]
+
 try:
     from settings_local import *
 except ImportError:

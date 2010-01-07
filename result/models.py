@@ -5,6 +5,7 @@ from application.fields import IntegerListField
 from application.models import Applicant
 
 class ReportCategory(models.Model):
+    result_set_id = models.IntegerField(null=True)
     name = models.CharField(max_length=5)
     order = models.IntegerField()
 
@@ -50,17 +51,18 @@ class ReportCategory(models.Model):
         return ''
 
     @staticmethod
-    def get_category_by_name(name):
+    def get_category_by_name(result_set_id, name):
         if ReportCategory._categories==None:
             cat = {}
             for category in ReportCategory.objects.all():
-                cat[category.name] = category
+                cat[(category.result_set_id, category.name)] = category
             ReportCategory._categories = cat
-        return ReportCategory._categories[name]
+        return ReportCategory._categories[(result_set_id, name)]
 
     @staticmethod
-    def get_category_by_app_first_name(first_name):
+    def get_category_by_app_first_name(result_set_id, first_name):
         return ReportCategory.get_category_by_name(
+            result_set_id,
             ReportCategory.get_category_name_from_first_name(
                 first_name))
 

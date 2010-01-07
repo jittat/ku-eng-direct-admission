@@ -1,4 +1,4 @@
 เลือกตัวอักษร:
 {% for cat in report_categories %}
-  {% ifnotequal cat.id current_cat_id %}<a href="{% url result-page cat.id %}">{{ cat.name }}</a>{% else %}<b>[{{ cat.name }}]</b>{% endifnotequal %}&nbsp;&nbsp;
+  {% ifnotequal cat.id current_cat_id %}<a href="{% url result-set-page current_result_set_name cat.id %}">{{ cat.name }}</a>{% else %}<b>[{{ cat.name }}]</b>{% endifnotequal %}&nbsp;&nbsp;
 {% endfor %}
