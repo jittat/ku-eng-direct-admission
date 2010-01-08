@@ -92,7 +92,7 @@ def filter_admitted_applicants(applicants):
     if len(applicants)==1:
         return applicants[0]
 
-    apps_with_nat_id_ = [a for a in applicants
+    apps_with_nat_id = [a for a in applicants
                          if a.has_personal_info()]
     nat_id_set = set([a.personal_info.national_id 
                       for a in apps_with_nat_id])
