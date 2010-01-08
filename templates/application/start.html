@@ -16,6 +16,7 @@
   {% adm_submission_deadline_warning %}
 
   <div class="right-box">
+    {% comment %}
     {% if submission_deadline_passed %}
       <div class="login-box">
         <center><b>หมดเวลารับสมัครออนไลน์แล้ว</b></center>
@@ -34,6 +35,7 @@
       </div>
     {% endif %}
     <br/>
+    {% endcomment %}
 
     <div class="login-box">
       <center>
@@ -78,6 +80,8 @@
 
   </div>
 
+  {% comment %}
+
   {% if submission_deadline_passed %}
     <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px; margin-bottom:10px;" class="normal-msg">
       <center><h2>การส่งหลักฐานเพิ่มเติม</h2></center>
@@ -96,6 +100,20 @@
       </ul>
     </div>
   {% endif %}
+
+  {% endcomment %}
+
+    <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px; margin-bottom:10px;" class="normal-msg">
+      <center><h2>ประกาศผลผู้มีสิทธิ์เข้ารับการสัมภาษณ์</h2></center>
+      <ul>
+	<li>
+	  ดูประกาศ<a href="http://admission.eng.ku.ac.th/adm/result/admitted/">รายชื่อผู้มีสิทธิ์เข้ารับการสัมภาษณ์</a> สามารถเข้าสู่ระบบทางด้านขวาเพื่อตรวจสอบสาขาที่ได้รับคัดเลือกให้เข้าสัมภาษณ์ และเวลาของการสัมภาษณ์
+	</li>
+	<li>
+	  ดู<a href="http://admission.eng.ku.ac.th/adm/result/waitlist/">ประกาศรายชื่อสำรอง</a> คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าสอบสัมภาษณ์ จากรายชื่อสำรอง ในวันศุกร์ที่ 5 กุมภาพันธ์ 2553
+	</li>
+      </ul>
+    </div>
 
   {% if announcements %}
     <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px;" class="normal-msg">
