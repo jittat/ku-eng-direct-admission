@@ -27,8 +27,6 @@ def list(request, result_set_name=None, page_id=None):
     if result_set_name==None:
         result_set_name = settings.RESULT_SETS[0][RESULT_NAME_FIELD]
 
-    print result_set_name
-
     try:
         result_set_id = RESULT_ID_MAP[result_set_name]
     except:
