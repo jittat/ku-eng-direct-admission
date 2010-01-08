@@ -123,7 +123,8 @@ def request_status(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             applicants = Applicant.objects.filter(email__iendswith=email).all()
-            real_applicants = [a for a in applicants if a.get_email() == email]
+            real_applicants = [a for a in applicants 
+                               if a.get_email().lower() == email.lower()]
             if len(real_applicants)==0:
 
                 send_status_by_email_no_applicant(email)
