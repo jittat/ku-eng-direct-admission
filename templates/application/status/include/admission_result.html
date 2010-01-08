@@ -1,0 +1,18 @@
+<b>ผลการคัดเลือก:</b>
+{% if admission_result.is_admitted %}
+  คุณผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์เข้าศึกษาต่อแบบรับตรง (ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "admitted" %}">หน้าประกาศผลการรับสมัคร</a>)
+  <b>สาขาที่ได้รับการคัดเลือก*:</b>
+  {{ admission_result.admitted_major.number }}
+  {{ admission_result.admitted_major.name }}
+   <br/>
+  <b>ข้อมูลการสัมภาษณ์:</b> {{ admission_result.additional_info }}<br/>
+
+  <b>หมายเหตุ:</b> สาขาที่ได้รับคัดเลือกอาจมีการเปลี่ยนแปลงได้ แต่จะเป็นสาขาที่อยู่ในอันดับที่ดีขึ้นเท่านั้น
+{% else %}
+  {% if admission_result.is_waitlist %}
+    คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "waitlist" %}">หน้าประกาศผลการรับสมัคร</a>
+  {% else %}
+    คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์ อย่างไรก็ตาม ยังมีช่องทางอื่นในการเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน กรุณาดูข้อมูลได้ที่เว็บ <a href="http://admission.eng.ku.ac.th/information/2553">http://admission.eng.ku.ac.th</a>
+  {% endif %}
+{% endif %}
+<br/>

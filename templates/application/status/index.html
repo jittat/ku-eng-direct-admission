@@ -36,6 +36,9 @@
       </ul>
     </small>
   </div>
+  
+  {% comment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
+
   {% if submission_deadline_passed %}
   <div class="normal-msg" style="width: 510px; margin-top:5px;">
     <center><b>ขณะนี้หมดเวลารับสมัครแล้ว</b></center>
@@ -65,6 +68,22 @@
     </p>
   </div>
   {% endif %}
+
+  {% endcomment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
+
+  <!--- ******** ADMISSION INFORMATION ******** --->
+
+  <p>
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+
+    {% if show_admission_result %}
+      {% include "application/status/include/admission_result.html" %}
+    {% endif %}
+  </p>
+
+  <!--- ******** DOCUMENT STATUS ******** --->
+
   <p>
     {% if not submission_info.is_resubmitted %}
       คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
@@ -73,9 +92,8 @@
       {% if submission_info.is_reviewed_after_resubmitted %}ขณะนี้ใบสมัครพร้อมด้วยหลักฐานเพิ่มเติมของคุณได้ถูกตรวจสอบแล้ว{% else %}ขณะนี้กำลังรอตรวจสอบ{% endif %}
     {% endif %}
   </p>
+
   <p>
-    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
-    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
     <table id="doc-status-table">
       <tr>
 	<th>วิธีการส่งหลักฐาน</th>

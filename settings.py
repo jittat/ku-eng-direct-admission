@@ -155,6 +155,8 @@ RESULT_SETS = [
     (3,'waitlist', False, 'result/waitlist.html')
     ]
 
+SHOW_ADMISSION_RESULTS = False
+
 try:
     from settings_local import *
 except ImportError:

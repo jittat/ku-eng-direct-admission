@@ -490,3 +490,68 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
     }
 ).replace('\n','<br/>\n')
     adm_send_mail(applicants[0].get_email(), subject, message, force)
+
+
+
+def send_admission_status_problem_by_mail(email, force=False):
+    subject = 'ผลการสมัครเข้าศึกษาต่อแบบรับตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
+
+    message = (
+u"""เรียนผู้ใช้อีเมล์ %(email)s
+
+ในการเรียกค้น เราพบว่ามีข้อมูลผู้ใช้หลายคนที่มีหมายเลขประจำตัวประชาชนไม่ตรงกันที่ใช้อีเมล์นี้
+ทำให้เราไม่สามารถตรวจสอบผลการรับสมัครให้แบบอัตโนมัติได้
+
+รบกวนผู้สมัครส่งเมล์สอบถามผลการรับสมัครโดยตรงที่ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'email': email,
+    'admin_email': admin_email()
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicants[0].get_email(), subject, message, force)
+
+
+def send_admission_status_by_mail(applicant, force=False):
+    subject = u'ผลการสมัครเข้าศึกษาต่อแบบรับตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
+
+    if applicant.has_admission_result():
+        if applicant.admission_result.is_waitlist:
+            result = u"""คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้จาก<a href="http://admission.eng.ku.ac.th/adm/%s">หน้าประกาศผล</a>""" % (reverse("result-set-index", args=["waitlist"]),)
+        else:
+            result = u"""คุณผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์เข้าศึกษาต่อแบบรับตรง (ดูข้อมูลเพิ่มเติมได้ที่<a href="http://admission.eng.ku.ac.th/adm/%(url)s">หน้าประกาศผลการรับสมัคร</a>)
+
+สาขาที่ได้รับการคัดเลือก*: %(major)s
+ข้อมูลการสัมภาษณ์: %(add_info)s
+
+หมายเหตุ: สาขาที่ได้รับคัดเลือกอาจมีการเปลี่ยนแปลงได้ แต่จะเป็นสาขาที่อยู่ในอันดับที่ดีขึ้นเท่านั้น""" % {
+                'url': reverse('result-set-index', args=['admitted']),
+                'major':
+                    (applicant.admission_result.admitted_major.number + ' ' + 
+                     applicant.admission_result.admitted_major.name),
+                'add_info': applicant.admission_result.additional_info }
+    else:
+        result = u"""คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์ อย่างไรก็ตาม ยังมีช่องทางอื่นในการเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน กรุณาดูข้อมูลได้ที่เว็บ <a href="http://admission.eng.ku.ac.th/information/2553">http://admission.eng.ku.ac.th</a>"""
+
+    message = (
+u"""เรียนคุณ %(first_name)s %(last_name)s
+
+ด้านล่างเป็นผลการสมัครเข้าศึกษาต่อแบบรับตรงประจำปีการศึกษา 2553
+คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ วิทยาเขตบางเขน
+
+%(result)s
+
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'first_name': applicant.first_name,
+    'last_name': applicant.last_name,
+    'result': result,
+    'admin_email': admin_email()
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicant.get_email(), subject, message, force)
+

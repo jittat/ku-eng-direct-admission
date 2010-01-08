@@ -2,7 +2,7 @@
 from django.db import models
 
 from application.fields import IntegerListField
-from application.models import Applicant
+from application.models import Applicant, Major
 
 class ReportCategory(models.Model):
     result_set_id = models.IntegerField(null=True)
@@ -89,3 +89,15 @@ class QualifiedApplicant(models.Model):
             self.ticket_number,
             self.first_name,
             self.last_name)
+
+class AdmissionResult(models.Model):
+    applicant = models.OneToOneField(Applicant, 
+                                     related_name='admission_result')
+    
+    is_admitted = models.BooleanField()
+    is_waitlist = models.BooleanField()
+    
+    admitted_major = models.ForeignKey(Major, null=True)
+
+    additional_info = models.TextField(null=True)
+

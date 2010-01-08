@@ -2,6 +2,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from commons.decorators import applicant_required
 from commons.decorators import submitted_applicant_required
@@ -11,12 +12,16 @@ from commons.email import send_status_by_email_no_applicant
 from commons.email import send_status_by_email_not_submitted
 from commons.email import send_status_by_email_many_submitted_apps
 from commons.email import send_status_by_email
+from commons.email import send_admission_status_by_mail
+from commons.email import send_admission_status_problem_by_mail
 
 from application.models import Applicant
 from application.views import redirect_to_applicant_first_page
 from application.forms import StatusRequestForm
 
 from review.models import ReviewFieldResult
+
+from result.models import AdmissionResult
 
 @submitted_applicant_required
 def index(request):
@@ -31,8 +36,20 @@ def index(request):
     else:
         review_results = None
 
+    if request.applicant.has_admission_result():
+        admission_result = request.applicant.admission_result
+    else:
+        admission_result = AdmissionResult()
+        admission_result.is_admitted = False
+        admission_result.is_waitlist = False
+
+    show_admission_result = settings.SHOW_ADMISSION_RESULTS
+
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
+                                'show_admission_result':
+                                    show_admission_result,
+                                'admission_result': admission_result,
                                 'submission_info': submission_info,
                                 'review_results': review_results,
                                 'submission_deadline_passed':
@@ -71,6 +88,20 @@ def show(request):
                                 'form_step_info': form_step_info })
 
 
+def filter_admitted_applicants(applicants):
+    if len(applicants)==1:
+        return applicants[0]
+
+    apps_with_nat_id_ = [a for a in applicants
+                         if a.has_personal_info()]
+    nat_id_set = set([a.personal_info.national_id 
+                      for a in apps_with_nat_id])
+
+    if len(nat_id_set)!=1:
+        return None
+    else:
+        return apps_with_nat_id[0]
+
 @submitted_applicant_required
 def show_ticket(request):
     if request.applicant.online_doc_submission():
@@ -91,19 +122,30 @@ def request_status(request):
         form = StatusRequestForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
-            applicants = Applicant.objects.filter(email__endswith=email).all()
+            applicants = Applicant.objects.filter(email__iendswith=email).all()
             real_applicants = [a for a in applicants if a.get_email() == email]
             if len(real_applicants)==0:
+
                 send_status_by_email_no_applicant(email)
+                notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
             else:
-                submitted_applicants = [a for a in real_applicants if a.is_submitted] 
-                if len(submitted_applicants)==1:
-                    send_status_by_email(submitted_applicants[0])
-                elif len(submitted_applicants)==0:
-                    send_status_by_email_not_submitted(email, real_applicants)
+                if settings.SHOW_ADMISSION_RESULTS:
+                    applicant = filter_admitted_applicants(real_applicants)
+                    if applicant!=None:
+                        send_admission_status_by_mail(applicant)
+                        notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
+                    else:
+                        send_admission_status_problem_by_mail(email)
+                        notice = u'มีปัญหาในการเรียกค้น ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
                 else:
-                    send_status_by_email_many_submitted_apps(submitted_applicants)
-            notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
+                    submitted_applicants = [a for a in real_applicants if a.is_submitted] 
+                    if len(submitted_applicants)==1:
+                        send_status_by_email(submitted_applicants[0])
+                    elif len(submitted_applicants)==0:
+                        send_status_by_email_not_submitted(email, real_applicants)
+                    else:
+                        send_status_by_email_many_submitted_apps(submitted_applicants)
+                    notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
     else:
         form = StatusRequestForm()
 

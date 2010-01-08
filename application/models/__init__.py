@@ -175,6 +175,12 @@ class Applicant(models.Model):
             except MajorPreference.DoesNotExist:
                 return False
 
+    def has_admission_result(self):
+        try:
+            return self.admission_result != None
+        except:
+            return False
+
     def get_applicant_docs_or_none(self):
         result = self.check_related_model('appdocs')
         if (result!=None) and (result==0):
