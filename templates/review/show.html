@@ -20,6 +20,15 @@
   {% if applicant.has_supplements %}
     {% include "review/include/supplements.html" %}
   {% endif %}
+  <div class="light-frame">
+  {% if applicant.has_admission_result %}
+    {% with applicant.admission_result as admission_result %}
+      {% include "application/status/include/admission_result.html" %}
+    {% endwith %}
+  {% else %}
+    {% include "application/status/include/admission_result.html" %}
+  {% endif %}
+  </div><div class="small-vert-sept"></div>
   <form action="" method="post">
     <table class="applicants">
       <tr>
