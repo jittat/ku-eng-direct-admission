@@ -518,7 +518,8 @@ def send_admission_status_by_mail(applicant, force=False):
 
     if applicant.has_admission_result():
         if applicant.admission_result.is_waitlist:
-            result = u"""คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้จาก<a href="http://admission.eng.ku.ac.th/adm/%s">หน้าประกาศผล</a>""" % (reverse("result-set-index", args=["waitlist"]),)
+            result = u"""คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้จาก<a href="http://admission.eng.ku.ac.th/adm/%s">หน้าประกาศผล</a>
+สำหรับผู้ที่มีรายชื่ออยู่ในรายชื่อสำรอง คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าสอบสัมภาษณ์ในวันศุกร์ที่ 5 กุมภาพันธ์ 2553 ทางเว็บไซด์ <a href="http://admission.eng.ku.ac.th">โครงการรับตรง (http://admission.eng.ku.ac.th)</a>""" % (reverse("result-set-index", args=["waitlist"]),)
         else:
             result = u"""คุณผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์เข้าศึกษาต่อแบบรับตรง (ดูข้อมูลเพิ่มเติมได้ที่<a href="http://admission.eng.ku.ac.th/adm/%(url)s">หน้าประกาศผลการรับสมัคร</a>)
 

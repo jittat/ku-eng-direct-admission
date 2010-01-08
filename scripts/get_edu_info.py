@@ -25,7 +25,7 @@ def main():
                 app = nat_id_dict[line]
                 print >> f, ("%s %s : %s" % 
                              (line, app.full_name(), 
-                              app.educatาion.school_name))
+                              app.education.school_name))
             else:
                 print line, "not found"
         except:

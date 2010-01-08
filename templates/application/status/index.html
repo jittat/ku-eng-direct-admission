@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-  {% load adm_steps %}{% step_bar "ตรวจสอบสถานะใบสมัคร" %}
+  {% load adm_steps %}{% step_bar "ตรวจสอบสถานะการสมัคร" %}
 
   {% adm_submission_deadline_warning %}
 
@@ -17,6 +17,8 @@
       <span class="notice">{{ notice }}</span>
     </div>
   {% endif %}
+
+  {% comment %}
 
   <div class="right-box">
     <br/>
@@ -37,6 +39,8 @@
     </small>
   </div>
   
+  {% endcomment %}
+
   {% comment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
 
   {% if submission_deadline_passed %}
@@ -74,12 +78,17 @@
   <!--- ******** ADMISSION INFORMATION ******** --->
 
   <p>
-    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
-    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+    <div class="light-frame">
+      <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+      <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}
+    </div>
+    <div class="small-vert-sept"></div>
 
-    {% if show_admission_result %}
-      {% include "application/status/include/admission_result.html" %}
-    {% endif %}
+    <div class="light-frame">
+      {% if show_admission_result %}
+        {% include "application/status/include/admission_result.html" %}
+      {% endif %}
+    </div>
   </p>
 
   <!--- ******** DOCUMENT STATUS ******** --->
@@ -173,9 +182,13 @@
     คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a>
     เพื่อตรวจสอบรายละเอียด{% if not applicant.online_doc_submission %}และพิมพ์ใบนำส่งหลักฐาน{% endif %}
   </p>
+
+  {% comment %}
   <p>
     คุณสามารถแก้ข้อมูลการศึกษาและอันดับสาขาวิชาที่เลือกได้โดยกดเลือกจากเมนูด้านขวามือ
   </p>
+  {% endcomment %}
+
   <p>
     ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ {% load adm_info %}{% adm_admin_email_link %}
   </p>

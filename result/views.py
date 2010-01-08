@@ -18,14 +18,14 @@ RESULT_ID_INDEX = dict([(r[RESULT_ID_FIELD],i)
                         in zip(settings.RESULT_SETS, range(len(settings.RESULT_SETS)))])
 
 def index(request):
-    result_set_name = settings.RESULT_SETS[0][RESULT_NAME_FIELD]
+    result_set_name = settings.DEFAULT_RESULT_SET_NAME
     return HttpResponseRedirect(reverse('result-set-index', 
                                         args=[result_set_name]))
 
 @cache_page(60 * 5)
 def list(request, result_set_name=None, page_id=None):
     if result_set_name==None:
-        result_set_name = settings.RESULT_SETS[0][RESULT_NAME_FIELD]
+        result_set_name = settings.DEFAULT_RESULT_SET_NAME
 
     try:
         result_set_id = RESULT_ID_MAP[result_set_name]

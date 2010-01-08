@@ -321,3 +321,8 @@ table#applicant-result-list {
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 5px; }
+
+.light-frame {
+  padding: 5px;
+  border: 1px solid gray;
+  -moz-border-radius: 5px; }

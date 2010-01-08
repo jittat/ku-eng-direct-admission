@@ -155,6 +155,7 @@ RESULT_SETS = [
     (3,'waitlist', False, 'result/waitlist.html')
     ]
 
+DEFAULT_RESULT_SET_NAME = 'eligible'
 SHOW_ADMISSION_RESULTS = False
 
 try:
