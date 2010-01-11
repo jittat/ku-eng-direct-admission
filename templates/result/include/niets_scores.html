@@ -1,0 +1,4 @@
+{% for sround in niets_scores %}
+  <span style="border: 1px gray solid; padding: 2px; background: gray; color: white">{{ forloop.counter }}</span>{% for s in sround %}<span style="border: 1px gray solid; padding: 2px 5px 2px 5px">{{ s|floatformat:2 }}</span>{% endfor %}
+  &nbsp;
+{% endfor %}

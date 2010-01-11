@@ -101,3 +101,25 @@ class AdmissionResult(models.Model):
 
     additional_info = models.TextField(null=True)
 
+
+class NIETSScores(models.Model):
+    applicant = models.OneToOneField(Applicant,
+                                     related_name='NIETS_scores')
+    score_list = models.CharField(max_length=200)
+
+    def as_list(self):
+        if self.score_list!='':
+            return [float(s) for s in self.score_list.split(',')]
+        else:
+            return None
+
+    def as_list_by_exam_round(self):
+        if self.score_list=='':
+            return None
+        else:
+            l = self.as_list()
+            out = []
+            while len(l)!=0:
+                out.append(l[:3])
+                l = l[3:]
+            return out

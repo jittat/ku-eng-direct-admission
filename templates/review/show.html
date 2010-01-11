@@ -20,15 +20,38 @@
   {% if applicant.has_supplements %}
     {% include "review/include/supplements.html" %}
   {% endif %}
+
   <div class="light-frame">
-  {% if applicant.has_admission_result %}
-    {% with applicant.admission_result as admission_result %}
-      {% include "application/status/include/admission_result.html" %}
-    {% endwith %}
-  {% else %}
-    {% include "application/status/include/admission_result.html" %}
-  {% endif %}
-  </div><div class="small-vert-sept"></div>
+    <b>ผลการคัดเลือก:</b>
+    {% if applicant.has_admission_result %}
+      {% with applicant.admission_result as admission_result %}
+
+        {% if admission_result.is_admitted %}
+          {{ admission_result.admitted_major.number }}
+          {{ admission_result.admitted_major.name }}
+          | ข้อมูลการสัมภาษณ์: {{ admission_result.additional_info }}
+        {% else %}
+          {% if admission_result.is_waitlist %}
+            สำรอง
+          {% endif %}
+        {% endif %}
+      {% endwith %}
+    {% else %}
+      ไม่ผ่านการคัดเลือก
+    {% endif %}
+    <br/>
+    <b>ผลคะแนนจากสทศ.:</b>
+    {% if applicant.NIETS_scores %}
+      {% with applicant.NIETS_scores.as_list_by_exam_round as niets_scores %}
+        {% include "result/include/niets_scores.html" %}
+      {% endwith %}
+    {% else %}
+      ไม่มีข้อมูล
+    {% endif %}
+  </div>
+
+  <div class="small-vert-sept"></div>
+
   <form action="" method="post">
     <table class="applicants">
       <tr>
