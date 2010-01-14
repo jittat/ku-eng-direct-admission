@@ -82,13 +82,23 @@
       <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
       <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}
     </div>
-    <div class="small-vert-sept"></div>
-
     <div class="light-frame">
       {% if show_admission_result %}
         {% include "application/status/include/admission_result.html" %}
       {% endif %}
     </div>
+    {% if show_admission_result and admission_result.is_admitted %}
+      <div class="light-frame">
+	<center>
+	  คุณต้องยืนยันสาขาวิชาที่ต้องการพิจารณาคัดเลือก
+	</center>
+	<a href="{% url confirmation-pref %}" class="in-button">
+	  <div class="button-blue">
+	    เข้าสู่ระบบยืนยันอันดับการเลือกสาขา
+	  </div>
+	</a>
+      </div>
+    {% endif %}
   </p>
 
   <!--- ******** DOCUMENT STATUS ******** --->
