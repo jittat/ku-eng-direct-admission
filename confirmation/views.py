@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 from django import forms
 
 from commons.decorators import submitted_applicant_required
+from commons.models import Log
+
 from models import AdmissionMajorPreference
 
 def get_higher_ranked_majors(majors, current_major):
@@ -83,8 +85,6 @@ def pref(request):
 
     form_check_message = ''
 
-    print admission_pref
-
     if request.method=='POST':
         if 'submit' in request.POST:
             check_result, form_check_message = check_form_submission(request.POST, higher_majors)
@@ -95,12 +95,24 @@ def pref(request):
                     higher_majors, request.POST)
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
+
+                Log.create("confirmation - type: %d, val: %s" %
+                           (admission_pref.get_pref_type().ptype,
+                            str(admission_pref.is_accepted_list)),
+                           applicant_id=applicant.id,
+                           applicantion_id=applicant.submission_info.applicantion_id)
+
                 return HttpResponseRedirect(reverse('status-index'))
         else:
             if admission_pref:
                 request.session['notice'] = 'ยกเลิกการแก้ไขอันดับการเลือกสาขาวิชา'
             else:
                 request.session['notice'] = 'ยกเลิกการยืนยันอันดับการเลือกสาขาวิชา'
+
+            Log.create("confirmation: cancel",
+                       applicant_id=applicant.id,
+                       applicantion_id=applicant.submission_info.applicantion_id)
+
             return HttpResponseRedirect(reverse('status-index'))
     else:
         pass
