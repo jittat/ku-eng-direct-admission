@@ -96,8 +96,9 @@ def pref(request):
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
 
-                Log.create("confirmation - type: %d, val: %s" %
+                Log.create("confirmation - type: %d (%s), val: %s" %
                            (admission_pref.get_pref_type().ptype,
+                            request.POST['pref_type'],
                             str(admission_pref.is_accepted_list)),
                            applicant_id=applicant.id,
                            applicantion_id=applicant.submission_info.applicantion_id)
