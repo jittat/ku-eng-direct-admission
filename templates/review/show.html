@@ -16,7 +16,12 @@
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
   {% include "review/include/doc_received_status.html" %} | 
-  <a id="doc-major_pref-link" href="#">[ดูอันดับการเลือก]</a><br/>
+  [<a id="doc-major_pref-link" href="#">ดูอันดับการเลือก</a>]
+  {% if applicant.admission_result and applicant.admission_result.is_admitted %}
+    | [<a href="{% url confirmation-info applicant.id %}" target="_blank">ข้อมูลสัมภาษณ์</a>]
+  {% endif %}
+  <br/>
+
   {% if applicant.has_supplements %}
     {% include "review/include/supplements.html" %}
   {% endif %}

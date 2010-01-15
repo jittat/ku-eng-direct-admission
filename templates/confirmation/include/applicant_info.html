@@ -1,0 +1,19 @@
+<div class="light-frame">
+<b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+  <b>สาขาที่ได้รับการคัดเลือกให้เข้าสัมภาษณ์</b>: 
+  {{ admission_result.admitted_major.number }}
+  {{ admission_result.admitted_major.name }}
+</div>
+<div class="light-frame">
+  <b>ข้อมูลการศึกษา</b><br/>
+  <b>โรงเรียน:</b> {{ applicant.education.school_name }}, {{ applicant.education.school_province }}  | <b>เกรดเฉลี่ย:</b> {{ applicant.education.gpax }}<br/>
+  <b>ผลคะแนนจากสทศ. (GAT | PAT1 | PAT3):</b>
+  {% if applicant.NIETS_scores %}
+    {% with applicant.NIETS_scores.as_list_by_exam_round as niets_scores %}
+      {% include "result/include/niets_scores.html" %}
+    {% endwith %}
+  {% else %}
+    ไม่มีข้อมูล
+  {% endif %}
+  <br/>
+</div>

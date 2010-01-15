@@ -43,7 +43,7 @@
 	    <input id="id_pref_type_move_up_inclusive" type="radio" name="pref_type" value="move_up_inclusive" {% if pref_type.is_move_up_inclusive %}checked="checked"{% endif %}/>
 	  </td>
 	  <td>
-	    เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้าไม่รับการพิจารณาให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ ยังคงยืนยันขอใช้สิทธิ์เข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} ที่ได้รับการพิจารณาคัดเลือกไว้แล้ว
+	    เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้าไม่ได้รับการพิจารณาให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ ยังคงยืนยันขอใช้สิทธิ์เข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} ที่ได้รับการพิจารณาคัดเลือกไว้แล้ว
 	</td></tr>
 	<tr><td>
 	  <input id="id_pref_type_move_up_strict" type="radio" name="pref_type" value="move_up_strict" {% if pref_type.is_move_up_strict %}checked="checked"{% endif %}/>

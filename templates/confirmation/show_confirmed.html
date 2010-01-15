@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load adm_info %}
+
+{% block title %}ยืนยันลำดับการเลือกสาขา{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+{% endblock %}
+
+{% block body %}
+  <h1>โครงการรับตรง | ผู้สมัครยืนยันการเลื่อนอันดับสาขาแล้ว</h1>
+
+  {% include "confirmation/include/applicant_info.html" %}
+
+  <div class="light-frame">
+    <b>ข้อมูลอันดับสาขาวิชา</b> สาขาที่ได้รับการคัดเลือก: {{ admission_result.admitted_major.name }}<br/>
+    {% if not higher_majors %}
+    ผู้สมัครได้รับคัดเลือกให้เข้าสัมภาษณ์ในสาขาที่คุณเลือกไว้ในอันดับที่สูงที่สุด ({{ admission_result.admitted_major.name }}) ดังนั้นจะไม่สามารถขอเลื่อนสาขาวิชาได้
+    {% endif %}
+    <p>
+      <b>ผู้สมัครเลือก:</b>
+      {% if pref_type.is_no_move %}
+        (1) เข้าศึกษาต่อในสาขา{{ admission_result.admitted_major.name }} {% if higher_majors %}โดย<b>ไม่ต้องการเข้ารับการพิจารณาเลื่อนอันดับไปในสาขาอื่น</b>{% endif %}
+      {% endif %}
+      {% if pref_type.is_move_up_inclusive %}
+        (2) เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้าไม่ได้รับการพิจารณาให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ ยังคงยืนยันขอใช้สิทธิ์เข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} ที่ได้รับการพิจารณาคัดเลือกไว้แล้ว
+      {% endif %}
+      {% if pref_type.is_move_up_strict %}
+        (3) เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น  แต่ถ้า<b>ไม่ได้รับการพิจารณา</b>ให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ  ขอ<b>สละสิทธิ์</b>การเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์จากโครงการรับตรงนี้<br/>
+      {% endif %}
+      {% if pref_type.is_withdrawn %}
+        (4) <b>สละสิทธิ์</b>การเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์จากโครงการรับตรงนี้
+      {% endif %}
+    </p>
+      
+    สาขาอื่นที่ต้องการให้พิจารณาเลื่อนอันดับ โดยเลือกได้หลายอันดับ:<br/>
+    {% for m, is_accepted in majors_with_is_accepted %}
+      <input type="checkbox" name="major-accepted-{{ forloop.counter }}" {% if is_accepted %}checked="checked"{% endif %}/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
+    {% endfor %}
+  </div>
+{% endblock %}

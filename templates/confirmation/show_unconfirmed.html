@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load adm_info %}
+
+{% block title %}ยังไม่ได้ยืนยันลำดับการเลือกสาขา{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+{% endblock %}
+
+{% block body %}
+  <h1>โครงการรับตรง | ข้อมูลผู้สมัคร (ยังไม่ยืนยันอันดับ)</h1>
+
+  {% include "confirmation/include/applicant_info.html" %}
+
+  <div class="light-frame">
+    <b>ข้อมูลอันดับสาขาวิชา</b> สาขาที่ได้รับการคัดเลือก: {{ admission_result.admitted_major.name }}<br/>
+    {% if not higher_majors %}
+    <p>ผู้สมัครได้รับคัดเลือกให้เข้าสัมภาษณ์ในสาขาที่เลือกไว้ในอันดับที่สูงที่สุด ({{ admission_result.admitted_major.name }}) ดังนั้นจะไม่สามารถขอเลื่อนสาขาวิชาได้</p>
+    {% endif %}
+    <p>
+      รายการสาขาวิชาที่เลือกไว้ในอันดับที่สูงกว่า: <br/>
+      {% for m in higher_majors %}
+        <input type="checkbox"/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
+      {% endfor %}
+    </p>
+  </div>
+{% endblock %}

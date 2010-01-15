@@ -2,11 +2,12 @@
 from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
-
-from django import forms
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 from commons.decorators import submitted_applicant_required
 from commons.models import Log
+from application.models import Applicant
 
 from models import AdmissionMajorPreference
 
@@ -134,3 +135,47 @@ def pref(request):
                                 'pref_type': pref_type,
                                 'form_check_message': form_check_message })
 
+def render_confirmed_applicant(applicant):
+    admission_result = applicant.admission_result
+    preferred_majors = applicant.preference.get_major_list()
+    higher_majors = get_higher_ranked_majors(preferred_majors, 
+                                             admission_result.admitted_major)
+    admission_pref = applicant.admission_major_preference
+    pref_type = admission_pref.get_pref_type()
+    accepted_major_ids = [m.id for m in admission_pref.get_accepted_majors()]
+    is_accepted_list = [(m.id in accepted_major_ids)
+                        for m in higher_majors]
+     
+    return render_to_response('confirmation/show_confirmed.html',
+                              { 'applicant': applicant,
+                                'admission_result': admission_result,
+                                'higher_majors': higher_majors,
+                                'majors_with_is_accepted':
+                                    zip(higher_majors, is_accepted_list),
+                                'admission_pref': admission_pref,
+                                'pref_type': pref_type })
+
+
+def render_unconfirmed_applicant(applicant):
+    admission_result = applicant.admission_result
+    preferred_majors = applicant.preference.get_major_list()
+    higher_majors = get_higher_ranked_majors(preferred_majors, 
+                                             admission_result.admitted_major)
+     
+    return render_to_response('confirmation/show_unconfirmed.html',
+                              { 'applicant': applicant,
+                                'admission_result': admission_result,
+                                'higher_majors': higher_majors })
+
+@login_required
+def interview_info(request, applicant_id):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    try:
+        pref = applicant.admission_major_preference
+    except:
+        pref = None
+
+    if pref:
+        return render_confirmed_applicant(applicant)
+    else:
+        return render_unconfirmed_applicant(applicant)
