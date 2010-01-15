@@ -17,6 +17,7 @@ def get_higher_ranked_majors(majors, current_major):
             result.append(m)
         else:
             return result
+        
 
 def check_form_submission(post_data, higher_majors):
     if (('pref_type' not in post_data) or
@@ -81,7 +82,11 @@ def pref(request):
                             for m in higher_majors]
     else:
         pref_type = AdmissionMajorPreference.PrefType.new_empty()
-        is_accepted_list = [False] * len(higher_majors)
+        try:
+            is_accepted_list = [False] * len(higher_majors)
+        except:
+            Log.create("Error: empty higher majors: %d" % (applicant.id,))
+            raise
 
     form_check_message = ''
 
@@ -96,8 +101,9 @@ def pref(request):
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
 
-                Log.create("confirmation - type: %d (%s), val: %s" %
-                           (admission_pref.get_pref_type().ptype,
+                Log.create("confirmation - from: %s,type: %d (%s), val: %s" %
+                           (request.META['REMOTE_ADDR'],
+                            admission_pref.get_pref_type().ptype,
                             request.POST['pref_type'],
                             str(admission_pref.is_accepted_list)),
                            applicant_id=applicant.id,
