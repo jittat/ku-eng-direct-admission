@@ -14,8 +14,40 @@ def validate_phone_number(phone_number):
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
+    email = forms.EmailField(required=False)
+    application_id = forms.CharField(required=False)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if 'email' not in cleaned_data:
+            return cleaned_data
+        email = cleaned_data.get('email')
+        application_id = cleaned_data.get('application_id')
+
+        if email!='' and application_id=='':
+            return cleaned_data
+
+        if email!='' and application_id!='':  # use two identity
+            del cleaned_data['email']
+            del cleaned_data['application_id']
+            self._errors['application_id'] = ErrorList(
+                ['ไม่สามารถป้อนทั้งอีเมล์และหมายเลขพร้อมกัน'])
+            return cleaned_data
+
+        import re
+        if not re.match(r'53[123]\d{5}', application_id):
+            self._errors['application_id'] = ErrorList(
+                ['หมายเลขประจำตัวไม่ถูกต้อง'])
+            del cleaned_data['application_id']
+
+        return cleaned_data
+
+    def uses_email(self):
+        cleaned_data = self.cleaned_data
+        if 'email' not in cleaned_data:
+            return False
+        return self.cleaned_data['email'] != ''
 
 
 class ForgetPasswordForm(forms.Form):

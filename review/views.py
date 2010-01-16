@@ -207,6 +207,25 @@ def toggle_received_status(request, applicant_id):
     return HttpResponseForbidden()
 
 
+@login_required
+def generate_password(request, applicant_id):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    if not applicant.can_password_be_generated():
+        return HttpResponseForbidden()
+
+    new_password = applicant.random_password()
+    applicant.save()
+    submission_info = applicant.submission_info
+
+    log = Log.create("Generated password: %s" % (applicant_id,),
+                     request.user.username,
+                     applicant_id=int(applicant_id),
+                     applicantion_id=submission_info.applicantion_id)
+    
+    return render_to_response("review/password_generated.html",
+                              { 'applicant': applicant,
+                                'password': new_password })
+
 def get_applicant_doc_name_list(applicant):
     names = []
     names.append('picture')
@@ -377,11 +396,13 @@ def review_document(request, applicant_id, return_to_manual=False):
     else:
         appdocs = None
         
+    can_request_password = applicant.can_password_be_generated()
     return render_to_response("review/show.html",
                               { 'applicant': applicant,
                                 'appdocs': appdocs,
                                 'submission_info': submission_info,
-                                'review_data': data })
+                                'review_data': data,
+                                'can_request_password': can_request_password })
 
 
 APPLICANTS_PER_PAGE = 200

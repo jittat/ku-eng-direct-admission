@@ -215,6 +215,10 @@ class Applicant(models.Model):
                 (not self.submission_info.doc_reviewed_complete) and
                 (not supplement_submission_deadline_passed()))
 
+    def can_password_be_generated(self):
+        return (self.is_submitted and 
+                self.doc_submission_method == Applicant.SUBMITTED_OFFLINE)
+
 
     ######################
     # methods for authentication

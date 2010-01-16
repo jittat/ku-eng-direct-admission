@@ -12,6 +12,7 @@ from application.views import redirect_to_first_form
 from application.views import redirect_to_applicant_first_page
 
 from application.models import Applicant
+from application.models import SubmissionInfo
 from application.models import Registration
 from application.forms import LoginForm, ForgetPasswordForm
 from application.forms import RegistrationForm, ActivationNameForm
@@ -27,13 +28,22 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
             passwd = form.cleaned_data['password']
 
-            try:
-                applicant = Applicant.objects.filter(email=email).all()[0]
-            except Exception:
-                applicant = None
+            if form.uses_email():
+                email = form.cleaned_data['email']
+
+                try:
+                    applicant = Applicant.objects.filter(email=email).all()[0]
+                except Exception:
+                    applicant = None
+            else:
+                application_id = form.cleaned_data['application_id']
+                submission_info = SubmissionInfo.find_by_ticket_number(application_id)
+                if submission_info!=None:
+                    applicant = submission_info.applicant
+                else:
+                    applicant = None
 
             if applicant!=None:
                 if applicant.activation_required:

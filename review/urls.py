@@ -12,6 +12,10 @@ urlpatterns = patterns(
     url(r'^received/toggle/(\d+)/$', 'toggle_received_status', 
         name='review-toggle-received-status'),
 
+    url(r'^gen-password/(\d+)/$', 'generate_password', 
+        name='review-gen-password'),
+
+
     url(r'^list/complete/$', 'list_applicant',
         { 'reviewed': True }, name='review-list-complete'),
     url(r'^list/wait/$', 'list_applicant',
@@ -46,4 +50,5 @@ urlpatterns = patterns(
     url(r'^img/(\d+)/(\w*)', 'doc_img_view', name='review-doc-img-view'),
     url(r'^supplement/img/(\w*)', 'supplement_img_view', 
         name='review-supplement-img-view'),
+
 )

@@ -48,7 +48,39 @@
 	{% endif %}
 	<form action="{% url apply-login %}" method="post">
 	  <table class="header-left">
-	    {{ form.as_table }}
+	    <tr>
+	      <th width="45%">
+		<label for="id_email">อีเมล์:</label>
+	      </th>
+	      <td width="55%">
+		{{ form.email.errors }}
+		{{ form.email }}
+	      </td>
+	    </tr>
+	    <tr>
+	      <td></td>
+	      <td><small>หรือ (เลือกอย่างใดอย่างหนึ่ง)</small></td>
+	    </tr>
+	    <tr>
+	      <td style="text-align:right;">
+		<b><label for="id_application_id">หมายเลขผู้สมัคร:</label></b><br/>
+		<small>เช่น 53007007</small>
+	      </td>
+	      <td>
+		{{ form.application_id.errors }}
+		{{ form.application_id }}
+	      </td>
+	    </tr>
+	    <tr><td><br/></td><td></td></tr>
+	    <tr>
+	      <th>
+		<label for="id_password">รหัสผ่าน:</label>
+	      </th>
+	      <td>
+		{{ form.password.errors }}
+		{{ form.password }}
+	      </td>
+	    </tr>
 	    <tr>
 	      <td></td>
 	      <td>
