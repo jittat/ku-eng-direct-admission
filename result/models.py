@@ -102,6 +102,33 @@ class AdmissionResult(models.Model):
     additional_info = models.TextField(null=True)
 
 
+class ScoreStat:
+
+    SUPER_ZMAX = 8
+
+    def __init__(self, mean, sd, max_score):
+        self.mean = mean
+        self.sd = sd
+        self.max_score = max_score
+
+    def cal_score(self, x):
+        z = (x - self.mean) / self.sd
+        return 0.5 + 0.5 * z / ScoreStat.SUPER_ZMAX
+
+SCORE_STATS = [
+    { 'gat': ScoreStat(78.09, 44.32, 290),
+      'pat1': ScoreStat(88.33, 30.63, 300),
+      'pat3': ScoreStat(108.66, 26.17, 240) },
+    { 'gat': ScoreStat(93.10, 51.13, 287.5),
+      'pat1': ScoreStat(87.11, 31.14, 300),
+      'pat3': ScoreStat(97.86, 28.56, 260) },
+    { 'gat': ScoreStat(106.78, 55.59, 292.5),
+      'pat1': ScoreStat(63.56, 25.90, 270),
+      'pat3': ScoreStat(86.73, 24.64, 237) }
+    ]
+EXAM_COUNT = len(SCORE_STATS)
+
+
 class NIETSScores(models.Model):
     applicant = models.OneToOneField(Applicant,
                                      related_name='NIETS_scores')
@@ -123,3 +150,48 @@ class NIETSScores(models.Model):
                 out.append(l[:3])
                 l = l[3:]
             return out
+
+    
+    @staticmethod
+    def extract_gatpat_scores(score_list):
+        scores = {'gat': [0] * EXAM_COUNT,
+                  'pat1': [0] * EXAM_COUNT,
+                  'pat3': [0] * EXAM_COUNT}
+
+        i = 0
+        for e in range(EXAM_COUNT):
+            for exam in ['gat','pat1','pat3']:
+                scores[exam][e] = score_list[i]
+                i += 1
+
+        return scores
+
+    def get_best_normalized_score(self, test_name):
+        all_scores = self.as_list()
+        scores = NIETSScores.extract_gatpat_scores(all_scores)
+        best_score = 0
+        raw_score = 0
+        for i in range(EXAM_COUNT):
+            x = scores[test_name][i]
+            score = SCORE_STATS[i][test_name].cal_score(x)
+            if score > best_score:
+                best_score = score
+                raw_score = x
+        return best_score, raw_score
+
+    def get_score(self):
+        gat, gs = self.get_best_normalized_score('gat')
+        pat1, p1s = self.get_best_normalized_score('pat1')
+        pat3, p3s = self.get_best_normalized_score('pat3')
+        score = ((self.applicant.education.gpax/4.0*0.1) + 
+                 gat * 0.2 +
+                 pat1 * 0.2 + 
+                 pat3 * 0.5)
+        return 10000.0 * score
+
+    def get_best_test_scores(self):
+        gat, gs = self.get_best_normalized_score('gat')
+        pat1, p1s = self.get_best_normalized_score('pat1')
+        pat3, p3s = self.get_best_normalized_score('pat3')
+        return [gs, p1s, p3s]
+

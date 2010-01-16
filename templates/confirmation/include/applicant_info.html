@@ -7,13 +7,12 @@
 <div class="light-frame">
   <b>ข้อมูลการศึกษา</b><br/>
   <b>โรงเรียน:</b> {{ applicant.education.school_name }}, {{ applicant.education.school_province }}  | <b>เกรดเฉลี่ย:</b> {{ applicant.education.gpax }}<br/>
-  <b>ผลคะแนนจากสทศ. (GAT | PAT1 | PAT3):</b>
+  <b>ผลคะแนนจากสทศ:</b>
   {% if applicant.NIETS_scores %}
-    {% with applicant.NIETS_scores.as_list_by_exam_round as niets_scores %}
-      {% include "result/include/niets_scores.html" %}
-    {% endwith %}
+    GAT: {{ best_scores.0 }} | PAT1: {{ best_scores.1 }} | PAT3: {{ best_scores.2 }} | คะแนนรวม {{ applicant.NIETS_scores.get_score }}
   {% else %}
     ไม่มีข้อมูล
   {% endif %}
   <br/>
 </div>
+

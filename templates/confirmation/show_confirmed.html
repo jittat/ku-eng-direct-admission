@@ -39,4 +39,6 @@
       <input type="checkbox" name="major-accepted-{{ forloop.counter }}" {% if is_accepted %}checked="checked"{% endif %}/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
     {% endfor %}
   </div>
+
+  {% include "confirmation/include/interview_box.html" %}
 {% endblock %}

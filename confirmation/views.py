@@ -146,8 +146,19 @@ def render_confirmed_applicant(applicant):
     is_accepted_list = [(m.id in accepted_major_ids)
                         for m in higher_majors]
      
+    try:
+        niets_scores = applicant.NIETS_scores
+    except:
+        niets_scores = None
+
+    if niets_scores:
+        best_scores = niets_scores.get_best_test_scores()
+    else:
+        best_scores = None
+
     return render_to_response('confirmation/show_confirmed.html',
                               { 'applicant': applicant,
+                                'best_scores': best_scores,
                                 'admission_result': admission_result,
                                 'higher_majors': higher_majors,
                                 'majors_with_is_accepted':
@@ -162,8 +173,19 @@ def render_unconfirmed_applicant(applicant):
     higher_majors = get_higher_ranked_majors(preferred_majors, 
                                              admission_result.admitted_major)
      
+    try:
+        niets_scores = applicant.NIETS_scores
+    except:
+        niets_scores = None
+
+    if niets_scores:
+        best_scores = niets_scores.get_best_test_scores()
+    else:
+        best_scores = None
+
     return render_to_response('confirmation/show_unconfirmed.html',
                               { 'applicant': applicant,
+                                'best_scores': best_scores,
                                 'admission_result': admission_result,
                                 'higher_majors': higher_majors })
 
