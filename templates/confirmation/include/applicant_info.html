@@ -18,7 +18,7 @@
     <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
       PAT3: {{ best_scores.2 }}
     </span>
-    &nbsp; | คะแนนรวม {{ applicant.NIETS_scores.get_score }}
+    &nbsp; | คะแนนรวม {{ applicant.NIETS_scores.get_score|floatformat:3 }}
   {% else %}
     ไม่มีข้อมูล
   {% endif %}
