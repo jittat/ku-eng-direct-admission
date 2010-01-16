@@ -1,15 +1,25 @@
 <div class="light-frame">
-<b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+  <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
   <b>สาขาที่ได้รับการคัดเลือกให้เข้าสัมภาษณ์</b>: 
   {{ admission_result.admitted_major.number }}
-  {{ admission_result.admitted_major.name }}
+  {{ admission_result.admitted_major.name }}<br/>
+</div>
+<div class="light-frame">
+  <b>ที่อยู่:</b>
+  {% with applicant.address.home_address as address %}
+  {{ address.number }} {{ address.village_name }}
+  {% if address.village_number %}หมู่ {{ address.village_number }}{% endif %}
+  {% if address.road %}ถ. {{ address.road }}{% endif %} {{ address.district }}    
+  {{ address.city }}
+  {{ address.province }} {{ address.postal_code }}
+  {% endwith %}
 </div>
 <div class="light-frame">
   <b>ข้อมูลการศึกษา</b><br/>
   <b>โรงเรียน:</b> {{ applicant.education.school_name }}, {{ applicant.education.school_province }}  | <b>เกรดเฉลี่ย:</b> {{ applicant.education.gpax }}<br/>
   <b>ผลคะแนนจากสทศ:</b>
   {% if applicant.NIETS_scores %}
-    <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
+    คะแนนที่ดีที่สุด: <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
       GAT: {{ best_scores.0 }}
     </span>
     <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
@@ -18,7 +28,11 @@
     <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
       PAT3: {{ best_scores.2 }}
     </span>
-    &nbsp; | คะแนนรวม {{ applicant.NIETS_scores.get_score|floatformat:3 }}
+    &nbsp; | คะแนนรวม {{ applicant.NIETS_scores.get_score|floatformat:3 }}<br/>
+    คะแนนทุกครั้ง:
+    {% with applicant.NIETS_scores.as_list_by_exam_round as niets_scores %}
+      {% include "result/include/niets_scores.html" %}
+    {% endwith %}
   {% else %}
     ไม่มีข้อมูล
   {% endif %}
