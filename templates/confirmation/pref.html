@@ -64,7 +64,7 @@
     </p>
     <div id="id_major_pref_form" style="background: #e0ffe0; padding: 5px; border: 1px solid green; margin-bottom: 5px;{% if pref_type.is_move_up_strict or pref_type.is_move_up_inclusive %}{% else %}display:none{% endif %}" >
       <p>
-	โปรดเลือกสาขาที่คุณต้องการให้พิจารณาเลื่อนอันดับ โดยเลือกได้หลายอันดับ:<br/>
+	โปรดเลือกสาขาที่คุณต้องการให้พิจารณาเลื่อนอันดับด้านล่าง โดยทำเครื่องหมายที่กล่องเลือกหน้าชื่อสาขา ผู้สมัครสามารถเลือกได้หลายอันดับ:<br/>
 	{% for m, is_accepted in majors_with_is_accepted %}
           <input type="checkbox" name="major-accepted-{{ forloop.counter }}" {% if is_accepted %}checked="checked"{% endif %}/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
 	{% endfor %}
