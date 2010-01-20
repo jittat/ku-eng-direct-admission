@@ -302,6 +302,28 @@ table#applicant-result-list {
   table#applicant-result-list td.center {
     text-align: center; }
 
+table#niets-scores {
+  font-size: 90%; }
+  table#niets-scores th {
+    background: #000070;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px; }
+  table#niets-scores tr.odd {
+    background: #e0e0e0; }
+  table#niets-scores tr.even {
+    background: #d0d0d0; }
+  table#niets-scores td {
+    padding-left: 10px;
+    padding-right: 10px; }
+  table#niets-scores th {
+    background: black; }
+  table#niets-scores td {
+    border-bottom: 1px solid black;
+    text-align: right; }
+  table#niets-scores tr.best {
+    background: #e0e0e0; }
+
 #supplement-form {
   margin-top: 10px;
   background: #e0ffe0;

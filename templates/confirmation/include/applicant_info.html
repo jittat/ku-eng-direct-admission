@@ -15,26 +15,37 @@
   {% endwith %}
 </div>
 <div class="light-frame">
-  <b>ข้อมูลการศึกษา</b><br/>
   <b>โรงเรียน:</b> {{ applicant.education.school_name }}, {{ applicant.education.school_province }}  | <b>เกรดเฉลี่ย:</b> {{ applicant.education.gpax }}<br/>
-  <b>ผลคะแนนจากสทศ:</b>
   {% if applicant.NIETS_scores %}
-    คะแนนที่ดีที่สุด: <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
-      GAT: {{ best_scores.0 }}
-    </span>
-    <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
-      PAT1: {{ best_scores.1 }}
-    </span>
-    <span style="border: 1px gray solid; padding: 2px 5px 2px 5px">
-      PAT3: {{ best_scores.2 }}
-    </span>
-    &nbsp; | คะแนนรวม {{ applicant.NIETS_scores.get_score|floatformat:3 }}<br/>
-    คะแนนทุกครั้ง:
+    <b>คะแนนรวม:</b> {{ applicant.NIETS_scores.get_score|floatformat:3 }}<br/>
     {% with applicant.NIETS_scores.as_list_by_exam_round as niets_scores %}
-      {% include "result/include/niets_scores.html" %}
+      <table id="niets-scores">
+	<tr>
+	  <th></th>
+	  <th>GAT</th><th>PAT1</th><th>PAT3</th>
+	</tr>
+	{% for sround in niets_scores %}
+          <tr>
+	    <th>ครั้งที่ {{ forloop.counter }}</th>
+	    {% for s in sround %}
+	      <td>{{ s|floatformat:2 }}</td>
+	    {% endfor %}
+	  </tr>
+        {% endfor %}
+	<tr class="best">
+	  <th>ดีที่สุด</th>
+	  {% for s in best_scores %}
+	    <td><b>{{ s|floatformat:2 }}</b></td>
+          {% endfor %}
+	</tr>
+      </table>
     {% endwith %}
   {% else %}
-    ไม่มีข้อมูล
+    {% if not applicant.education.uses_gat_score %}
+      <b>คะแนน A-NET: </b>{{ applicant.education.anet|floatformat:2 }}
+    {% else %}
+      ไม่มีข้อมูลคะแนนจากสทศ
+    {% endif %}
   {% endif %}
   <br/>
 </div>

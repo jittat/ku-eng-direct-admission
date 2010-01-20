@@ -135,27 +135,27 @@ def pref(request):
                                 'pref_type': pref_type,
                                 'form_check_message': form_check_message })
 
+def get_best_scores(applicant):
+    try:
+        niets_scores = applicant.NIETS_scores
+    except:
+        return None
+
+    return niets_scores.get_best_test_scores()
+
 def render_confirmed_applicant(applicant):
     admission_result = applicant.admission_result
     preferred_majors = applicant.preference.get_major_list()
     higher_majors = get_higher_ranked_majors(preferred_majors, 
                                              admission_result.admitted_major)
+    best_scores = get_best_scores(applicant)
+
     admission_pref = applicant.admission_major_preference
     pref_type = admission_pref.get_pref_type()
     accepted_major_ids = [m.id for m in admission_pref.get_accepted_majors()]
     is_accepted_list = [(m.id in accepted_major_ids)
                         for m in higher_majors]
      
-    try:
-        niets_scores = applicant.NIETS_scores
-    except:
-        niets_scores = None
-
-    if niets_scores:
-        best_scores = niets_scores.get_best_test_scores()
-    else:
-        best_scores = None
-
     return render_to_response('confirmation/show_confirmed.html',
                               { 'applicant': applicant,
                                 'best_scores': best_scores,
@@ -172,17 +172,7 @@ def render_unconfirmed_applicant(applicant):
     preferred_majors = applicant.preference.get_major_list()
     higher_majors = get_higher_ranked_majors(preferred_majors, 
                                              admission_result.admitted_major)
-     
-    try:
-        niets_scores = applicant.NIETS_scores
-    except:
-        niets_scores = None
-
-    if niets_scores:
-        best_scores = niets_scores.get_best_test_scores()
-    else:
-        best_scores = None
-
+    best_scores = get_best_scores(applicant)
     return render_to_response('confirmation/show_unconfirmed.html',
                               { 'applicant': applicant,
                                 'best_scores': best_scores,
