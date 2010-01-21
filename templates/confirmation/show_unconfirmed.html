@@ -19,9 +19,9 @@
     <p>ผู้สมัครได้รับคัดเลือกให้เข้าสัมภาษณ์ในสาขาที่เลือกไว้ในอันดับที่สูงที่สุด ({{ admission_result.admitted_major.name }}) ดังนั้นจะไม่สามารถขอเลื่อนสาขาวิชาได้</p>
     {% endif %}
     <p>
-      รายการสาขาวิชาที่เลือกไว้ในอันดับที่สูงกว่า: <br/>
+      รายการสาขาวิชาที่เลือกไว้ในอันดับที่สูงกว่า: {% if not higher_majors %}ไม่มี{% endif %}<br/>
       {% for m in higher_majors %}
-        <input type="checkbox"/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
+        <input type="checkbox" readonly="readonly"/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
       {% endfor %}
     </p>
   </div>

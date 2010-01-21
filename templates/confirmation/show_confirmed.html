@@ -34,7 +34,7 @@
       {% endif %}
     </p>
       
-    สาขาอื่นที่ต้องการให้พิจารณาเลื่อนอันดับ โดยเลือกได้หลายอันดับ:<br/>
+    สาขาอื่นที่ต้องการให้พิจารณาเลื่อนอันดับ โดยเลือกได้หลายอันดับ: {% if not majors_with_is_accepted %}ไม่มี{% endif %}<br/>
     {% for m, is_accepted in majors_with_is_accepted %}
       <input type="checkbox" name="major-accepted-{{ forloop.counter }}" {% if is_accepted %}checked="checked"{% endif %}/> อันดับที่ {{ forloop.counter }} - {{ m.name }}<br/>
     {% endfor %}
