@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns(
     'confirmation.views',
 
-    url(r'^/$', 'index', name='confirmation-index'),
+    url(r'^$', 'index', name='confirmation-index'),
 
     url(r'^submit/$', 'confirm', 
         {'preview': True}, name='confirmation-submit'),
