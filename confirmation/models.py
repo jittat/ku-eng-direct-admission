@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from application.fields import IntegerListField
 from application.models import Applicant
@@ -97,3 +98,11 @@ class AdmissionMajorPreference(models.Model):
             return AdmissionMajorPreference.PrefType.MOVE_UP_INCLUSIVE
         else:
             return AdmissionMajorPreference.PrefType.MOVE_UP_STRICT
+
+class AdmissionConfirmation(models.Model):
+    applicant = models.OneToOneField(Applicant, related_name='admission_confirmation')
+    confirmed_at = models.DateTimeField(auto_now_add=True)
+    confirming_user = models.ForeignKey(User)
+
+    class Meta:
+        ordering = ['-confirmed_at']

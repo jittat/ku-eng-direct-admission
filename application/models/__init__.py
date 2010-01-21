@@ -216,8 +216,7 @@ class Applicant(models.Model):
                 (not supplement_submission_deadline_passed()))
 
     def can_password_be_generated(self):
-        return (self.is_submitted and 
-                self.doc_submission_method == Applicant.SUBMITTED_OFFLINE)
+        return self.is_submitted
 
 
     ######################

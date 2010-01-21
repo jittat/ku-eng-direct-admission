@@ -1,0 +1,22 @@
+{% extends "commons/regis-base.html" %}
+
+{% block extra-title-bar %}หน่วยทะเบียน | ระบบยืนยันสิทธิ์ {% endblock %}
+
+{% block regis-body %}
+
+<h2>กรุณาตรวจสอบรายชื่อก่อนยืนยัน</h2>
+
+<div class="light-frame">
+  <center>
+    <b>หมายเลขประจำตัว</b> {{ applicant.ticket_number }}<br/>
+    <b>ชื่อผู้สมัคร</b> {{ applicant.full_name }}<br/>
+    <b>สาขาที่ได้รับเลือกเข้าสัมภาษณ์</b> {{ applicant.admission_result.admitted_major }}
+    <form action="{% url confirmation-confirm %}" method="post">
+      <input type="hidden" name="application_id" value="{{ applicant.ticket_number }}"/>
+      <input type="submit" name="confirm" value="ยืนยันสิทธิ์"/>
+      <input type="submit" name="cancel" value="เปลี่ยนใจไม่ทำการยืนยันสิทธิ์"/>
+    </form>
+  </center>
+</div>
+
+{% endblock %}

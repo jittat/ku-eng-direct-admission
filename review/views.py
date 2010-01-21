@@ -210,7 +210,7 @@ def toggle_received_status(request, applicant_id):
 @login_required
 def generate_password(request, applicant_id):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
-    if not applicant.can_password_be_generated():
+    if not (applicant.can_password_be_generated() and request.user.is_staff):
         return HttpResponseForbidden()
 
     new_password = applicant.random_password()
@@ -311,6 +311,11 @@ def review_document(request, applicant_id, return_to_manual=False):
         return HttpResponseRedirect(reverse('review-ticket'))
 
     if (request.method=='POST') and ('submit' in request.POST):
+
+        if not request.user.has_perm('review.change_reviewfieldresult'):
+            request.session['notice'] = 'คุณไม่สามารถแก้ข้อมูลได้ในขณะนี้'
+            return HttpResponseRedirect(reverse('review-ticket'))
+
         # auto set received flag
         submission_info.set_doc_received_at_now_if_not()
 
@@ -396,7 +401,7 @@ def review_document(request, applicant_id, return_to_manual=False):
     else:
         appdocs = None
         
-    can_request_password = applicant.can_password_be_generated()
+    can_request_password = request.user.is_staff and applicant.can_password_be_generated()
     return render_to_response("review/show.html",
                               { 'applicant': applicant,
                                 'appdocs': appdocs,

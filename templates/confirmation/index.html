@@ -1,0 +1,39 @@
+{% extends "commons/regis-base.html" %}
+
+{% block extra-title-bar %}หน่วยทะเบียน | ระบบยืนยันสิทธิ์ {% endblock %}
+
+{% block regis-body %}
+
+<form class="search-form" action="{% url confirmation-submit %}" method="post">
+  <p>
+    กรุณาป้อนหมายเลขประจำตัวผู้สมัครเพื่อยืนยันสิทธิ์:
+    <input type="text" name="application_id"/>
+    <input type="submit" name="confirm" value="ยืนยันสิทธิ์"/>
+  </p>
+</form>
+
+{% if notice %}
+  <div class="notice-bar">
+    <span class="notice">{{ notice }}</span>
+  </div>
+{% endif %}
+
+<p>
+  จำนวนผู้ยืนยันสิทธิ์แล้วทั้งหมด: {{ stat.total }} คน
+</p>
+
+<h3>ผู้ยืนยันสิทธิ์ล่าสุด {{ confirmations.count }} คนแรก</h3>
+<table class=applicants>
+  <tr>
+    <th>หมายเลขผู้สมัคร</th>
+    <th>ชื่อผู้สมัคร</th>
+    <th>ยืนยันเมื่อ</th>
+  {% for confirmation in confirmations %}
+    <tr class="{% cycle "odd" "even" %}">
+      <td>{{ confirmation.applicant.ticket_number }}</td>
+      <td width="50%">{{ confirmation.applicant.full_name }}</td>
+      <td>{{ confirmation.confirmed_at|date:"H:i, j N" }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

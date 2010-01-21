@@ -21,7 +21,7 @@
     | [<a href="{% url confirmation-info applicant.id %}" target="_blank">ข้อมูลสัมภาษณ์</a>]
   {% endif %}
   {% if can_request_password %}
-    | [<a href="{% url review-gen-password applicant.id %}" target="_blank">ขอรหัสผ่าน</a>]
+    | [<a id="generate-password-link" href="{% url review-gen-password applicant.id %}" target="_blank">ขอรหัสผ่าน</a>]
   {% endif %}
   <br/>
 
@@ -191,6 +191,9 @@
         $.get("{% url manual-show-edu applicant.id %}", function(data) {
           $("#id_applicant_education_info").html(data);
         });
+      });
+      $("#generate-password-link").click(function() {
+        return confirm("คุณกำลังจะเปลี่ยนรหัสผ่านของ{{ applicant.full_name }}\nคุณแน่ใจหรือไม่?");
       });
     });
   </script>
