@@ -26,14 +26,14 @@
 	</tr>
 	{% for sround in niets_scores %}
           <tr>
-	    <th>ครั้งที่ {{ forloop.counter }}</th>
+	    <td>ครั้งที่ {{ forloop.counter }}</td>
 	    {% for s in sround %}
 	      <td>{{ s|floatformat:2 }}</td>
 	    {% endfor %}
 	  </tr>
         {% endfor %}
 	<tr class="best">
-	  <th>ดีที่สุด</th>
+	  <td>ดีที่สุด</td>
 	  {% for s in best_scores %}
 	    <td><b>{{ s|floatformat:2 }}</b></td>
           {% endfor %}
