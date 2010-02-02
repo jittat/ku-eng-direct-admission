@@ -106,3 +106,27 @@ class AdmissionConfirmation(models.Model):
 
     class Meta:
         ordering = ['-confirmed_at']
+
+# REST api
+from django_restapi.resource import Resource
+from django_restapi.authentication import HttpBasicAuthentication
+from django.http import HttpResponse
+import json
+
+class AdmissionConfirmationResource(Resource):
+    def __init__(self, authentication=None,
+                 mimetype=None):
+        Resource.__init__(self, authentication, ('GET',), mimetype)
+
+    def read(self, request, *args, **kwargs):
+        confirmation = AdmissionConfirmation.objects.all().select_related(depth=1)
+        results = []
+        for c in confirmation:
+            result = {'national_id': c.applicant.personal_info.national_id}
+            results.append(result)
+        return HttpResponse(json.dumps(results))
+
+confirmation_resource = AdmissionConfirmationResource(
+    authentication = HttpBasicAuthentication()
+)
+

@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from models import confirmation_resource
 
 urlpatterns = patterns(
     'confirmation.views',
@@ -11,4 +12,6 @@ urlpatterns = patterns(
 
     url(r'^pref/$', 'pref', name='confirmation-pref'),
     url(r'^info/(\d+)/$', 'interview_info', name='confirmation-info'),
+
+    url(r'^list/(.*?)/?$', confirmation_resource),
 )
