@@ -533,7 +533,9 @@ def send_admission_status_by_mail(applicant, force=False):
                      applicant.admission_result.admitted_major.name),
                 'add_info': applicant.admission_result.additional_info }
     else:
-        result = u"""คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์ อย่างไรก็ตาม ยังมีช่องทางอื่นในการเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน กรุณาดูข้อมูลได้ที่เว็บ <a href="http://admission.eng.ku.ac.th/information/2553">http://admission.eng.ku.ac.th</a>"""
+        result = u"""คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์รอบที่ 1 อย่างไรก็ตาม ในวันที่ 5 ก.พ. 2553 จะมีการประกาศรายชื่อผู้มีสิทธิ์เพิ่มเติม กรุณาติดตามได้จากเว็บรับตรง 
+
+นอกจากนี้ยังมีช่องทางอื่นในการเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน กรุณาดูข้อมูลได้ที่เว็บ <a href="http://admission.eng.ku.ac.th/information/2553">http://admission.eng.ku.ac.th</a>"""
 
     message = (
 u"""เรียนคุณ %(first_name)s %(last_name)s
