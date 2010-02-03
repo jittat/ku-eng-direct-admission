@@ -60,6 +60,18 @@ def supplement_submission_deadline_passed():
         pass
     return False
 
+def admission_major_pref_deadline_passed():
+    try:
+        deadline = settings.ADMISSION_MAJOR_PREF_DEADLINE
+        if deadline != None:
+            return datetime.now() >= deadline
+        else:
+            return False
+    except:
+        pass
+    return False
+        
+
 def admin_email():
     admin = settings.ADMINS[0]
     return admin[1]

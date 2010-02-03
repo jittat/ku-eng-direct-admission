@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
 from commons.decorators import submitted_applicant_required
+from commons.utils import admission_major_pref_deadline_passed
 from commons.models import Log
 from application.models import Applicant, SubmissionInfo
 
@@ -63,6 +64,10 @@ def pref(request):
 
     if not admitted:
         raise Http404
+
+    # check for deadline
+    if admission_major_pref_deadline_passed():
+        return render_to_response('confirmation/pref_deadline_passed.html')
 
     admission_result = applicant.admission_result
 

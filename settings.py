@@ -136,6 +136,7 @@ SUBMISSION_CHANGE_GRACE_PERIOD = timedelta(3)
 SUBMISSION_CHANGE_GRACE_PERIOD_END = datetime(2009,12,11)
 SUBMISSION_DEADLINE = datetime(2009,12,16)
 SUPPLEMENT_DEADLINE = datetime(2009,12,19,1,30,0)
+ADMISSION_MAJOR_PREF_DEADLINE = datetime(2010,2,3,23,59,59)
 
 # path for storing uploaded images (for documents)
 UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')
