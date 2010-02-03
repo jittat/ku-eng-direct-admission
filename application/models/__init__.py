@@ -219,6 +219,12 @@ class Applicant(models.Model):
         return self.is_submitted
 
 
+    def has_confirmed(self):
+        try:
+            return self.admission_confirmation != None
+        except:
+            return False
+
     ######################
     # methods for authentication
 

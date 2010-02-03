@@ -22,7 +22,7 @@ def main():
                 app = nat_id_dict[line]
                 print ("%s %s %s %s" % 
                        (line, app.full_name(), 
-                        app.get_doc_submission_method_display(),
+                        app.email,
                         app.personal_info.phone_number))
             else:
                 print line, "not found"

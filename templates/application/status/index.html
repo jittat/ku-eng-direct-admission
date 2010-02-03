@@ -19,6 +19,7 @@
   {% endif %}
 
   {% comment %}
+  <!--- *************************** --->
 
   <div class="right-box">
     <br/>
@@ -39,6 +40,7 @@
     </small>
   </div>
   
+  <!--- *************************** --->
   {% endcomment %}
 
   {% comment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
@@ -90,7 +92,13 @@
     {% if show_admission_result and admission_result.is_admitted %}
       <div class="light-frame">
 	<center>
-	  คุณต้องยืนยันสาขาวิชาที่ต้องการพิจารณาคัดเลือก
+	  <b>สถานะการยืนยันสิทธิ์:</b> {% if applicant.has_confirmed %}ยืนยันสิทธิ์แล้ว (บันทึกข้อมูลเมื่อ {{ applicant.admission_confirmation.confirmed_at|date:"j N" }}){% else %}ยังไม่ได้ยืนยันสิทธิ์{% endif %}
+	</center>
+      </div>
+      <div class="light-frame">
+	<center>
+	  คุณต้องยืนยันสาขาวิชาที่ต้องการพิจารณาคัดเลือก<br/>
+	  <small>สามารถยืนยันการเลือกสาขาวิชาได้ถึงเวลา 23:59 ของวันที่ 3 ก.พ. 2553</small>
 	</center>
 	<a href="{% url confirmation-pref %}" class="in-button">
 	  <div class="button-blue">
