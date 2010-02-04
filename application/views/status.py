@@ -44,11 +44,14 @@ def index(request):
         admission_result.is_waitlist = False
 
     show_admission_result = settings.SHOW_ADMISSION_RESULTS
+    show_final_admission_result = settings.SHOW_FINAL_ADMISSION_RESULTS
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'show_admission_result':
                                     show_admission_result,
+                                'show_final_admission_result':
+                                    show_final_admission_result,
                                 'admission_result': admission_result,
                                 'submission_info': submission_info,
                                 'review_results': review_results,

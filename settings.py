@@ -159,6 +159,7 @@ RESULT_SETS = [
 
 DEFAULT_RESULT_SET_NAME = 'eligible'
 SHOW_ADMISSION_RESULTS = False
+SHOW_FINAL_ADMISSION_RESULTS = False
 
 try:
     from settings_local import *

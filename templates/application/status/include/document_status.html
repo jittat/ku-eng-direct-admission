@@ -1,0 +1,85 @@
+{% load adm_media %}
+<p>
+  {% if not submission_info.is_resubmitted %}
+    คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} ขณะนี้คณะ{% if submission_info.has_received_doc %}ได้รับหลักฐานของคุณแล้ว{% else %}ยังไม่ได้รับหลักฐานของคุณ{% endif %}
+  {% else %}
+    คุณได้ส่งใบสมัครโดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }} และคุณได้ส่งหลักฐานเพิ่มเติมแล้ว
+    {% if submission_info.is_reviewed_after_resubmitted %}ขณะนี้ใบสมัครพร้อมด้วยหลักฐานเพิ่มเติมของคุณได้ถูกตรวจสอบแล้ว{% else %}ขณะนี้กำลังรอตรวจสอบ{% endif %}
+  {% endif %}
+</p>
+
+<p>
+  <table id="doc-status-table">
+    <tr>
+      <th>วิธีการส่งหลักฐาน</th>
+      <th>วันที่ได้รับหลักฐาน</th>
+      <th>สถานะการตรวจสอบหลักฐาน</th>
+    </tr>
+    <tr>
+      <td>{{ applicant.get_doc_submission_method_display }}</td>
+      <td>
+	{% passed_icon submission_info.has_received_doc %}
+	{% if submission_info.doc_received_at %}
+ 	  {{ submission_info.doc_received_at|date:"j N y" }}
+	{% else %}
+	  ยังไม่ได้รับ 
+	{% endif %}
+      </td>
+      <td id="id_review_result_tcell">
+        {% if submission_info.has_been_reviewed %}
+	  {% passed_icon submission_info.doc_reviewed_complete %}
+	  {% if submission_info.doc_reviewed_complete %}
+	    ตรวจสอบเรียบร้อย
+	  {% else %}
+	    เอกสารบางส่วนผิดพลาด
+	    <ul>
+  	      {% for result in review_results %}
+	        <li>{{ result.review_field }} : {{ result.applicant_note }}</li>
+	      {% endfor %}
+	    </ul>
+	    {% if submission_info.is_resubmitted %}
+	      {% if not submission_info.is_reviewed_after_resubmitted %}
+  	        ขณะนี้ได้ส่งเอกสารเพิ่มเติมแล้ว และกำลังรอการตรวจสอบใหม่
+	      {% endif %}
+            {% endif %}
+	  {% endif %}  
+	{% else %}
+	  ยังไม่ได้ตรวจสอบ
+	{% endif %}
+      </td>
+    </tr>
+  </table>
+</p>
+
+{% if submission_info.has_been_reviewed %}
+  {% if not submission_info.doc_reviewed_complete %}
+    <div class="normal-msg" style="width: 510px">
+      <img src="{% media_url %}/image/Info.png"/>
+      {% if submission_info.is_resubmitted %}
+        {% if not submission_info.is_reviewed_after_resubmitted %}
+          คณะได้รับการยื่นหลักฐานเพิ่มเติมของคุณแล้ว และจะรีบตรวจสอบต่อไป<br/>
+          เมื่อตรวจสอบเรียบร้อยแล้วจะส่งเมล์ยืนยันให้กับคุณอีกครั้ง
+        {% else %}
+          คณะได้ตรวจสอบหลักฐานเพิ่มเติมของคุณแล้ว แต่ยังมีข้อผิดพลาดอยู่
+          เพื่อให้การสมัครสมบูรณ์ <b>คุณจะต้องส่งหลักฐานเพิ่มเติมเพื่อแก้ไขข้อผิดพลาดข้างต้น</b>
+          สำหรับผู้สมัครที่เลือกส่งหลักฐานแบบออนไลน์ สามารถเข้าไปอัพโหลดหลักฐานเพิ่มเติมได้ 
+          โดยเลือกที่เมนูด้านขวา
+        {% endif %}
+      {% else %}
+        เพื่อให้การสมัครสมบูรณ์ <b>คุณจะต้องส่งหลักฐานเพิ่มเติมเพื่อแก้ไขข้อผิดพลาดข้างต้น</b>
+        {% if applicant.online_doc_submission %}
+          สำหรับผู้สมัครที่เลือกส่งหลักฐานแบบออนไลน์ สามารถเข้าไปอัพโหลดหลักฐานเพิ่มเติมได้ 
+          โดยเลือกที่เมนูด้านขวา
+        {% else %}
+          {% if not submission_deadline_passed %}
+            ในการส่งเอกสารทางไปรษณีย์ อย่าลืมแนบใบนำส่งหลักฐานมาด้วย
+          {% else %}
+            แม้ว่าคุณจะเลือกวิธีส่งแบบส่งทางไปรษณีย์
+            แต่คณะจะเปิดให้ส่งหลักฐานเพิ่มเติมได้ผ่านทางระบบออนไลน์เท่านั้น
+            ผู้สมัครสามารถเข้าใช้ได้จากเมนูด้านขวา
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+{% endif %}
