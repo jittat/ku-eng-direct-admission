@@ -101,6 +101,17 @@ class AdmissionResult(models.Model):
 
     additional_info = models.TextField(null=True)
 
+    is_final_admitted = models.BooleanField(default=False)
+    final_admitted_major = models.ForeignKey(Major, null=True, 
+                                             related_name='final_results')
+
+    @staticmethod
+    def new_for_applicant(applicant):
+        res = AdmissionResult(applicant=applicant,
+                              is_admitted=False,
+                              is_waitlist=False,
+                              is_final_admitted=False)
+        return res
 
 class ScoreStat:
 
