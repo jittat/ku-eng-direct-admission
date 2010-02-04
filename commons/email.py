@@ -558,3 +558,42 @@ u"""เรียนคุณ %(first_name)s %(last_name)s
 ).replace('\n','<br/>\n')
     adm_send_mail(applicant.get_email(), subject, message, force)
 
+
+def send_final_admission_status_by_mail(applicant, force=False):
+    subject = u'ผลการสมัครเข้าศึกษาต่อแบบรับตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
+
+    if applicant.has_admission_result():
+        admission_result = applicant.admission_result
+    else:
+        from result.models import AdmissionResult
+
+        admission_result = AdmissionResult.new_for_applicant(applicant)
+
+    from django.template.loader import get_template
+    from django.template import Context
+
+    result = (get_template('emails/final_admission_status.txt')
+              .render(Context({'applicant': applicant,
+                               'admission_result': admission_result})))
+
+    message = (
+u"""เรียนคุณ %(first_name)s %(last_name)s
+
+ด้านล่างเป็นผลการสมัครเข้าศึกษาต่อแบบรับตรงประจำปีการศึกษา 2553
+คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ วิทยาเขตบางเขน
+
+%(result)s
+
+ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ 
+กรุณาช่วยแจ้งผู้ดูแลด้วยที่อีเมล์ %(admin_email)s
+
+-โครงการรับสมัครตรง
+"""
+% { 'first_name': applicant.first_name,
+    'last_name': applicant.last_name,
+    'result': result,
+    'admin_email': admin_email()
+    }
+).replace('\n','<br/>\n')
+    adm_send_mail(applicant.get_email(), subject, message, force)
+
