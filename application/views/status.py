@@ -13,6 +13,7 @@ from commons.email import send_status_by_email_not_submitted
 from commons.email import send_status_by_email_many_submitted_apps
 from commons.email import send_status_by_email
 from commons.email import send_admission_status_by_mail
+from commons.email import send_final_admission_status_by_mail
 from commons.email import send_admission_status_problem_by_mail
 
 from application.models import Applicant
@@ -135,10 +136,13 @@ def request_status(request):
                 send_status_by_email_no_applicant(email)
                 notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
             else:
-                if settings.SHOW_ADMISSION_RESULTS:
+                if (settings.SHOW_FINAL_ADMISSION_RESULTS) or (settings.SHOW_ADMISSION_RESULTS):
                     applicant = filter_admitted_applicants(real_applicants)
                     if applicant!=None:
-                        send_admission_status_by_mail(applicant)
+                        if settings.SHOW_FINAL_ADMISSION_RESULTS:
+                            send_final_admission_status_by_mail(applicant)
+                        else:
+                            send_admission_status_by_mail(applicant)
                         notice = u'ระบบได้จัดส่งจดหมายอิเล็กทรอนิกส์ไปยัง ' + email + u' แล้ว'
                     else:
                         send_admission_status_problem_by_mail(email)

@@ -10,6 +10,8 @@ urlpatterns = patterns(
         {'preview': True}, name='confirmation-submit'),
     url(r'^confirm/$', 'confirm', name='confirmation-confirm'),
 
+    url(r'^confirm-second-round/$', 'show_confirmation_second_round', name='confirmation-second'),
+
     url(r'^pref/$', 'pref', name='confirmation-pref'),
     url(r'^info/(\d+)/$', 'interview_info', name='confirmation-info'),
 

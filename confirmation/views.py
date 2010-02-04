@@ -290,5 +290,23 @@ def confirm(request, preview=False):
         return HttpResponseRedirect(reverse('confirmation-index'))            
 
 
-        
+@submitted_applicant_required
+def show_confirmation_second_round(request):
+    applicant = request.applicant
+    second_round_admitted = False
+    if applicant.has_admission_result():
+        second_round_admitted = (applicant.admission_result.is_final_admitted and (not applicant.admission_result.is_admitted))
 
+    if not second_round_admitted:
+        raise Http404
+
+    admission_result = applicant.admission_result
+
+    Log.create("view confirmation second round - id: %d, from: %s" %
+               (applicant.id, request.META['REMOTE_ADDR']),
+               applicant_id=applicant.id,
+               applicantion_id=applicant.submission_info.applicantion_id)
+
+    return render_to_response('confirmation/second_round_confirmation.html',
+                              { 'applicant': applicant,
+                                'admission_result': admission_result })
