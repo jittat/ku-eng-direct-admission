@@ -33,7 +33,13 @@
     <b>ผลการคัดเลือก:</b>
     {% if applicant.has_admission_result %}
       {% with applicant.admission_result as admission_result %}
-
+        {% if admission_result.is_final_admitted %}
+          รับเข้าศึกษา | สาขาที่รับ: {{ admission_result.final_admitted_major.number }} {{ admission_result.final_admitted_major.name }}
+        {% else %} 
+          {% if admission_result.is_admitted %}สละสิทธิ์{% else %}ไม่รับเข้าศึกษา{% endif %}
+        {% endif %}
+        <br/>
+        <b>ผลรอบแรก:</b>
         {% if admission_result.is_admitted %}
           {{ admission_result.admitted_major.number }}
           {{ admission_result.admitted_major.name }}
