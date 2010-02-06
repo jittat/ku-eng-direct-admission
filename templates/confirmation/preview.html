@@ -10,7 +10,7 @@
   <center>
     <b>หมายเลขประจำตัว</b> {{ applicant.ticket_number }}<br/>
     <b>ชื่อผู้สมัคร</b> {{ applicant.full_name }}<br/>
-    <b>สาขาที่ได้รับเลือกเข้าสัมภาษณ์</b> {{ applicant.admission_result.admitted_major }}
+    <b>สาขาที่ได้รับเลือกเข้าศึกษาต่อ</b> {{ applicant.admission_result.final_admitted_major }}
     <form action="{% url confirmation-confirm %}" method="post">
       <input type="hidden" name="application_id" value="{{ applicant.ticket_number }}"/>
       <input type="submit" name="confirm" value="ยืนยันสิทธิ์"/>

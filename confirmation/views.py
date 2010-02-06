@@ -245,9 +245,9 @@ def confirm(request, preview=False):
     applicant = submission_info.applicant
 
     if (not applicant.has_admission_result() or
-        not applicant.admission_result.is_admitted):
+        not applicant.admission_result.is_final_admitted):
         request.session['notice'] = (u'เกิดข้อผิดพลาด ผู้สมัครที่ใช้หมายเลข %s (%s) '
-                                     u'ไม่ผ่านการคัดเลือกเข้าสัมภาษณ์' % 
+                                     u'ไม่ผ่านการคัดเลือกเข้าศึกษาต่อ' % 
                                      (application_id, applicant.full_name()))
         return HttpResponseRedirect(reverse('confirmation-index'))
 
