@@ -47,6 +47,8 @@
         {% else %}
           {% if admission_result.is_waitlist %}
             สำรอง
+	  {% else %}
+	    ไม่ผ่านการคัดเลือกรอบแรก
           {% endif %}
         {% endif %}
       {% endwith %}
