@@ -15,14 +15,19 @@
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
   <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
-  {% include "review/include/doc_received_status.html" %} | 
-  [<a id="doc-major_pref-link" href="#">ดูอันดับการเลือก</a>]
-  {% if applicant.admission_result and applicant.admission_result.is_admitted %}
-    | [<a href="{% url confirmation-info applicant.id %}" target="_blank">ข้อมูลสัมภาษณ์</a>]
-  {% endif %}
-  {% if can_request_password %}
-    | [<a id="generate-password-link" href="{% url review-gen-password applicant.id %}" target="_blank">ขอรหัสผ่าน</a>]
-  {% endif %}
+  <small>
+    {% include "review/include/doc_received_status.html" %} | 
+    [<a id="doc-major_pref-link" href="#">ดูอันดับการเลือก</a>]
+    {% if applicant.admission_result and applicant.admission_result.is_admitted %}
+      | [<a href="{% url confirmation-info applicant.id %}" target="_blank">ข้อมูลสัมภาษณ์</a>]
+    {% endif %}
+    {% if applicant.admission_result and not applicant.admission_result.is_admitted and applicant.admission_result.is_final_admitted %}
+      | [<a href="{% url confirmation-second-admin applicant.id %}" target="_blank">พิมพ์ใบยืนยัน</a>]
+    {% endif %}
+    {% if can_request_password %}
+      | [<a id="generate-password-link" href="{% url review-gen-password applicant.id %}" target="_blank">ขอรหัสผ่าน</a>]
+    {% endif %}
+  </small>
   <br/>
 
   {% if applicant.has_supplements %}

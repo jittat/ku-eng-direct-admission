@@ -290,9 +290,7 @@ def confirm(request, preview=False):
         return HttpResponseRedirect(reverse('confirmation-index'))            
 
 
-@submitted_applicant_required
-def show_confirmation_second_round(request):
-    applicant = request.applicant
+def render_confirmation_form_second_round(request, applicant):
     second_round_admitted = False
     if applicant.has_admission_result():
         second_round_admitted = (applicant.admission_result.is_final_admitted and (not applicant.admission_result.is_admitted))
@@ -310,3 +308,14 @@ def show_confirmation_second_round(request):
     return render_to_response('confirmation/second_round_confirmation.html',
                               { 'applicant': applicant,
                                 'admission_result': admission_result })
+
+
+@submitted_applicant_required
+def show_confirmation_second_round(request):
+    applicant = request.applicant
+    return render_confirmation_form_second_round(request, applicant)
+
+@login_required
+def admin_show_confirmation_second_round(request, app_id):
+    applicant = get_object_or_404(Applicant, pk=app_id)
+    return render_confirmation_form_second_round(request, applicant)

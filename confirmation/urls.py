@@ -11,6 +11,7 @@ urlpatterns = patterns(
     url(r'^confirm/$', 'confirm', name='confirmation-confirm'),
 
     url(r'^confirm-second-round/$', 'show_confirmation_second_round', name='confirmation-second'),
+    url(r'^confirm-second-round-admin/(\d+)/$', 'admin_show_confirmation_second_round', name='confirmation-second-admin'),
 
     url(r'^pref/$', 'pref', name='confirmation-pref'),
     url(r'^info/(\d+)/$', 'interview_info', name='confirmation-info'),
