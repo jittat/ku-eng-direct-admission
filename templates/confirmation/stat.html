@@ -1,0 +1,23 @@
+{% extends "commons/regis-base.html" %}
+
+{% block extra-title-bar %}หน่วยทะเบียน | สถิติการยืนยันสิทธิ์ {% endblock %}
+
+{% block regis-body %}
+
+<h3>จำนวนการยืนยันสิทธิ์แยกตามสาขา</h3>
+<table class=applicants>
+  <tr>
+    <th>หมายเลข</th>
+    <th>สาขา</th>
+    <th>จำนวนที่ยืนยันแล้ว</th>
+  {% for major, count in confirmation_stat %}
+    <tr class="{% cycle "odd" "even" %}">
+      <td>{{ major.number }}</td>
+      <td>{{ major.name }}</td>
+      <td>{{ count }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+
+{% endblock %}

@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from commons.decorators import submitted_applicant_required
 from commons.utils import admission_major_pref_deadline_passed
 from commons.models import Log
-from application.models import Applicant, SubmissionInfo
+from application.models import Applicant, SubmissionInfo, Major
 
 from models import AdmissionMajorPreference, AdmissionConfirmation
 
@@ -197,7 +197,6 @@ def interview_info(request, applicant_id):
     else:
         return render_unconfirmed_applicant(applicant)
 
-
 @login_required
 def index(request):
     confirmations = AdmissionConfirmation.objects.select_related(depth=1).all()[:20]
@@ -216,6 +215,31 @@ def index(request):
                               { 'confirmations': confirmations,
                                 'stat': stat,
                                 'notice': notice })
+
+
+def get_confirmation_stat_with_majors():
+    majors = Major.get_all_majors()
+    confirmations = AdmissionConfirmation.objects.select_related(depth=1).all() 
+
+    counters = dict([(m.id, 0) for m in majors])
+    for con in confirmations:
+        app = con.applicant
+        if app.admission_result.is_final_admitted:
+            major_id = app.admission_result.final_admitted_major_id
+            counters[major_id] += 1
+
+    stat = []
+    for major in majors:
+        stat.append((major, counters[major.id]))
+    return stat
+
+
+@login_required
+def confirmation_stat(request):
+    confirmation_stat = get_confirmation_stat_with_majors()
+
+    return render_to_response('confirmation/stat.html',
+                              { 'confirmation_stat': confirmation_stat })
 
 
 @login_required

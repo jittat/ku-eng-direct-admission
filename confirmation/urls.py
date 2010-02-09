@@ -5,6 +5,7 @@ urlpatterns = patterns(
     'confirmation.views',
 
     url(r'^$', 'index', name='confirmation-index'),
+    url(r'^stat/$', 'confirmation_stat', name='confirmation-stat'),
 
     url(r'^submit/$', 'confirm', 
         {'preview': True}, name='confirmation-submit'),

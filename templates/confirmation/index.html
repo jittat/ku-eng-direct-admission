@@ -18,9 +18,11 @@
   </div>
 {% endif %}
 
-<p>
-  จำนวนผู้ยืนยันสิทธิ์แล้วทั้งหมด: {{ stat.total }} คน
-</p>
+<h3>สถิติการยืนยันสิทธิ์</h3>
+<ul>
+  <li>จำนวนผู้ยืนยันสิทธิ์แล้วทั้งหมด: {{ stat.total }} คน</li>
+  <li><a href="{% url confirmation-stat %}">จำนวนการยืนยันสิทธิ์แยกตามสาขา</a></li>
+</ul>
 
 <h3>ผู้ยืนยันสิทธิ์ล่าสุด {{ confirmations.count }} คนแรก</h3>
 <table class=applicants>
@@ -36,4 +38,5 @@
     </tr>
   {% endfor %}
 </table>
+
 {% endblock %}
