@@ -10,14 +10,20 @@
     <th>หมายเลข</th>
     <th>สาขา</th>
     <th>จำนวนที่ยืนยันแล้ว</th>
-  {% for major, count in confirmation_stat %}
+    <th>คะแนนสูงสุด</th>
+    <th>คะแนนต่ำสุด</th>
+  </tr>
+  {% for major, count, sstat in confirmation_stat %}
     <tr class="{% cycle "odd" "even" %}">
       <td>{{ major.number }}</td>
       <td>{{ major.name }}</td>
       <td>{{ count }}</td>
+      <td>{{ sstat.1|floatformat:3 }}</td>
+      <td>{{ sstat.0|floatformat:3 }}</td>
     </tr>
   {% endfor %}
 </table>
+ดาวน์โหลด <a href="{% url confirmation-stat-download %}">รายชื่อเป็นแฟ้มข้อมูล</a>
 
 
 {% endblock %}

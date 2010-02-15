@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect, HttpResponseForbidden
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from commons.decorators import submitted_applicant_required
 from commons.utils import admission_major_pref_deadline_passed
 from commons.models import Log
-from application.models import Applicant, SubmissionInfo, Major
+from application.models import Applicant, SubmissionInfo, Major, Education, PersonalInfo
+from result.models import NIETSScores, AdmissionResult
 
 from models import AdmissionMajorPreference, AdmissionConfirmation
 
@@ -217,22 +218,72 @@ def index(request):
                                 'notice': notice })
 
 
-def get_confirmation_stat_with_majors():
+def get_confirming_apps_with_majors():
     majors = Major.get_all_majors()
     confirmations = AdmissionConfirmation.objects.select_related(depth=1).all() 
+    results = AdmissionResult.objects.filter(
+        applicant__in=[c.applicant for c in confirmations])
+    res_dict = dict([(r.applicant_id,r) for r in results])
 
-    counters = dict([(m.id, 0) for m in majors])
+    apps = dict([(m.id, []) for m in majors])
     for con in confirmations:
         app = con.applicant
-        if app.admission_result.is_final_admitted:
-            major_id = app.admission_result.final_admitted_major_id
-            counters[major_id] += 1
+        admission_result = res_dict[app.id]
+        if admission_result.is_final_admitted:
+            major_id = admission_result.final_admitted_major_id
+            apps[major_id].append(app)
 
     stat = []
     for major in majors:
-        stat.append((major, counters[major.id]))
+        stat.append((major, apps[major.id]))
     return stat
 
+def cache_apps_score(apps):
+    educations = Education.objects.filter(applicant__in=apps)
+    gpaxdict = dict([(e.applicant_id,e.gpax) 
+                     for e in educations])
+    scores = NIETSScores.objects.filter(applicant__in=apps)
+    sdict = dict([(s.applicant_id, s.get_score(gpaxdict[s.applicant_id]))
+                  for s in scores])
+    for a in apps:
+        try:
+            a.score = sdict[a.id]
+        except:
+            # for A-NET apps
+            a.score = None
+
+def cache_apps_fields(apps, models, field_names):
+    for a in apps:
+        try:
+            if a.field_cache == None:
+                a.field_cache = {}
+        except:
+            a.field_cache = {}
+
+    for model, name in zip(models,field_names):
+        results = model.objects.filter(applicant__in=apps)
+        d = dict([(r.applicant_id, r) for r in results])
+        for a in apps:
+            a.field_cache[name] = d[a.id]
+
+def get_confirmation_stat_with_majors():
+    score_stat = {}
+    confirming_apps = get_confirming_apps_with_majors()
+    for m, apps in confirming_apps:
+        cache_apps_score(apps)
+        ma = apps[0].score
+        mi = ma
+        for a in apps:
+            s = a.score
+            if s!=None:
+                if s<mi:
+                    mi = s
+                if s>ma:
+                    ma = s
+        score_stat[m.id] = (mi,ma)
+
+    return [(s[0],len(s[1]),score_stat[s[0].id]) 
+            for s in confirming_apps]
 
 @login_required
 def confirmation_stat(request):
@@ -240,6 +291,45 @@ def confirmation_stat(request):
 
     return render_to_response('confirmation/stat.html',
                               { 'confirmation_stat': confirmation_stat })
+
+def write_csv_output(major_apps):
+    import csv
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=assignment.csv'
+
+    content = []
+
+    content.append(','.join(['Application_ID', 
+                             'Title',
+                             'FirstName', 
+                             'LastName', 
+                             'Score', 
+                             'Major']))
+    for m,apps in major_apps:
+        cache_apps_score(apps)
+        cache_apps_fields(apps,
+                          [PersonalInfo, SubmissionInfo],
+                          ['pinfo', 'subinfo'])
+        for a in apps:
+            score = a.score
+            if score==None:
+                score = a.education.anet
+            a.submission_info = a.field_cache['subinfo']
+            content.append(u','.join(
+                    [a.ticket_number(),
+                     a.title,
+                     a.first_name,
+                     a.last_name,
+                     str(score),
+                     str(m.number)]
+                    ))
+    content.append('')
+    response.content = '\n'.join(content)
+    return response
+
+@login_required
+def confirmation_stat_download(request):
+    return write_csv_output(get_confirming_apps_with_majors())
 
 
 @login_required

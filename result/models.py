@@ -190,11 +190,13 @@ class NIETSScores(models.Model):
                 raw_score = x
         return best_score, raw_score
 
-    def get_score(self):
+    def get_score(self, gpax=None):
         gat, gs = self.get_best_normalized_score('gat')
         pat1, p1s = self.get_best_normalized_score('pat1')
         pat3, p3s = self.get_best_normalized_score('pat3')
-        score = ((self.applicant.education.gpax/4.0*0.1) + 
+        if gpax==None:
+            gpax = self.applicant.education.gpax
+        score = ((gpax/4.0*0.1) + 
                  gat * 0.2 +
                  pat1 * 0.2 + 
                  pat3 * 0.5)
