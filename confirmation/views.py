@@ -327,10 +327,56 @@ def write_csv_output(major_apps):
     response.content = '\n'.join(content)
     return response
 
+def write_csv_output_for_registra(major_apps):
+    import csv
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=assignment_registra.csv'
+
+    content = []
+
+    content.append(u','.join([u'ลำดับ',
+                              u'เลขประจำตัวสอบ',
+                              u'เลขบัตรประชาชน',
+                              u'คำนำหน้า',
+                              u'ชื่อ', 
+                              u'นามสกุล', 
+                              u'โรงเรียนที่จบ', 
+                              u'คณะ',
+                              u'มหาวิทยาลัย']))
+    count = 0
+    for m,apps in major_apps:
+        cache_apps_score(apps)
+        cache_apps_fields(apps,
+                          [PersonalInfo, SubmissionInfo, Education],
+                          ['pinfo', 'subinfo', 'edu'])
+        for a in apps:
+            score = a.score
+            if score==None:
+                score = a.education.anet
+            a.submission_info = a.field_cache['subinfo']
+            content.append(u','.join(
+                    [str(count + 1),
+                     a.ticket_number(),
+                     a.field_cache['pinfo'].national_id,
+                     a.title,
+                     a.first_name,
+                     a.last_name,
+                     a.field_cache['edu'].school_name,
+                     u'วิศวกรรมศาสตร์',
+                     u'มก.']
+                    ))
+            count += 1
+    content.append(u'')
+    response.content = u'\n'.join(content)
+    return response
+
 @login_required
 def confirmation_stat_download(request):
     return write_csv_output(get_confirming_apps_with_majors())
 
+@login_required
+def confirmation_stat_download_for_registra(request):
+    return write_csv_output_for_registra(get_confirming_apps_with_majors())
 
 @login_required
 def confirm(request, preview=False):

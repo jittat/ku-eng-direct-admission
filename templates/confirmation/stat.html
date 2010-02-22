@@ -23,7 +23,9 @@
     </tr>
   {% endfor %}
 </table>
-ดาวน์โหลด <a href="{% url confirmation-stat-download %}">รายชื่อเป็นแฟ้มข้อมูล</a>
+ดาวน์โหลด 
+<a href="{% url confirmation-stat-download %}">รายชื่อเป็นแฟ้มข้อมูล (มีสาขา)</a>
+<a href="{% url confirmation-stat-download-regis %}">รายชื่อส่งสำนักทะเบียน (มีข้อมูลโรงเรียน)</a>
 
 
 {% endblock %}
