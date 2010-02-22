@@ -304,7 +304,8 @@ def write_csv_output(major_apps):
                              'FirstName', 
                              'LastName', 
                              'Score', 
-                             'Major']))
+                             'Major',
+                             'MajorName',]))
     for m,apps in major_apps:
         cache_apps_score(apps)
         cache_apps_fields(apps,
@@ -321,7 +322,8 @@ def write_csv_output(major_apps):
                      a.first_name,
                      a.last_name,
                      str(score),
-                     str(m.number)]
+                     str(m.number),
+                     m.name]
                     ))
     content.append('')
     response.content = '\n'.join(content)
@@ -341,6 +343,7 @@ def write_csv_output_for_registra(major_apps):
                               u'ชื่อ', 
                               u'นามสกุล', 
                               u'โรงเรียนที่จบ', 
+                              u'สาขาวิชา',
                               u'คณะ',
                               u'มหาวิทยาลัย']))
     count = 0
@@ -362,6 +365,7 @@ def write_csv_output_for_registra(major_apps):
                      a.first_name,
                      a.last_name,
                      a.field_cache['edu'].school_name,
+                     m.name,
                      u'วิศวกรรมศาสตร์',
                      u'มก.']
                     ))
