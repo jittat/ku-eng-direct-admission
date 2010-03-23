@@ -229,6 +229,7 @@ def get_confirming_apps_with_majors():
     for con in confirmations:
         app = con.applicant
         admission_result = res_dict[app.id]
+        app.admission_result = admission_result
         if admission_result.is_final_admitted:
             major_id = admission_result.final_admitted_major_id
             apps[major_id].append(app)
@@ -237,6 +238,21 @@ def get_confirming_apps_with_majors():
     for major in majors:
         stat.append((major, apps[major.id]))
     return stat
+
+def get_all_confirming_apps():
+    confirmations = AdmissionConfirmation.objects.select_related(depth=1).all() 
+    results = AdmissionResult.objects.filter(
+        applicant__in=[c.applicant for c in confirmations])
+    res_dict = dict([(r.applicant_id,r) for r in results])
+
+    apps = []
+    for con in confirmations:
+        app = con.applicant
+        admission_result = res_dict[app.id]
+        app.admission_result = admission_result
+        apps.append(app)
+
+    return apps
 
 def cache_apps_score(apps):
     educations = Education.objects.filter(applicant__in=apps)
@@ -316,6 +332,10 @@ def write_csv_output(major_apps):
             if score==None:
                 score = a.education.anet
             a.submission_info = a.field_cache['subinfo']
+            if a.admission_result.is_admitted:
+                major_name = a.admission_result.admitted_major.number
+            else:
+                major_name = ''
             content.append(u','.join(
                     [a.ticket_number(),
                      a.title,
@@ -374,6 +394,70 @@ def write_csv_output_for_registra(major_apps):
     response.content = u'\n'.join(content)
     return response
 
+def write_payment_csv_output(applicants):
+    import csv
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=assignment.csv'
+
+    content = []
+
+    content.append(','.join(['Application_ID', 
+                             'National_ID',
+                             'Title',
+                             'FirstName', 
+                             'LastName',
+                             'Score',
+                             'FirstRound',
+                             'FirstMajor',
+                             'Amount',
+                             'FinalRound',
+                             'FinalMajor',
+                             'Amount',
+                             ]))
+    cache_apps_score(applicants)
+    cache_apps_fields(applicants,
+                      [PersonalInfo, SubmissionInfo],
+                      ['pinfo', 'subinfo'])
+
+    payments = [0] + [16000]*7 + [36700]*3 + [60700]*3
+
+    for a in applicants:
+        score = a.score
+        if score==None:
+            score = a.education.anet
+        a.submission_info = a.field_cache['subinfo']
+        if a.admission_result.is_admitted:
+            first_major = a.admission_result.admitted_major_id
+            first_amount = payments[first_major]
+        else:
+            first_major = 0
+            first_amount = 0
+        if a.admission_result.is_final_admitted:
+            final_major = a.admission_result.final_admitted_major_id
+            final_amount = payments[final_major]
+        else:
+            final_major = 0
+            final_amount = 0
+        content.append(u','.join(
+                [a.ticket_number(),
+                 a.field_cache['pinfo'].national_id,
+                 a.title,
+                 a.first_name,
+                 a.last_name,
+                 str(score),
+                 str(a.admission_result.is_admitted),
+                 str(first_major),
+                 str(first_amount),
+                 str(a.admission_result.is_final_admitted),
+                 str(final_major),
+                 str(final_amount),
+                 ]
+                ))
+        
+    content.append('')
+    response.content = '\n'.join(content)
+    return response
+
 @login_required
 def confirmation_stat_download(request):
     return write_csv_output(get_confirming_apps_with_majors())
@@ -381,6 +465,10 @@ def confirmation_stat_download(request):
 @login_required
 def confirmation_stat_download_for_registra(request):
     return write_csv_output_for_registra(get_confirming_apps_with_majors())
+
+@login_required
+def confirmation_payment_net_download(request):
+    return write_payment_csv_output(get_all_confirming_apps())
 
 @login_required
 def confirm(request, preview=False):

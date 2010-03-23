@@ -8,6 +8,7 @@ urlpatterns = patterns(
     url(r'^stat/$', 'confirmation_stat', name='confirmation-stat'),
     url(r'^stat/download/$', 'confirmation_stat_download', name='confirmation-stat-download'),
     url(r'^stat/download-regis/$', 'confirmation_stat_download_for_registra', name='confirmation-stat-download-regis'),
+    url(r'^stat/download-payment-net/$', 'confirmation_payment_net_download', name='confirmation-payment-net-download'),
 
     url(r'^submit/$', 'confirm', 
         {'preview': True}, name='confirmation-submit'),
