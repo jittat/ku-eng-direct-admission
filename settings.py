@@ -132,6 +132,8 @@ MAX_MAJOR_RANK = 6
 
 from datetime import datetime, timedelta
 
+LOGIN_ENABLED = False
+
 SUBMISSION_CHANGE_GRACE_PERIOD = timedelta(3)
 SUBMISSION_CHANGE_GRACE_PERIOD_END = datetime(2009,12,11)
 SUBMISSION_DEADLINE = datetime(2009,12,16)

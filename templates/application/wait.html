@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load adm_info %}
+
+{% block title %}Applying{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="front-body">
+  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+
+  <p>
+    ระบบรับสมัครออนไลน์สำหรับการรับตรงรอบที่ 2 จะเปิดให้เข้าใช้ระบบได้ในวันที่ 1 พ.ค. 2553<br/>
+    <ul>
+      <li>สาขาที่รับสมัครคือ กลุ่มวิทยาเขตบางเขน (ภาคพิเศษ), วิศวกรรมเคมี (ภาคพิเศษ), และวิศวกรรมสำรวจและสารสนเทศภูมิศาสตร์ (ภาคพิเศษ)</li>
+      <li>อ่าน <a href="http://admission.eng.ku.ac.th/sites/default/files/announcement-2nd-round-rev3.pdf">ประกาศคณะวิศวกรรมศาสตร์ (ฉบับแก้ไข)</a> สำหรับเงื่อนไขและกำหนดการต่าง ๆ</li>
+      <li><a href="/information/2553/direct/scoring2">การคำนวณคะแนนสำหรับการรับตรงปี 2553 (รอบที่ 2)</a> และ<a href="http://admission.eng.ku.ac.th/information/2553/direct/score-cal2">ระบบคำนวณคะแนน</a></li>
+    </ul>
+  </p>
+</div>
+{% endblock %}

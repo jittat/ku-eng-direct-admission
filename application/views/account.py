@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -24,6 +24,14 @@ ALLOWED_LOGOUT_REDIRECTION = ['http://admission.eng.ku.ac.th']
 
 def login(request):
     announcements = Announcement.get_all_enabled_annoucements()
+    if not settings.LOGIN_ENABLED:
+        # login disabled
+        if request.method == 'POST':
+            return HttpResponseForbidden()
+        else:
+            return render_to_response('application/wait.html',
+                                      { 'announcements': announcements })     
+
     error_messages = []
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -67,6 +75,7 @@ def login(request):
             error_messages.append('รหัสผ่านผิดพลาด')
     else:
         form = LoginForm()
+
     return render_to_response('application/start.html',
                               { 'form': form,
                                 'submission_deadline_passed':
