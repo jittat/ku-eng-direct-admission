@@ -8,7 +8,7 @@ class Migration:
     no_dry_run = True
 
     def forwards(self, orm):
-        for applicant in Applicant.objects.all():
+        for applicant in orm.Applicant.objects.all():
             applicant.initialize_related_model()
             if applicant.has_personal_info():
                 applicant.add_related_model('personal_info')    
