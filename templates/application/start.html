@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load adm_info %}
+{% load feature_switch_tags %}
 
 {% block title %}Applying{% endblock %}
 
@@ -11,90 +12,108 @@
 
 {% block body %}
 <div class="front-body">
-  <h1>การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</h1>
+  <h1>
+    การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์<br/>
+    โครงการรับตรง (รอบที่ 2)
+  </h1>
 
   {% adm_submission_deadline_warning %}
 
   <div class="right-box">
-    {% comment %}
-    {% if submission_deadline_passed %}
+
+    {% if "second_round_admission"|feature_is_enabled %}
+
+      {% if submission_deadline_passed %}
+        <div class="login-box">
+          <center><b>หมดเวลารับสมัครออนไลน์แล้ว</b></center>
+        </div>
+      {% else %}
+        <div class="login-box">
+          <center>
+    	    เริ่มต้นสมัครโดยการ
+  	  </center>
+	  <a class="in-button" href="{% url apply-register %}">
+	    <div id="reg-button" class="button big">
+	      ลงทะเบียนเข้าใช้ระบบ
+	      <img src="{% media_url %}/image/Next.png"/>
+	    </div>
+	  </a>
+	</div>
+      {% endif %}
+      <br/>
+
       <div class="login-box">
-        <center><b>หมดเวลารับสมัครออนไลน์แล้ว</b></center>
+	<center>
+	  {% if not submission_deadline_passed %}
+  	    หลังจากลงทะเบียนแล้ว<br/>
+	    เริ่มกรอกใบสมัคร กรอกใบสมัครที่ค้างไว้<br/>
+	    หรือตรวจสอบสถานะการสมัคร
+	  {% else %}
+	    เข้าสู่ระบบเพื่อตรวจสอบสถานะการสมัคร
+	  {% endif %}
+	  <form action="{% url apply-login %}" method="post">
+	    <table class="header-left">
+	      <tr>
+		<th width="45%">
+		  <label for="id_email">อีเมล์:</label>
+		</th>
+		<td width="55%">
+		  {{ form.email.errors }}
+		  {{ form.email }}
+		</td>
+	      </tr>
+	      <tr>
+		<td></td>
+		<td><small>หรือ (เลือกอย่างใดอย่างหนึ่ง)</small></td>
+	      </tr>
+	      <tr>
+		<td style="text-align:right;">
+		  <b><label for="id_application_id">หมายเลขผู้สมัคร:</label></b><br/>
+		  <small>เช่น 53007007</small>
+		</td>
+		<td>
+		  {{ form.application_id.errors }}
+		  {{ form.application_id }}
+		</td>
+	      </tr>
+	      <tr><td><br/></td><td></td></tr>
+	      <tr>
+		<th>
+		  <label for="id_password">รหัสผ่าน:</label>
+		</th>
+		<td>
+		  {{ form.password.errors }}
+		  {{ form.password }}
+		</td>
+	      </tr>
+	      <tr>
+		<td></td>
+		<td>
+		  <input type="submit" name="submit" value="เข้าใช้ระบบ"/>
+		</td>
+	      </tr>
+	    </table>
+	  </form>
+	</center>
+	
+	<center>
+	  <a href="{% url apply-forget %}">ลืมรหัสผ่านหรือขอรหัสผ่านใหม่</a>
+	</center>
       </div>
     {% else %}
+
       <div class="login-box">
         <center>
-  	  เริ่มต้นสมัครโดยการ
+	  <br/>
+	  <br/>
+          <b>ระบบยังไม่เปิดให้บริการ กรุณารอก่อน</b>
+	  <br/>	
+	  <br/>
+	  <br/>
 	</center>
-	<a class="in-button" href="{% url apply-register %}">
-	  <div id="reg-button" class="button big">
-	    ลงทะเบียนเข้าใช้ระบบ
-	    <img src="{% media_url %}/image/Next.png"/>
-	  </div>
-	</a>
       </div>
-    {% endif %}
-    <br/>
-    {% endcomment %}
 
-    <div class="login-box">
-      <center>
-	{% if not submission_deadline_passed %}
-  	  หลังจากลงทะเบียนแล้ว<br/>
-	  เริ่มกรอกใบสมัคร กรอกใบสมัครที่ค้างไว้<br/>
-	  หรือตรวจสอบสถานะการสมัคร
-	{% else %}
-	  เข้าสู่ระบบเพื่อตรวจสอบสถานะการสมัคร
-	{% endif %}
-	<form action="{% url apply-login %}" method="post">
-	  <table class="header-left">
-	    <tr>
-	      <th width="45%">
-		<label for="id_email">อีเมล์:</label>
-	      </th>
-	      <td width="55%">
-		{{ form.email.errors }}
-		{{ form.email }}
-	      </td>
-	    </tr>
-	    <tr>
-	      <td></td>
-	      <td><small>หรือ (เลือกอย่างใดอย่างหนึ่ง)</small></td>
-	    </tr>
-	    <tr>
-	      <td style="text-align:right;">
-		<b><label for="id_application_id">หมายเลขผู้สมัคร:</label></b><br/>
-		<small>เช่น 53007007</small>
-	      </td>
-	      <td>
-		{{ form.application_id.errors }}
-		{{ form.application_id }}
-	      </td>
-	    </tr>
-	    <tr><td><br/></td><td></td></tr>
-	    <tr>
-	      <th>
-		<label for="id_password">รหัสผ่าน:</label>
-	      </th>
-	      <td>
-		{{ form.password.errors }}
-		{{ form.password }}
-	      </td>
-	    </tr>
-	    <tr>
-	      <td></td>
-	      <td>
-		<input type="submit" name="submit" value="เข้าใช้ระบบ"/>
-	      </td>
-	    </tr>
-	  </table>
-	</form>
-      </center>
-      
-      <center>
-	<a href="{% url apply-forget %}">ลืมรหัสผ่านหรือขอรหัสผ่านใหม่</a>
-      </center>
-    </div>
+    {% endif %}
 
     <br/>
 
@@ -111,41 +130,6 @@
     </div>
 
   </div>
-
-  {% comment %}
-
-  {% if submission_deadline_passed %}
-    <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px; margin-bottom:10px;" class="normal-msg">
-      <center><h2>การส่งหลักฐานเพิ่มเติม</h2></center>
-      <ul>
-	<li>
-	  ผู้สมัครที่ส่งหลักฐานแบบออนไลน์ที่หลักฐานไม่ผ่านการตรวจสามารถส่งหลักฐานได้จนถึงวันที่
-	  18 ธ.ค. 52
-	</li>
-	<li>
-	  ระบบสำหรับส่งหลักฐานเพิ่มเติมแบบออนไลน์
-	  สำหรับผู้สมัครแบบออนไลน์ที่เลือกส่งหลักฐานทางไปรษณีย์
-	  และผู้สมัครที่เลือกส่งแบบออนไลน์แต่ยังไม่ได้รับการตรวจ จะเปิดให้ใช้ในวันที่ 17
-	  ธ.ค. 52 และสามารถส่งหลักฐานเพิ่มเติมได้จนถึงวันที่ 18 ธ.ค. 52
-	  (<a href="http://admission.eng.ku.ac.th/node/1109">อ่านรายละเอียดเพิ่มเติม</a>)
-	</li>
-      </ul>
-    </div>
-  {% endif %}
-
-  {% endcomment %}
-
-    <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px; margin-bottom:10px;" class="normal-msg">
-      <center><h2>ประกาศผลผู้มีสิทธิ์เข้ารับการสัมภาษณ์</h2></center>
-      <ul>
-	<li>
-	  ดูประกาศ<a href="http://admission.eng.ku.ac.th/adm/result/admitted/">รายชื่อผู้มีสิทธิ์เข้ารับการสัมภาษณ์</a> สามารถเข้าสู่ระบบทางด้านขวาเพื่อตรวจสอบสาขาที่ได้รับคัดเลือกให้เข้าสัมภาษณ์ และเวลาของการสัมภาษณ์
-	</li>
-	<li>
-	  ดู<a href="http://admission.eng.ku.ac.th/adm/result/waitlist/">ประกาศรายชื่อสำรอง</a> คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าสอบสัมภาษณ์ จากรายชื่อสำรอง ในวันศุกร์ที่ 5 กุมภาพันธ์ 2553
-	</li>
-      </ul>
-    </div>
 
   {% if announcements %}
     <div style="width: 510px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; padding-left: 5px; padding-right: 5px;" class="normal-msg">
@@ -166,9 +150,7 @@
 	  ผลการเรียน ผลคะแนนสอบ และลำดับสาขาวิชา
 	</li>
 	<li>
-	  เมื่อกรอกข้อมูลเรียบร้อยแล้ว
-	  ผู้สมัครสามารถเลือกจะส่งหลักฐานทางออนไลน์ผ่านทางการอัพโหลดเข้าสู่ระบบ
-	  หรือเลือกส่งทางไปรษณีย์หรือส่งด้วยตนเองที่คณะวิศวกรรมศาสตร์
+	  เมื่อกรอกข้อมูลเรียบร้อยแล้วผู้สมัครจะต้องส่งหลักฐานทางออนไลน์ผ่านทางการอัพโหลดเข้าสู่ระบบ
 	</li>
 	<li>
 	  การกรอกใบสมัครไม่จำเป็นต้องกรอกให้เสร็จในครั้งเดียว
@@ -185,45 +167,38 @@
     <table class="schedule">
       <tr>
 	<td width="30%">
-	  16 พ.ย. - 15 ธ.ค. 52
+	  1 - 9 พ.ค. 53
 	  </td>
 	<td>
-	  กำหนดรับสมัครเข้าศึกษาต่อแบบรับตรง
+	  รับสมัครผ่านเว็บไซต์
 	</td>
       </tr>
       <tr>
+	<td>11 พ.ค. 53</td>
 	<td>
-	  22 ธ.ค. 52
-	</td><td>
-	  ประกาศรายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือกเข้าศึกษาต่อแบบรับตรง
+	  ประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาและผู้มีสิทธิ์ในลำดับสำรอง
 	</td>
       </tr>
       <tr>
+	<td>12 พ.ค. 53</td>
 	<td>
-	  8 ม.ค. 53	
-	</td><td>	
-	  ประกาศรายชื่อผู้มีสิทธ์สอบสัมภาษณ์เข้าศึกษาต่อแบบรับตรง
+	  ผู้มีสิทธิ์เขาศึกษารายงานตัวพร้อมส่งสําเนาระเบียนแสดงผลการเรียน 
+	  และสําเนาใบนําฝาก คาธรรมเนียมลงทะเบียนเรียนภาคเรียนที่ 1 
+	  จํานวน 36,700 บาท (เวลา 11.00-12.00 น.)
 	</td>
       </tr>
       <tr>
+	<td>13 พ.ค. 53</td>
 	<td>
-	  22 ม.ค. 53
-	</td><td>
-	  สอบสัมภาษณ์
+	  ประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาในลำดับสำรอง
 	</td>
       </tr>
       <tr>
+	<td>14 พ.ค. 53</td>
 	<td>
-	  27 ม.ค. 53
-	</td><td>
-	  ประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อแบบรับตรง
-	</td>
-      </tr>
-      <tr>
-	<td>
-	  27 ม.ค. - 3 ก.พ. 53
-	</td><td>
-	  รายงานตัวและยืนยันสิทธิ์การเข้าศึกษาสำหรับผู้สมัครเข้าศึกษาต่อแบบรับตรง
+	  ผู้มีสิทธิ์เขาศึกษาในลำดับสำรองรายงานตัวพร้อมส่งสําเนาระเบียนแสดงผลการเรียน 
+	  และสําเนาใบนําฝาก คาธรรมเนียมลงทะเบียนเรียนภาคเรียนที่ 1 
+	  จํานวน 36,700 บาท (เวลา 11.00-12.00 น.)
 	</td>
       </tr>
     </table>

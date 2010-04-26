@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     'adm.supplement',
     'adm.result',
     'adm.confirmation',
+    'adm.feature_switch'
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -128,15 +129,15 @@ PHPMAILER_KEY = ''
 ADMISSION_YEAR = 53
 
 # maximum number of choices
-MAX_MAJOR_RANK = 6
+MAX_MAJOR_RANK = 3
 
 from datetime import datetime, timedelta
 
-LOGIN_ENABLED = False
+LOGIN_ENABLED = True
 
 SUBMISSION_CHANGE_GRACE_PERIOD = timedelta(3)
 SUBMISSION_CHANGE_GRACE_PERIOD_END = datetime(2009,12,11)
-SUBMISSION_DEADLINE = datetime(2009,12,16)
+SUBMISSION_DEADLINE = datetime(2010,5,10)
 SUPPLEMENT_DEADLINE = datetime(2009,12,19,1,30,0)
 ADMISSION_MAJOR_PREF_DEADLINE = datetime(2010,2,3,23,59,59)
 
