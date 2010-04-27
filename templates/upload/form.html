@@ -54,19 +54,23 @@
     {% with field_forms.nat_id as upload_field %}
       {% include "upload/include/field_form.html" %}
     {% endwith %}
-    {% with field_forms.picture as upload_field %}
-      {% include "upload/include/field_form.html" %}
-    {% endwith %}
+    {% comment %}
+      {% with field_forms.picture as upload_field %}
+        {% include "upload/include/field_form.html" %}
+      {% endwith %}
+    {% endcomment %}
   </div>
-  <div id="education" class="doc-upload-forms">
-    <h2>ข้อมูลการศึกษา</h2>
-    {% with field_forms.edu_certificate as upload_field %}
-      {% include "upload/include/field_form.html" %}
-    {% endwith %}
-    {% with field_forms.abroad_edu_certificate as upload_field %}
-      {% include "upload/include/field_form.html" %}
-    {% endwith %}
-  </div>
+  {% comment %}
+    <div id="education" class="doc-upload-forms">
+      <h2>ข้อมูลการศึกษา</h2>
+      {% with field_forms.edu_certificate as upload_field %}
+        {% include "upload/include/field_form.html" %}
+      {% endwith %}
+      {% with field_forms.abroad_edu_certificate as upload_field %}
+        {% include "upload/include/field_form.html" %}
+      {% endwith %}
+    </div>
+  {% endcomment %}
   <div id="scores" class="doc-upload-forms">
     <h2>คะแนนสอบ</h2>
     {% if applicant.education.uses_gat_score %}

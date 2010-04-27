@@ -228,9 +228,9 @@ def generate_password(request, applicant_id):
 
 def get_applicant_doc_name_list(applicant):
     names = []
-    names.append('picture')
+    #names.append('picture')
     names.append('nat_id')
-    names.append('edu_certificate')
+    #names.append('edu_certificate')
     if applicant.education.uses_gat_score:
         names.append('gat_score')
         names.append('pat1_score')
@@ -238,7 +238,7 @@ def get_applicant_doc_name_list(applicant):
     else:
         names.append('anet_score')
     names.append('app_fee_doc')
-    names.append('abroad_edu_certificate')
+    #names.append('abroad_edu_certificate')
     return names
 
 

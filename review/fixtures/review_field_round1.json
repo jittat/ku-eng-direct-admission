@@ -1,5 +1,20 @@
 [
  {
+  "pk": 1, 
+  "model": "review.reviewfield", 
+  "fields": {
+   "applicant_note_format": "", 
+   "admin_note_format": "", 
+   "applicant_note_help_text": "", 
+   "short_name": "picture", 
+   "required": true, 
+   "enabled": true, 
+   "admin_note_help_text": "", 
+   "order": 1, 
+   "name": "\u0e23\u0e39\u0e1b\u0e16\u0e48\u0e32\u0e22"
+  }
+ }, 
+ {
   "pk": 2, 
   "model": "review.reviewfield", 
   "fields": {
@@ -12,6 +27,21 @@
    "admin_note_help_text": "", 
    "order": 2, 
    "name": "\u0e2a\u0e33\u0e40\u0e19\u0e32\u0e1a\u0e31\u0e15\u0e23\u0e1b\u0e23\u0e30\u0e08\u0e33\u0e15\u0e31\u0e27"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "review.reviewfield", 
+  "fields": {
+   "applicant_note_format": "", 
+   "admin_note_format": "", 
+   "applicant_note_help_text": "", 
+   "short_name": "edu_certificate", 
+   "required": true, 
+   "enabled": true, 
+   "admin_note_help_text": "", 
+   "order": 3, 
+   "name": "\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e40\u0e23\u0e35\u0e22\u0e19"
   }
  }, 
  {
@@ -87,6 +117,21 @@
    "admin_note_help_text": "\u0e01\u0e23\u0e2d\u0e01\u0e40\u0e27\u0e25\u0e32\u0e41\u0e25\u0e30\u0e27\u0e31\u0e19\u0e17\u0e35\u0e48\u0e1d\u0e32\u0e01\u0e40\u0e02\u0e49\u0e32\u0e1a\u0e31\u0e0d\u0e0a\u0e35 \u0e43\u0e19\u0e23\u0e39\u0e1b\u0e41\u0e1a\u0e1a\u0e40\u0e0a\u0e48\u0e19 17:15:38 17/11/52", 
    "order": 8, 
    "name": "\u0e2b\u0e25\u0e31\u0e01\u0e10\u0e32\u0e19\u0e43\u0e1a\u0e19\u0e33\u0e1d\u0e32\u0e01"
+  }
+ }, 
+ {
+  "pk": 9, 
+  "model": "review.reviewfield", 
+  "fields": {
+   "applicant_note_format": "", 
+   "admin_note_format": "", 
+   "applicant_note_help_text": "", 
+   "short_name": "abroad_edu_certificate", 
+   "required": false, 
+   "enabled": true, 
+   "admin_note_help_text": "", 
+   "order": 9, 
+   "name": "\u0e2b\u0e25\u0e31\u0e01\u0e10\u0e32\u0e19\u0e01\u0e32\u0e23\u0e28\u0e36\u0e01\u0e29\u0e32\u0e15\u0e48\u0e32\u0e07\u0e1b\u0e23\u0e30\u0e40\u0e17\u0e28"
   }
  }
 ]

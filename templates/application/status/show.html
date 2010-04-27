@@ -5,15 +5,11 @@
   <p>
     คุณได้ยื่นใบสมัครเรียบร้อย โดยเลือกส่งหลักฐานโดยการ{{ applicant.get_doc_submission_method_display }}
   </p>
-  <p>
-    ขณะนี้ระบบตรวจสอบสถานะอยู่ระหว่างการพัฒนา จะสามารถตรวจได้เร็ว ๆ นี้ นอกจากนี้ถ้ามีการเปลี่ยนแปลงสถานะการตรวจสอบจะมีอีเมล์แจ้งถึงผู้สมัคร
-  </p>
   <div id="applicant-info" class="application-info">
     {% include "application/include/application_info.html" %}
   </div>
 
   <p>
-    ขณะนี้ระบบสำหรับแก้ใบสมัครอยู่ระหว่างการพัฒนา จะสามารถแก้ได้เร็ว ๆ นี้<br/>
     กลับไป<a href="{% url status-index %}">หน้าสถานะใบสมัคร</a><br/>
     ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ 
     {% load adm_info %}{% adm_admin_email_link %}

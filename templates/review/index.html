@@ -15,8 +15,9 @@
 	  [<a href="{% url review-list-complete %}">ดูรายชื่อ</a>]
 	</li>
 	<li>
-	  รอตรวจสอบ: {{ stat.app_received.not_reviewed }}
+	  รอตรวจสอบ: {{ stat.app_received.not_reviewed }} 
 	  [<a href="{% url review-list-wait %}">ดูรายชื่อ</a>]
+	  (จำนวนที่รายงานอาจน้อยกว่ารายการจริง กรุณากดดูรายชื่อ)
 	</li>
       </ul>
     </li>

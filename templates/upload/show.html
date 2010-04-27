@@ -12,9 +12,6 @@
 
 {% block body %}
   {% form_steps %}
-  <p>
-    ขณะนี้ระบบตรวจสอบสถานะอยู่ระหว่างการพัฒนา จะสามารถตรวจได้เร็ว ๆ นี้ นอกจากนี้ถ้ามีการเปลี่ยนแปลงสถานะการตรวจสอบจะมีอีเมล์แจ้งถึงผู้สมัคร
-  </p>
   <small>สามารถตรวจสอบแฟ้มที่อัพโหลดไปได้ โดยกดที่รูปเล็กหรือลิงก์รูปแว่น <img width="10" height="10" src="{% media_url %}/image/Search.png"/> ข้างชื่อเอกสาร
     ระบบจะแสดงภาพตัวอย่างที่อาจจะผ่านการย่อให้ชม</small>
 
@@ -24,19 +21,23 @@
     {% with field_forms.nat_id as upload_field %}
       {% include "upload/include/field_show.html" %}
     {% endwith %}
-    {% with field_forms.picture as upload_field %}
-      {% include "upload/include/field_show.html" %}
-    {% endwith %}
+    {% comment %}
+      {% with field_forms.picture as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+    {% endcomment %}
   </div>
-  <div id="education" class="doc-upload-forms">
-    <h2>ข้อมูลการศึกษา</h2>
-    {% with field_forms.edu_certificate as upload_field %}
-      {% include "upload/include/field_show.html" %}
-    {% endwith %}
-    {% with field_forms.abroad_edu_certificate as upload_field %}
-      {% include "upload/include/field_show.html" %}
-    {% endwith %}
-  </div>
+  {% comment %}
+    <div id="education" class="doc-upload-forms">
+      <h2>ข้อมูลการศึกษา</h2>
+      {% with field_forms.edu_certificate as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+      {% with field_forms.abroad_edu_certificate as upload_field %}
+        {% include "upload/include/field_show.html" %}
+      {% endwith %}
+    </div>
+  {% endcomment %}
   <div id="scores" class="doc-upload-forms">
     <h2>คะแนนสอบ</h2>
     {% if applicant.education.uses_gat_score %}

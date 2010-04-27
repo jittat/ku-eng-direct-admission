@@ -18,7 +18,6 @@
     </div>
   {% endif %}
 
-  {% comment %}
   <!--- *************************** --->
 
   <div class="right-box">
@@ -41,7 +40,6 @@
   </div>
   
   <!--- *************************** --->
-  {% endcomment %}
 
   {% comment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
 
@@ -80,10 +78,11 @@
   <!--- ******** ADMISSION INFORMATION ******** --->
 
   <p>
-    <div class="light-frame">
-      <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
-      <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}
-    </div>
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}
+
+    {% comment %} <!--- submission result --->
+
     {% if show_final_admission_result %}
       <!--- FINAL ADMISSION RESULTS --->
       
@@ -136,6 +135,9 @@
 	</div>
       {% endif %}
     {% endif %}
+
+    {% endcomment %} <!--- submission result --->
+
   </p>
 
   <!--- ******** DOCUMENT STATUS ******** --->

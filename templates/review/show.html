@@ -34,6 +34,8 @@
     {% include "review/include/supplements.html" %}
   {% endif %}
 
+  {% comment %}
+  <!--***** Admission result ***** -->
   <div class="light-frame">
     <b>ผลการคัดเลือก:</b>
     {% if applicant.has_admission_result %}
@@ -70,6 +72,8 @@
       ไม่มีข้อมูล
     {% endif %}
   </div>
+  <!--***** Admission result ***** -->
+  {% endcomment %}
 
   <form action="" method="post">
     <table class="applicants">

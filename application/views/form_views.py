@@ -182,6 +182,9 @@ def applicant_major(request):
 @within_submission_deadline
 @active_applicant_required
 def applicant_doc_menu(request):
+    if settings.FORCE_UPLOAD_DOC:
+        return HttpResponseRedirect(reverse('upload-index'))
+
     applicant = request.applicant
     chosen = applicant.doc_submission_method != Applicant.UNDECIDED_METHOD
     #print applicant, chosen

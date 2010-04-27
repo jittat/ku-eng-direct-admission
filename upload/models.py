@@ -189,9 +189,6 @@ class AppDocs(models.Model):
         lists fields to be uploaded, and also lists optional fields.
         """
         upload_fields = [
-            'picture', 
-            'edu_certificate',
-            'abroad_edu_certificate',
             'gat_score',
             'pat1_score',
             'pat3_score',
@@ -200,5 +197,8 @@ class AppDocs(models.Model):
             'app_fee_doc']
 
         optional_fields = [
+            'picture', 
+            'edu_certificate',
+            'abroad_edu_certificate',
             'abroad_edu_certificate'
             ]
