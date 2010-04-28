@@ -97,7 +97,8 @@ class FormsTestCaseBase(TransactionTestCase):
         'uses_gat_score':'True',
         }
 
-    MAJOR_RANK_FORM_DATA = {
+    
+    MAJOR_RANK_FORM_DATA_ROUND1 = {
         'major_1':'3',
         'major_10':'--',
         'major_11':'--',
@@ -111,6 +112,24 @@ class FormsTestCaseBase(TransactionTestCase):
         'major_7':'2',
         'major_8':'--',
         'major_9':'1',
+        'submit':'เก็บข้อมูล',
+        }
+
+    # UPDATED FOR ROUND 2
+    MAJOR_RANK_FORM_DATA = {
+        'major_1':'--',
+        'major_10':'--',
+        'major_11':'--',
+        'major_12':'--',
+        'major_13':'--',
+        'major_2':'--',
+        'major_3':'--',
+        'major_4':'--',
+        'major_5':'--',
+        'major_6':'--',
+        'major_7':'--',
+        'major_8':'1',
+        'major_9':'3',
         'submit':'เก็บข้อมูล',
         }
 
@@ -141,8 +160,12 @@ class FormsTestCaseBase(TransactionTestCase):
 
     def _major_ranks_info_required(self):
         response = self.client.post('/apply/majors/',
-                                    InfoFormsTestCase.MAJOR_RANK_FORM_DATA)
-        self.assertRedirects(response,'/apply/doc_menu/')
+                                    InfoFormsTestCase.MAJOR_RANK_FORM_DATA,
+                                    follow=True)
+        if not settings.FORCE_UPLOAD_DOC:
+            self.assertRedirects(response,'/apply/doc_menu/')
+        else:
+            self.assertRedirects(response,'/doc/')
 
     def _submit_postal_doc_confirm_required(self):
         response = self.client.get('/apply/confirm/')

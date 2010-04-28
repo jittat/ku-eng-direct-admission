@@ -152,8 +152,10 @@ class ReviewTestCase(ReviewTestCaseBase):
 
         self._admin_login_required()
 
-        self.client.post('/review/show/2/',
+        self.client.get('/review/received/toggle/2/')
+        response = self.client.post('/review/show/2/',
                          ALL_PASSED_REVIEW_FORM_DATA_ANET)
+
 
         self._login_required(SOMYING_EMAIL, SOMYING_PASSWORD)
 

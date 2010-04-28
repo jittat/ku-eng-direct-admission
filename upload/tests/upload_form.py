@@ -21,8 +21,8 @@ class UploadTestCaseBase(FormsTestCaseBase):
 
     DOC_FIELDS = [
         'nat_id',
-        'picture',
-        'edu_certificate',
+        #'picture',                # Removed in Round 2
+        #'edu_certificate',        # Removed in Round 2
         'gat_score',
         'pat1_score',
         'pat3_score',
@@ -48,8 +48,11 @@ class UploadTestCase(UploadTestCaseBase):
 
     def test_seeing_upload_fields(self):
         response = self._fill_forms_upto_online_doc_upload_form()
-        self.assertContains(response, 'picture')
-        self.assertContains(response, 'edu_certificate')
+
+        # Removed in round 2
+        #self.assertContains(response, 'picture')
+        #self.assertContains(response, 'edu_certificate')
+
         self.assertContains(response, 'nat_id')
 
     def test_uploading_one_field(self):
