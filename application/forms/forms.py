@@ -185,6 +185,12 @@ class EducationForm(forms.ModelForm):
     def clean_anet(self):
         if self.cleaned_data['uses_gat_score']:
             return self.cleaned_data['anet']
+
+        if self.cleaned_data['anet'] < 35:
+            for s in ['gat','pat1','pat3']:
+                sc = self.cleaned_data[s]
+                if (sc==None) or (sc < 0) or (sc > 300):
+                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 ให้ป้อนคะแนน GAT/PAT เพื่อพิจารณาด้วย")
         return self.validate_score_in_range('anet', 'A-NET', 0, 100)
 
     class Meta:

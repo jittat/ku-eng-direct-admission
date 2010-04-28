@@ -97,6 +97,59 @@ class FormsTestCaseBase(TransactionTestCase):
         'uses_gat_score':'True',
         }
 
+    EDU_FORM_DATA_ANET_PASSED = {
+        'anet':'35',
+        'gat':'',
+        'gat_date':'',
+        'gpax':'3.45',
+        'has_graduated':'True',
+        'pat1':'',
+        'pat1_date':'',
+        'pat3':'',
+        'pat3_date':'',
+        'school_city':'เมือง',
+        'school_name':'สาธิต',
+        'school_province':'นครปฐม',
+        'submit':'เก็บข้อมูล',
+        'uses_gat_score':'False',
+        }
+
+    
+    EDU_FORM_DATA_ANET_FAILED = {
+        'anet':'10',
+        'gat':'',
+        'gat_date':'',
+        'gpax':'3.45',
+        'has_graduated':'True',
+        'pat1':'',
+        'pat1_date':'',
+        'pat3':'',
+        'pat3_date':'',
+        'school_city':'เมือง',
+        'school_name':'สาธิต',
+        'school_province':'นครปฐม',
+        'submit':'เก็บข้อมูล',
+        'uses_gat_score':'False',
+        }
+
+    
+    EDU_FORM_DATA_ANET_FAILED_WITH_GATPAT = {
+        'anet':'10',
+        'gat':'100',
+        'gat_date':'1',
+        'gpax':'3.45',
+        'has_graduated':'True',
+        'pat1':'200',
+        'pat1_date':'2',
+        'pat3':'300',
+        'pat3_date':'3',
+        'school_city':'เมือง',
+        'school_name':'สาธิต',
+        'school_province':'จันทบุรี',
+        'submit':'เก็บข้อมูล',
+        'uses_gat_score':'False',
+        }
+
     
     MAJOR_RANK_FORM_DATA_ROUND1 = {
         'major_1':'3',
@@ -219,6 +272,30 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._address_info_required()
         self._edu_info_required()
         self._major_ranks_info_required()
+
+    def test_edu_form_with_anet(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        response = self.client.post('/apply/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_PASSED)
+        self.assertRedirects(response,'/apply/majors/')
+
+    def test_edu_form_with_anet_invalid_when_score_too_low_with_no_gatpat(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        response = self.client.post('/apply/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED)
+        self.assertTemplateUsed(response,'application/education.html')
+
+    def test_edu_form_with_anet_invalid_when_score_too_low_with_gatpat(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        response = self.client.post('/apply/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED_WITH_GATPAT)
+        self.assertRedirects(response,'/apply/majors/')
 
     def test_postal_submission_confirm(self):
         self._login_required()

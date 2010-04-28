@@ -1,11 +1,13 @@
 <div id="edu-gen-info">
   <h2>ข้อมูลทั่วไป</h2>
   <table class="header-left">
-    <tr>
-      <th>{{ form.has_graduated.label_tag }}:</th>
-      <td>{{ form.has_graduated }}</td>
-      <td>{{ form.has_graduated.errors }}</td>
-    </tr>
+    {% if not accept_only_graduated %}
+      <tr>
+	<th>{{ form.has_graduated.label_tag }}:</th>
+	<td>{{ form.has_graduated }}</td>
+	<td>{{ form.has_graduated.errors }}</td>
+      </tr>
+    {% endif %}
     <tr>
       <th>{{ form.school_name.label_tag }}:</th>
       <td>{{ form.school_name }}</td>
@@ -31,14 +33,32 @@
 <div id="edu-score-box">
   <h2>คะแนนสอบ</h2>
   <div id="score-type-selection">
-    {{ form.uses_gat_score.label_tag }}
-    {{ form.uses_gat_score }}
+    คุณต้องการสมัครโดยใช้คะแนน
+    {{ form.uses_gat_score }}  
+    <span class="hint">(เลือก GAT/PAT หรือ A-NET)</span>
+  </div>
+  <div id="anet">
+    <h3>ป้อนคะแนน A-NET</h3>
+    <table>
+      <tr>
+	<td>คะแนนวิชาความถนัดทางวิศวกรรม {{ form.anet }}</td>
+	<td>{{ form.anet.errors }}</td>
+      </tr>
+    </table>
+  </div>
+  <div id="anet-needed-gatpat" style="background: #ffe0e0;">
+    <center>
+      ในกรณีที่ผู้สมัครได้คะแนน A-NET ต่ำกว่า 35 คะแนน
+      ผู้สมัครจะมีสิทธิ์สมัครก็ต่อเมื่อมีคะแนนมาตรฐานปกติไม่น้อยกว่า 5,000 คะแนน<br/>
+      ในกรณีดังกล่าว ให้ระบุคะแนนสอบ GAT/PAT ประกอบด้วย
+    </center>
   </div>
   <div id="gatpat">
+    <h3>ป้อนคะแนน GAT/PAT</h3>
     <span class="hint">
       สำหรับแต่ละวิชา ให้เลือกคะแนนครั้งที่ดีที่สุด 
       อย่างไรก็ตาม ครั้งที่ดีที่สุดไม่จำเป็นต้องเป็นครั้งที่ได้คะแนนดิบสูงที่สุดเสมอไป 
-      <a href="http://admission.eng.ku.ac.th/information/2553/direct/scoring" target="_blank">อ่านรายละเอียดการคิดคะแนน</a> และ<a href="http://admission.eng.ku.ac.th/information/2553/direct/score-cal" target="_blank">ทดลองคิดคะแนน</a><br/>
+      <a href="http://admission.eng.ku.ac.th/information/2553/direct/scoring2" target="_blank">อ่านรายละเอียดการคิดคะแนน</a> และ<a href="http://admission.eng.ku.ac.th/information/2553/direct/score-cal2" target="_blank">ทดลองคิดคะแนน</a><br/>
       <b>หมายเหตุ:</b> สำหรับคะแนนสอบเดือน ก.ค. 52 
       ให้ใช้คะแนนที่ประกาศเมื่อวันที่ 1 ต.ค. 52 
       หรือใช้คะแนนล่าสุดที่ประกาศในเว็บของ สทศ.
@@ -64,17 +84,9 @@
       </tr>
     </table>
   </div>
-  <div id="anet">
-    <table>
-      <tr>
-	<th>A-NET:</th> 
-	<td>คะแนนวิชาความถนัดทางวิศวกรรม {{ form.anet }}</td>
-	<td>{{ form.anet.errors }}</td>
-      </tr>
-    </table>
-  </div>
 </div>
 <script>
+  var graduated_only = {% if accept_only_graduated %}true{% else %}false{% endif %};
   function allowOnlyGATPAT() {
     $("#id_uses_gat_score").val('True');
     $("#score-type-selection").hide();
@@ -85,10 +97,12 @@
   function showGATPAT() {
     $("#edu-score-box #gatpat").show();
     $("#edu-score-box #anet").hide();
+    $("#anet-needed-gatpat").hide();
   }
   function showANET() {
     $("#edu-score-box #anet").show();
-    $("#edu-score-box #gatpat").hide();
+    $("#anet-needed-gatpat").show();
+    //$("#edu-score-box #gatpat").hide();
   }
   function updateScoreFields() {
     if($("#id_uses_gat_score").val()=='True')
@@ -97,7 +111,7 @@
       showANET();
   }
   function updateScoreSelectionField() {
-    if($("#id_has_graduated").val() == 'True') {
+    if(graduated_only || ($("#id_has_graduated").val() == 'True')) {
       allowAllScoreType();
     } else {
       allowOnlyGATPAT();

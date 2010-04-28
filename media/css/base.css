@@ -121,6 +121,12 @@ ul.errorlist {
 
 #edu-form #edu-score-box input {
   width: 50px; }
+#edu-form #edu-score-box h3 {
+  font-size: 105%;
+  margin: 0;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  border-left: 5px solid gray; }
 
 .doc-upload-forms {
   clear: both; }

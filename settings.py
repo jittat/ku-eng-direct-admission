@@ -141,6 +141,9 @@ SUBMISSION_DEADLINE = datetime(2010,5,10)
 SUPPLEMENT_DEADLINE = datetime(2010,5,10)
 ADMISSION_MAJOR_PREF_DEADLINE = datetime(2010,2,3,23,59,59)
 
+ACCEPT_ONLY_GRADUATED = True
+VERIFIY_MINIMUM_SCORE = True
+
 # path for storing uploaded images (for documents)
 FORCE_UPLOAD_DOC = True
 UPLOADED_DOC_PATH = os.path.join(PROJECT_DIR,'uploaded_docs')

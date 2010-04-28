@@ -568,6 +568,7 @@ class Education(models.Model):
     uses_gat_score = models.BooleanField(
         choices=((True,u"GAT/PAT"),
                 (False,u"ANET")),
+        default=True,
         verbose_name=u"คะแนนที่ใช้สมัคร")
     gpax = models.FloatField(verbose_name="GPAX")
     gat = models.FloatField(blank=True, null=True,

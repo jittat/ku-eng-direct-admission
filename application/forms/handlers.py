@@ -2,7 +2,7 @@
 
 from django.conf import settings
 
-from application.models import Major, MajorPreference
+from application.models import Major, MajorPreference, Education
 from application.models import Address, ApplicantAddress
 from application.forms import EducationForm, PersonalInfoForm
 from application.forms import AddressForm
@@ -92,6 +92,11 @@ def handle_personal_info_form(request, old_info, applicant=None):
                                   applicant)
 
 def handle_education_form(request, old_education, applicant=None):
+    if settings.ACCEPT_ONLY_GRADUATED:
+        if old_education==None:
+            old_education = Education(has_graduated=True)
+        else:
+            old_education.has_graduated = True;
     return handle_basic_form_save(EducationForm,
                                   'educational_info',
                                   request,

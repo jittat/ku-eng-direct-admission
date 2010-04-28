@@ -128,9 +128,12 @@ def applicant_education(request):
     if result:
         return HttpResponseRedirect(reverse('apply-majors'))
 
+    accept_only_graduated = settings.ACCEPT_ONLY_GRADUATED
+
     form_step_info = build_form_step_info(2,applicant)
     return render_to_response('application/education.html', 
                               { 'form': form,
+                                'accept_only_graduated': accept_only_graduated,
                                 'form_step_info': form_step_info })
 
 
