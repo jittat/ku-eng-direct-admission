@@ -43,7 +43,7 @@ class Migration:
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_submitted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '10'})
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '10', 'default': '""'})
         },
         'application.applicantaddress': {
             'applicant': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'address'", 'unique': 'True', 'to': "orm['application.Applicant']"}),

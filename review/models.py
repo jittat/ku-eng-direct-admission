@@ -117,3 +117,14 @@ class ReviewFieldResult(models.Model):
                 return True
         return False
 
+
+class CompletedReviewField(models.Model):
+    national_id = models.CharField(max_length=20)
+    review_field = models.ForeignKey(ReviewField)
+    
+    @staticmethod
+    def find_completed_review_fields_for_applicant(applicant):
+        national_id = applicant.personal_info.national_id
+        return CompletedReviewField.objects.filter(national_id=national_id)
+
+

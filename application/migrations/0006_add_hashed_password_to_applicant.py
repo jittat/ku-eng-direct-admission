@@ -9,7 +9,7 @@ class Migration:
     def forwards(self, orm):
         
         # Adding field 'Applicant.hashed_password'
-        db.add_column('application_applicant', 'hashed_password', models.CharField(max_length=100))
+        db.add_column('application_applicant', 'hashed_password', models.CharField(max_length=100,default=''))
         
     
     

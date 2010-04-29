@@ -32,3 +32,14 @@ class IntegerListField(models.Field):
     def get_db_prep_value(self, value):
         return ','.join([str(r) for r in value])
 
+
+# south introspection
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules(
+    [(
+            [IntegerListField],
+            [],
+            {},
+            ),
+     ], ["^application\.fields\.IntegerListField"])
+

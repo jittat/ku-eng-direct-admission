@@ -125,7 +125,7 @@ class Migration:
             'edu_certificate': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'gat_score': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'last_uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True', 'default':'"2009-01-01 00:00"'}),
             'nat_id': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'num_uploaded_today': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'pat1_score': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),

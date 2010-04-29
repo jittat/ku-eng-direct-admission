@@ -67,7 +67,7 @@ class Migration:
             'school_city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'school_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'school_province': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
-            'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True', 'default': '"2009-01-01 00:00"'}),
             'uses_gat_score': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'})
         },
         'application.gpexamdate': {

@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.flatpages',
+    'django_extensions',
     'south',
     'mailer',
     'adm.application',

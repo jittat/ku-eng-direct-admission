@@ -105,7 +105,7 @@ class Migration:
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         'application.registration': {
-            'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
+            'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True', 'default': '""'}),
             'applicant': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'registrations'", 'to': "orm['application.Applicant']"}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

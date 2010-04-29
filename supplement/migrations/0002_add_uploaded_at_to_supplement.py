@@ -39,7 +39,7 @@ class Migration:
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'supplement_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['supplement.SupplementType']"}),
-            'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
+            'uploaded_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True', 'default': '"2009-01-01 00:00"'})
         },
         'supplement.supplementtype': {
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

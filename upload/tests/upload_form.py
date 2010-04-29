@@ -243,3 +243,23 @@ class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
             self.assertRedirects(response, '/apply/status/')
         return response
         
+class CompletedReviewFieldTestCase(UploadTestCaseBase):
+
+    fixtures = ['application_completed_review_field']
+
+    def setUp(self):
+        pass
+
+    def _login_required(self):
+        response = self.client.post('/apply/login/',
+                                    {'email': 'test@test.com',
+                                     'password': 'jzzow'})
+        self.assertRedirects(response,'/apply/personal/')
+
+    def test_shows_only_unreviewed_fields(self):
+        self._login_required()
+        
+        response = self.client.get('/doc/')
+        self.assertContains(response, 'nat_id')
+        self.assertNotContains(response, 'app_fee_doc')
+        
