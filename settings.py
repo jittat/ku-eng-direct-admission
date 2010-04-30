@@ -129,6 +129,10 @@ PHPMAILER_KEY = ''
 ########################
 ADMISSION_YEAR = 53
 
+# This is crucial for round 2 admission to ensure distinct application
+# numbers from round 1.
+SUBMISSION_METHOD_APPLICATION_ID_OFFSET = 2
+
 # maximum number of choices
 MAX_MAJOR_RANK = 3
 

@@ -182,3 +182,58 @@ class ReviewTestCase(ReviewTestCaseBase):
         self.assertContains(response, "หลักฐานใบนำฝาก")
         self.assertContains(response, "หมายเลขไม่มี")
 
+class ReviewForApplicantsWithCompletedReviewFieldsTestCase(ReviewTestCaseBase):
+
+    fixtures = ['application_completed_review_field', 
+                'submissions_completed_review_field',
+                'admin_user', 
+                'review_field',
+                'major']
+
+    def setUp(self):
+        # make sure the when testing, the app is using django's email
+        # system.
+        from django.core.mail import send_mail
+
+        email.send_mail = send_mail 
+
+        self.org_email_setting = settings.FAKE_SENDING_EMAIL
+        settings.FAKE_SENDING_EMAIL = False
+
+
+    def tearDown(self):
+        settings.FAKE_SENDING_EMAIL = self.org_email_setting
+
+
+    def test_completed_review_field_not_show_in_review_page(self):
+        self._admin_login_required()
+
+        response = self.client.get('/review/show/2/')
+
+        self.assertNotContains(response, 'id_app_fee_doc-is_passed')
+ 
+    def test_review_status_failed(self):
+        self._admin_login_required()
+
+        # this applicant uses GAT/PAT score, so by submiting ANET data
+        # the review should fail.
+
+        REVIEW_FORM_DATA_WITHOUT_GATPAT = dict(ALL_PASSED_REVIEW_FORM_DATA_ANET)
+        response = self.client.post('/review/show/2/',
+                                    REVIEW_FORM_DATA_WITHOUT_GATPAT,
+                                    follow=True)
+
+        self.assertContains(response,
+                            'จัดเก็บและแจ้งผลการตรวจว่าหลักฐานไม่ผ่านกับผู้สมัครแล้ว')
+
+    def test_review_status_successful(self):
+        self._admin_login_required()
+
+        # update review, using data without app_fee_doc, update should
+        # still success because this field is already reviewed.
+        response = self.client.post('/review/show/2/',
+                                    DEPOSITE_MISSING_REVIEW_FORM_DATA_GATPAT,
+                                    follow=True)
+
+        self.assertContains(response,
+                            'จัดเก็บและแจ้งผลการตรวจว่าผ่านกับผู้สมัครแล้ว')

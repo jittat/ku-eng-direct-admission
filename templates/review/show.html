@@ -96,24 +96,31 @@
               {% endwith %}
             {% endif %}
 	  </td>
-	  <td>{{ item.form.is_passed }}</td>
-	  <td>
-	    {{ item.form.applicant_note }}
-	    {% if f.applicant_note_help_text %}
-    	      <div class="help-text">{{ f.applicant_note_help_text }}</div>
-	    {% endif %}
-	  </td>
-	  <td>
-	    {{ item.form.internal_note }}
-	    {% if f.admin_note_help_text %}
-  	      <div class="help-text">{{ f.admin_note_help_text }}</div>
-            {% endif %}
-	  </td>
-	  <td>
-	    {% if not f.required %}
-	      {{ item.form.is_submitted }}
-	    {% endif %}
-	  </td>
+	  {% if item.completed %}
+	    <td></td>
+	    <td>เคยผ่านการตรวจแล้ว</td>
+	    <td></td>
+	    <td></td>
+          {% else %}
+  	    <td>{{ item.form.is_passed }}</td>
+	    <td>
+	      {{ item.form.applicant_note }}
+	      {% if f.applicant_note_help_text %}
+    	        <div class="help-text">{{ f.applicant_note_help_text }}</div>
+	      {% endif %}
+	    </td>
+	    <td>
+	      {{ item.form.internal_note }}
+	      {% if f.admin_note_help_text %}
+  	        <div class="help-text">{{ f.admin_note_help_text }}</div>
+              {% endif %}
+	    </td>
+	    <td>
+	      {% if not f.required %}
+	        {{ item.form.is_submitted }}
+	      {% endif %}
+	    </td>
+          {% endif %}
 	</tr>
 	{% endwith %}
       {% endfor %}

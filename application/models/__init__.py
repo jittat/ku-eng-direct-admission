@@ -76,7 +76,23 @@ class Applicant(models.Model):
         if save:
             if (not smart) or (old != 1):
                 self.save()
-            
+
+
+    def refresh_has_related_model(self):
+        self.has_related_model = []
+        new_related_model = [0 for i in range(len(Applicant.RELATED_MODELS))]
+        if self.has_personal_info():
+            new_related_model[Applicant.RELATED_MODELS['personal_info']] = 1
+        if self.has_address():
+            new_related_model[Applicant.RELATED_MODELS['address']] = 1
+        if self.has_educational_info():
+            new_related_model[Applicant.RELATED_MODELS['educational_info']] = 1
+        if self.has_major_preference():
+            new_related_model[Applicant.RELATED_MODELS['major_preference']] = 1
+        if self.get_applicant_docs_or_none()!=None:
+            new_related_model[Applicant.RELATED_MODELS['appdocs']] = 1
+        self.has_related_model = new_related_model
+        self.save()
 
     class DuplicateSubmissionError(Exception):
         pass
@@ -308,9 +324,11 @@ class Applicant(models.Model):
     def ticket_number(self):
         try:
             application_id = self.submission_info.applicantion_id
+            method_id = (self.doc_submission_method + 
+                         settings.SUBMISSION_METHOD_APPLICATION_ID_OFFSET)
             return ("%(year)d%(method)d%(id)05d" % 
                     { 'year': settings.ADMISSION_YEAR,
-                      'method': self.doc_submission_method,
+                      'method': method_id,
                       'id': application_id })
         except SubmissionInfo.DoesNotExist:
             return None

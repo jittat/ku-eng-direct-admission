@@ -1,0 +1,36 @@
+[
+ {
+  "pk": 1, 
+  "model": "application.submissioninfo", 
+  "fields": {
+   "doc_reviewed_complete": false, 
+   "doc_received_at": "2010-04-29 22:51:34", 
+   "submitted_at": "2010-04-29 22:51:34", 
+   "doc_reviewed_at": "2010-04-29 23:49:25", 
+   "applicant": 2, 
+   "resubmitted_at": null, 
+   "last_updated_at": null, 
+   "has_been_reviewed": true, 
+   "is_resubmitted": false, 
+   "salt": "adcxntbdqv"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "upload.appdocs", 
+  "fields": {
+   "picture": "", 
+   "edu_certificate": "", 
+   "pat1_score": "doc/2/pat1_score_9.png", 
+   "last_uploaded_at": "2010-04-29 23:49:45", 
+   "applicant": 2, 
+   "abroad_edu_certificate": "", 
+   "app_fee_doc": "",
+   "pat3_score": "doc/2/pat3_score.gif", 
+   "num_uploaded_today": 5, 
+   "anet_score": "", 
+   "nat_id": "doc/2/nat_id.jpg", 
+   "gat_score": "doc/2/gat_score.jpg"
+  }
+ }
+]

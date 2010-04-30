@@ -106,9 +106,11 @@
 $(document).ready(function() {
   DocSubmission.progress_url = "{% url upload-progress %}";
   {% for f in field_forms.keys %}
-    $('#upload-form-{{ f }}').submit(function() {
-      return DocSubmission.handleFormSubmit(this,"{{ f }}");
-    });
+    {% if not f in completed_review_field_names %}
+      $('#upload-form-{{ f }}').submit(function() {
+        return DocSubmission.handleFormSubmit(this,"{{ f }}");
+      });
+    {% endif %}
   {% endfor %}
   $("#upload-detail-link").click(function() {
     $("#upload-detail-link").html("กดที่นี่เพื่อเปิด/ปิดรายละเอียด");

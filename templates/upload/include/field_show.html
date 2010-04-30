@@ -1,10 +1,15 @@
 <div class="upload-item">
-  {% if upload_field.has_thumbnail %}
-    <div class="thumbnail">
-      <a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% url upload-thumbnail upload_field.name %}?{{ upload_field.random_string }}"/></a>
+  {% if upload_field.field.name in completed_review_field_names %}
+    ไม่ต้องอัพโหลด{{ upload_field.field.verbose_name }} เนื่องจากได้ผ่านการตรวจหลักฐานในการสมัครรอบก่อนแล้ว
+  {% else %}
+
+    {% if upload_field.has_thumbnail %}
+      <div class="thumbnail">
+        <a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% url upload-thumbnail upload_field.name %}?{{ upload_field.random_string }}"/></a>
+      </div>
+    {% endif %}
+    <div class="doc-upload-form">
+      {{ upload_field.field.verbose_name }}{% if upload_field.has_thumbnail %} <span class="upload-doc-view"><a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% load adm_media %}{% media_url %}/image/Search.png"/></a></span>{% endif %}<br/>
     </div>
   {% endif %}
-  <div class="doc-upload-form">
-    {{ upload_field.field.verbose_name }}{% if upload_field.has_thumbnail %} <span class="upload-doc-view"><a href="{% url upload-preview upload_field.name %}?{{ upload_field.random_string }}" rel="facebox"><img src="{% load adm_media %}{% media_url %}/image/Search.png"/></a></span>{% endif %}<br/>
-  </div>
 </div>

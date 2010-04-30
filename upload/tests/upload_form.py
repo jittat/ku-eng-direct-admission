@@ -6,6 +6,7 @@ from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 
 from application.models import Applicant, Registration
+from review.models import ReviewField, CompletedReviewField
 from commons import email
 
 from application.tests.info_forms import FormsTestCaseBase
@@ -53,7 +54,7 @@ class UploadTestCase(UploadTestCaseBase):
         #self.assertContains(response, 'picture')
         #self.assertContains(response, 'edu_certificate')
 
-        self.assertContains(response, 'nat_id')
+        self.assertContains(response, 'upload-form-nat_id')
 
     def test_uploading_one_field(self):
         self._fill_forms_upto_online_doc_upload_form()
@@ -245,10 +246,9 @@ class ResubmissionTestCase(ReviewTestCaseBase, UploadTestCaseBase):
         
 class CompletedReviewFieldTestCase(UploadTestCaseBase):
 
-    fixtures = ['application_completed_review_field']
-
-    def setUp(self):
-        pass
+    fixtures = ['application_completed_review_field', 
+                'review_field', 
+                'major']
 
     def _login_required(self):
         response = self.client.post('/apply/login/',
@@ -256,10 +256,73 @@ class CompletedReviewFieldTestCase(UploadTestCaseBase):
                                      'password': 'jzzow'})
         self.assertRedirects(response,'/apply/personal/')
 
-    def test_shows_only_unreviewed_fields(self):
+    def _set_all_fields_as_reviewed(self):
+        for rf in ReviewField.objects.all():
+            cf = CompletedReviewField(national_id='0000000000000',
+                                      review_field=rf)
+            cf.save()
+
+    def test_should_show_only_unreviewed_fields(self):
         self._login_required()
         
         response = self.client.get('/doc/')
-        self.assertContains(response, 'nat_id')
-        self.assertNotContains(response, 'app_fee_doc')
+
+        self.assertContains(response, 'upload-form-nat_id')
+        self.assertNotContains(response, 'upload-form-app_fee_doc')
         
+
+    def test_should_not_allow_submit_on_incomplete_upload(self):
+        self._login_required()
+        response = self._upload_one_field('/doc/upload/nat_id/')
+        self.assertContains(response, '/doc/preview/nat_id')
+        
+        response = self.client.post('/doc/submit/',
+                                    {'submit': 'ส่งใบสมัคร'})
+        self.assertContains(response,'doc-error')
+
+    def test_should_submit_on_complete_upload_without_reviewed_field(self):
+        self._login_required()
+        response = self._upload_one_field('/doc/upload/nat_id/')
+        response = self._upload_one_field('/doc/upload/gat_score/')
+        response = self._upload_one_field('/doc/upload/pat1_score/')
+        response = self._upload_one_field('/doc/upload/pat3_score/')
+
+        response = self.client.post('/doc/submit/',
+                                    {'submit': 'ส่งใบสมัคร'})
+        self.assertRedirects(response,'/doc/confirm/')
+
+    def test_should_submit_and_confirm_on_complete_upload_without_reviewed_field(self):
+        self._login_required()
+        response = self._upload_one_field('/doc/upload/nat_id/')
+        response = self._upload_one_field('/doc/upload/gat_score/')
+        response = self._upload_one_field('/doc/upload/pat1_score/')
+        response = self._upload_one_field('/doc/upload/pat3_score/')
+
+        response = self.client.post('/doc/submit/',
+                                    {'submit': 'ส่งใบสมัคร'})
+        self.assertRedirects(response,'/doc/confirm/')
+
+        response = self.client.post('/doc/confirm/',
+                                    {'submit': 'ยืนยัน'})
+        self.assertTemplateUsed(response,'upload/submission_success.html')
+        self.assertEquals(len(mail.outbox),1)
+
+    def test_should_redirect_to_confirm_when_all_fields_are_reviewed(self):
+        self._set_all_fields_as_reviewed()
+        self._login_required()
+        
+        response = self.client.get('/doc/', follow=True)
+        self.assertRedirects(response,'/doc/confirm/')
+        
+
+    def test_should_submit_and_confirm_on_complete_upload_when_all_fields_are_reviewed(self):
+        self._set_all_fields_as_reviewed()
+        self._login_required()
+        response = self.client.get('/doc/', follow=True)
+        self.assertRedirects(response,'/doc/confirm/')
+
+        response = self.client.post('/doc/confirm/',
+                                    {'submit': 'ยืนยัน'})
+        self.assertTemplateUsed(response,'upload/submission_success.html')
+        self.assertEquals(len(mail.outbox),1)
+

@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 
 from application.models import Applicant, Education
+from review.models import CompletedReviewField
 
 uploaded_storage = FileSystemStorage(location=settings.UPLOADED_DOC_PATH)
 
@@ -108,7 +109,7 @@ class AppDocs(models.Model):
         image = self.__getattribute__(field_name)
         return image.path
 
-    def get_upload_fields(self):
+    def get_upload_fields(self, excluded=[]):
         applicant = self.applicant
         field_list = list(AppDocs.FormMeta.upload_fields)
         try:
@@ -122,17 +123,27 @@ class AppDocs(models.Model):
             field_list.remove('gat_score')
             field_list.remove('pat1_score')
             field_list.remove('pat3_score')
+
+        # remove some fields
+        for review_field in excluded:
+            fname = review_field.short_name
+            try:
+                field_list.remove(fname)
+            except ValueError:
+                pass
+
         return field_list
 
-    def get_required_fields(self):
-        fields = self.get_upload_fields()
+    def get_required_fields(self, excluded=[]):
+        fields = self.get_upload_fields(excluded)
         for f in AppDocs.FormMeta.optional_fields:
             if f in fields:
                 fields.remove(f)        
         return fields
 
     def get_missing_fields(self, find_one=False):
-        required_fields = self.get_required_fields()
+        reviewed_fields = CompletedReviewField.get_for_applicant(self.applicant)
+        required_fields = self.get_required_fields(excluded=reviewed_fields)
         missing = []
         for f in required_fields:
             if self.__getattribute__(f).name == '':

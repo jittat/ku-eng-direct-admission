@@ -20,7 +20,7 @@ from application.views.form_views import redirect_to_applicant_first_page
 
 from application.models import Applicant
 
-from review.models import ReviewField, ReviewFieldResult
+from review.models import ReviewField, ReviewFieldResult, CompletedReviewField
 
 from models import AppDocs
 from models import get_field_thumbnail_filename, get_field_preview_filename
@@ -155,10 +155,21 @@ def index(request, missing_fields=None):
         request.applicant.add_related_model('appdocs', 
                                             save=True)
 
+    completed_review_fields = CompletedReviewField.get_for_applicant(request.applicant)
+    completed_review_field_names = [rf.short_name 
+                                    for rf 
+                                    in completed_review_fields]
+
     fields = docs.get_upload_fields()
+    required_fields = docs.get_required_fields(
+        excluded=completed_review_fields)
+
+    if len(required_fields) == 0:
+        return HttpResponseRedirect(reverse('upload-confirm'))
+
     field_forms = populate_upload_field_forms(docs, 
                                               fields,
-                                              docs.get_required_fields())
+                                              required_fields)
 
     form_step_info = { 'steps': UPLOAD_FORM_STEPS,
                        'current_step': 0,
@@ -169,7 +180,10 @@ def index(request, missing_fields=None):
                                 'form_step_info': form_step_info,
                                 'notice': notice,
                                 'missing_fields': missing_fields,
-                                'uploaded_field_error': uploaded_field_error })
+                                'completed_review_field_names':
+                                    completed_review_field_names,
+                                'uploaded_field_error':
+                                    uploaded_field_error })
 
 
 UPDATE_FORM_STEPS = [
@@ -427,11 +441,18 @@ def confirm(request):
     if request.method!='POST':
         docs = request.applicant.get_applicant_docs_or_none()
         fields = docs.get_upload_fields()
+        completed_review_fields = CompletedReviewField.get_for_applicant(request.applicant)
+        completed_review_field_names = [rf.short_name 
+                                        for rf 
+                                        in completed_review_fields]
+
         field_forms = populate_upload_field_forms(docs, fields)
 
         return render_to_response("upload/confirm.html",
                                   { 'applicant': request.applicant,
-                                    'field_forms': field_forms })
+                                    'field_forms': field_forms,
+                                    'completed_review_field_names':
+                                        completed_review_field_names })
 
     else:
         if not 'submit' in request.POST:

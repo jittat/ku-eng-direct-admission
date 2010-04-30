@@ -25,7 +25,7 @@ from commons.email import send_resubmission_reminder_by_email
 
 from commons.models import Log
 
-from models import ReviewField, ReviewFieldResult
+from models import ReviewField, ReviewFieldResult, CompletedReviewField
 from supplement.models import Supplement
 
 def find_basic_statistics():
@@ -285,10 +285,12 @@ def prepare_applicant_forms(applicant, names, results, post_data=None):
                                       initial=initial))
     return forms
 
-def build_review_data(fields, results, forms):
+def build_review_data(fields, results, forms, completed_review_fields):
+    completed_names = [f.short_name for f in completed_review_fields]
     data = [ { 'field': field,
                'result': result,
-               'form': form } 
+               'form': form,
+               'completed': field.short_name in completed_names } 
              for field, result, form 
              in zip(fields, results, forms) ]
 
@@ -296,10 +298,11 @@ def build_review_data(fields, results, forms):
 
 def prepare_applicant_review_data(applicant):
     field_names = get_applicant_doc_name_list(applicant)
+    completed_review_fields = CompletedReviewField.get_for_applicant(applicant)
     fields = prepare_applicant_review_fields(field_names)
     results = prepare_applicant_review_results(applicant, field_names)
     forms = prepare_applicant_forms(applicant, field_names, results)
-    return build_review_data(fields, results, forms)
+    return build_review_data(fields, results, forms, completed_review_fields)
 
 @login_required
 def review_document(request, applicant_id, return_to_manual=False):
@@ -326,6 +329,9 @@ def review_document(request, applicant_id, return_to_manual=False):
         results = prepare_applicant_review_results(applicant, field_names)
         forms = prepare_applicant_forms(applicant, field_names, results, request.POST)
 
+        completed_review_fields = CompletedReviewField.get_for_applicant(applicant)
+        completed_names = [rf.short_name for rf in completed_review_fields]
+
         error = False
         for f in forms:
             if not f.is_valid():
@@ -335,6 +341,10 @@ def review_document(request, applicant_id, return_to_manual=False):
             failed_fields = []
 
             for field, result, form in zip(fields, results, forms):
+                if field.short_name in completed_names:
+                    # skip completed review fields
+                    continue
+
                 if not result:
                     old_value = '-'    # for logging
                     result = ReviewFieldResult()
