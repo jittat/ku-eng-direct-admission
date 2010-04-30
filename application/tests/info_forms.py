@@ -298,6 +298,9 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self.assertRedirects(response,'/apply/majors/')
 
     def test_postal_submission_confirm(self):
+        old_upload_doc_setting = settings.FORCE_UPLOAD_DOC
+        settings.FORCE_UPLOAD_DOC = False
+
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
@@ -305,7 +308,13 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._major_ranks_info_required()
         self._submit_postal_doc_confirm_required()
 
+        settings.FORCE_UPLOAD_DOC = old_upload_doc_setting
+
+
     def test_postal_submission(self):
+        old_upload_doc_setting = settings.FORCE_UPLOAD_DOC
+        settings.FORCE_UPLOAD_DOC = False
+
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
@@ -314,10 +323,15 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._submit_postal_doc_confirm_required()
         self._submit_postal_confirm_required()
 
-    def test_edu_info_update(self):
+        settings.FORCE_UPLOAD_DOC = old_upload_doc_setting
+
+    def test_edu_info_update_postal_submission(self):
         old_grace_period_end = settings.SUBMISSION_CHANGE_GRACE_PERIOD_END
         settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = (
             datetime.now() + timedelta(1))
+
+        old_upload_doc_setting = settings.FORCE_UPLOAD_DOC
+        settings.FORCE_UPLOAD_DOC = False
 
         self._login_required()
         self._personal_info_required()
@@ -328,6 +342,7 @@ class InfoFormsTestCase(FormsTestCaseBase):
         self._submit_postal_confirm_required()
         self._edu_update_required()
 
+        settings.FORCE_UPLOAD_DOC = old_upload_doc_setting
         settings.SUBMISSION_CHANGE_GRACE_PERIOD_END = old_grace_period_end
 
     def test_online_submission_form(self):
