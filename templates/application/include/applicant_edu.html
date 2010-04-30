@@ -16,6 +16,9 @@
 	  <li>PAT3: {{ education.pat3 }} คะแนน สอบเมื่อ {{ education.pat3_date }}</li>
       {% else %}
         สมัครโดยใช้คะแนน A-NET {{ education.anet }} คะแนน
+	{% if education.anet_total_score %}
+          <br/>คะแนนรวม {{ education.anet_total_score }} คะแนน
+        {% endif %}
       {% endif %}
     </li>
   </ul>

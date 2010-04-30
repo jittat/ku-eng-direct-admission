@@ -16,7 +16,7 @@ review_fields = dict([(r.short_name, r)
                       for r in ReviewField.objects.all()])
 
 for line in open(file_name):
-    items = line.split(',')
+    items = line.strip().split(',')
     nat_id = items[0]
     fields = items[1:]
 
