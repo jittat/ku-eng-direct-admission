@@ -168,31 +168,21 @@ class EducationForm(forms.ModelForm):
             raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
         return score
 
-    def clean_gat(self):
-        if not self.cleaned_data['uses_gat_score']:
-            return self.cleaned_data['gat']
-        return self.validate_score_in_range('gat', 'GAT', 0, 300)
-
-    def clean_pat1(self):
-        if not self.cleaned_data['uses_gat_score']:
-            return self.cleaned_data['pat1']
-        return self.validate_score_in_range('pat1', 'PAT1', 0, 300)
-
-    def clean_pat3(self):
-        if not self.cleaned_data['uses_gat_score']:
-            return self.cleaned_data['pat3']
-        return self.validate_score_in_range('pat3', 'PAT3', 0, 300)
-
-    def clean_anet(self):
-        if self.cleaned_data['uses_gat_score']:
-            return self.cleaned_data['anet']
-
-        if self.cleaned_data['anet'] < 35:
-            for s in ['gat','pat1','pat3']:
-                sc = self.cleaned_data[s]
-                if (sc==None) or (sc < 0) or (sc > 300):
-                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 ให้ป้อนคะแนน GAT/PAT เพื่อพิจารณาด้วย")
-        return self.validate_score_in_range('anet', 'A-NET', 0, 100)
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data['uses_gat_score']:
+            self.validate_score_in_range('gat', 'GAT', 0, 300)
+            self.validate_score_in_range('pat1', 'PAT1', 0, 300)
+            self.validate_score_in_range('pat3', 'PAT3', 0, 300)
+        else:
+            self.validate_score_in_range('anet', 'A-NET', 0, 100)
+            if cleaned_data['anet'] < 35:
+                sc = self.cleaned_data['anet_total_score']
+                if sc==None:
+                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 ให้ป้อนคะแนนรวมเพื่อพิจารณาด้วย")
+                elif sc < 5000:
+                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 จะต้องมีคะแนนรวมอย่างน้อย 5000")
+        return cleaned_data
 
     class Meta:
         model = Education

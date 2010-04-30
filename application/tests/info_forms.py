@@ -115,8 +115,9 @@ class FormsTestCaseBase(TransactionTestCase):
         }
 
     
-    EDU_FORM_DATA_ANET_FAILED = {
+    EDU_FORM_DATA_ANET_FAILED_WITHOUT_TOTAL_SCORE = {
         'anet':'10',
+        'anet_total_score':'',
         'gat':'',
         'gat_date':'',
         'gpax':'3.45',
@@ -133,8 +134,28 @@ class FormsTestCaseBase(TransactionTestCase):
         }
 
     
-    EDU_FORM_DATA_ANET_FAILED_WITH_GATPAT = {
+    EDU_FORM_DATA_ANET_FAILED_WITH_TOTAL_SCORE_PASSED = {
         'anet':'10',
+        'anet_total_score':'5000',
+        'gat':'100',
+        'gat_date':'1',
+        'gpax':'3.45',
+        'has_graduated':'True',
+        'pat1':'200',
+        'pat1_date':'2',
+        'pat3':'300',
+        'pat3_date':'3',
+        'school_city':'เมือง',
+        'school_name':'สาธิต',
+        'school_province':'จันทบุรี',
+        'submit':'เก็บข้อมูล',
+        'uses_gat_score':'False',
+        }
+
+    
+    EDU_FORM_DATA_ANET_FAILED_WITH_TOTAL_SCORE_FAILED = {
+        'anet':'10',
+        'anet_total_score':'4999',
         'gat':'100',
         'gat_date':'1',
         'gpax':'3.45',
@@ -281,21 +302,29 @@ class InfoFormsTestCase(FormsTestCaseBase):
                                     InfoFormsTestCase.EDU_FORM_DATA_ANET_PASSED)
         self.assertRedirects(response,'/apply/majors/')
 
-    def test_edu_form_with_anet_invalid_when_score_too_low_with_no_gatpat(self):
+    def test_edu_form_with_anet_invalid_when_score_too_low_with_no_total_score(self):
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
         response = self.client.post('/apply/education/',
-                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED)
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED_WITHOUT_TOTAL_SCORE)
         self.assertTemplateUsed(response,'application/education.html')
 
-    def test_edu_form_with_anet_invalid_when_score_too_low_with_gatpat(self):
+    def test_edu_form_with_anet_invalid_when_score_too_low_with_total_score_passed(self):
         self._login_required()
         self._personal_info_required()
         self._address_info_required()
         response = self.client.post('/apply/education/',
-                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED_WITH_GATPAT)
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED_WITH_TOTAL_SCORE_PASSED)
         self.assertRedirects(response,'/apply/majors/')
+
+    def test_edu_form_with_anet_invalid_when_score_too_low_with_total_score_failed(self):
+        self._login_required()
+        self._personal_info_required()
+        self._address_info_required()
+        response = self.client.post('/apply/education/',
+                                    InfoFormsTestCase.EDU_FORM_DATA_ANET_FAILED_WITH_TOTAL_SCORE_FAILED)
+        self.assertTemplateUsed(response,'application/education.html')
 
     def test_postal_submission_confirm(self):
         old_upload_doc_setting = settings.FORCE_UPLOAD_DOC

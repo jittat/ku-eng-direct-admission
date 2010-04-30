@@ -1,3 +1,9 @@
+{% if form.errors %}
+<div class="doc-error">
+  ไม่สามารถจัดเก็บข้อมูลได้เนื่องจากมีข้อผิดพลาด
+  {{ form.non_field_errors }}
+</div>
+{% endif %}
 <div id="edu-gen-info">
   <h2>ข้อมูลทั่วไป</h2>
   <table class="header-left">
@@ -39,19 +45,26 @@
   </div>
   <div id="anet">
     <h3>ป้อนคะแนน A-NET</h3>
-    <table>
+    <div id="anet-needed-gatpat" style="background: #ffe0e0;">
+      <center><small>
+	ในกรณีที่ผู้สมัครได้คะแนน A-NET ต่ำกว่า 35 คะแนน
+	ผู้สมัครจะมีสิทธิ์สมัครก็ต่อเมื่อมีคะแนนรวมไม่น้อยกว่า 5,000 คะแนน
+	ในกรณีนี้ให้ผู้สมัครระบุคะแนนรวมด้วย<br/> ถ้าในกรณีที่คะแนน A-NET
+	มากกว่าหรือเท่ากับ 35 คะแนน ไม่จำเป็นต้องระบุคะแนนรวม
+      </small></center>
+    </div>
+    <table class="header-left">
       <tr>
-	<td>คะแนนวิชาความถนัดทางวิศวกรรม {{ form.anet }}</td>
+	<th>คะแนนวิชาความถนัดทางวิศวกรรม:</th>
+	<td>{{ form.anet }}</td>
 	<td>{{ form.anet.errors }}</td>
       </tr>
+      <tr>
+	<th>คะแนนรวมตามรายการคำนวณคะแนนของสกอ:</th>
+	<td>{{ form.anet_total_score }}</td>
+	<td>{{ form.anet_total_score.errors }}</td>
+      </tr>
     </table>
-  </div>
-  <div id="anet-needed-gatpat" style="background: #ffe0e0;">
-    <center>
-      ในกรณีที่ผู้สมัครได้คะแนน A-NET ต่ำกว่า 35 คะแนน
-      ผู้สมัครจะมีสิทธิ์สมัครก็ต่อเมื่อมีคะแนนรวมไม่น้อยกว่า 5,000 คะแนน<br/>
-      ขณะนี้ระบบกำลังปรับปรุงเพื่อให้รับการป้อนคะแนนรวมดังกล่าว กรุณารอสักครู่
-    </center>
   </div>
   <div id="gatpat">
     <h3>ป้อนคะแนน GAT/PAT</h3>
@@ -118,12 +131,10 @@
   function showGATPAT() {
     $("#edu-score-box #gatpat").show();
     $("#edu-score-box #anet").hide();
-    $("#anet-needed-gatpat").hide();
   }
   function showANET() {
     $("#edu-score-box #anet").show();
-    $("#anet-needed-gatpat").show();
-    //$("#edu-score-box #gatpat").hide();
+    $("#edu-score-box #gatpat").hide();
   }
   function updateScoreFields() {
     if($("#id_uses_gat_score").val()=='True')

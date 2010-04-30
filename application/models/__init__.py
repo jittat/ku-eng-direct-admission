@@ -609,6 +609,8 @@ class Education(models.Model):
                                   related_name="pat3_score_set")
     anet = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน A-NET")
+    anet_total_score = models.FloatField(blank=True, null=True,
+                                         verbose_name="คะแนนรวมตามรายการคำนวณคะแนนของสกอ.")
 
     alt_name = models.CharField(max_length=300,
                                 default="",
