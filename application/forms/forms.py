@@ -14,7 +14,7 @@ def validate_phone_number(phone_number):
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(required=False)
+    email = forms.EmailField()
     application_id = forms.CharField(required=False)
     password = forms.CharField(widget=forms.PasswordInput)
 
@@ -44,6 +44,7 @@ class LoginForm(forms.Form):
         return cleaned_data
 
     def uses_email(self):
+        return True
         cleaned_data = self.cleaned_data
         if 'email' not in cleaned_data:
             return False

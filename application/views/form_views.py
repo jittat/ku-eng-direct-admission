@@ -201,6 +201,9 @@ def applicant_doc_menu(request):
 @within_submission_deadline
 @active_applicant_required
 def info_confirm(request):
+    if settings.FORCE_UPLOAD_DOC:
+        return HttpResponseRedirect(reverse('upload-index'))
+
     applicant = request.applicant
 
     if request.method == 'POST':
