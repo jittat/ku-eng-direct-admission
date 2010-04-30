@@ -610,6 +610,12 @@ class Education(models.Model):
     anet = models.IntegerField(blank=True, null=True,
                                verbose_name="คะแนน A-NET")
 
+    alt_name = models.CharField(max_length=300,
+                                default="",
+                                blank=True,
+                                null=True,
+                                verbose_name="ชื่ออื่น(ที่ใช้เมื่อสอบ)")
+
     # This is used for post-identifying potential cross review-update
     # condition.  In that case the document must be manually validated
     # again.
