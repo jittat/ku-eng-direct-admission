@@ -163,7 +163,10 @@ class EducationForm(forms.ModelForm):
 
     def validate_score_in_range(self, name, display_name, 
                                 score_min, score_max):
-        score = self.cleaned_data[name]
+        try:
+            score = self.cleaned_data[name]
+        except:
+            raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
         if (score == None) or (score < score_min) or (score > score_max):
             raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
         return score
