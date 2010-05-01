@@ -20,11 +20,13 @@ from application.models import PersonalInfo
 from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
 
-from application.forms import PersonalInfoForm, AddressForm, EducationForm
+from application.forms import PersonalInfoForm, AddressForm, EducationForm, SingleMajorPreferenceForm
 from application.forms.handlers import handle_major_form
+from application.forms.handlers import assign_major_pref_to_applicant
 from application.forms.handlers import handle_education_form
 from application.forms.handlers import handle_personal_info_form
 from application.forms.handlers import handle_address_form
+
 
 def build_form_step_dict(form_steps):
     d = {}
@@ -137,6 +139,35 @@ def applicant_education(request):
                                 'form_step_info': form_step_info })
 
 
+def applicant_major_single_choice(request):
+    applicant = request.applicant
+
+    if (request.method == 'POST') and ('cancel' not in request.POST):
+
+        form = SingleMajorPreferenceForm(request.POST)
+        if form.is_valid():
+            assign_major_pref_to_applicant(applicant,
+                                           [form.cleaned_data['major'].number])
+            return HttpResponseRedirect(reverse('apply-doc-menu'))
+    else:
+        if applicant.has_major_preference():
+            pref = applicant.preference.majors
+            if len(pref)==0:
+                prev_major = None
+            else:
+                majors = dict([(int(m.number), m) for m in Major.get_all_majors()])
+                prev_major = majors[pref[0]]
+        form = SingleMajorPreferenceForm(initial={'major': prev_major.id})
+
+    # add step info
+    form_data = {}
+    form_step_info = build_form_step_info(3, applicant)
+    form_data['form_step_info'] = form_step_info
+    form_data['form'] = form
+    return render_to_response('application/majors_single.html',
+                              form_data)
+
+
 def prepare_major_form(applicant, pref_ranks=None, errors=None):
     majors = Major.get_all_majors()
     max_major_rank = settings.MAX_MAJOR_RANK
@@ -155,6 +186,9 @@ def prepare_major_form(applicant, pref_ranks=None, errors=None):
 @within_submission_deadline
 @active_applicant_required
 def applicant_major(request):
+    if settings.MAX_MAJOR_RANK == 1:
+        return applicant_major_single_choice(request)
+
     applicant = request.applicant
 
     if (request.method == 'POST') and ('cancel' not in request.POST):

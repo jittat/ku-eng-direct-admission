@@ -5,7 +5,7 @@ import datetime
 from django import forms
 
 from application.models import Applicant, PersonalInfo
-from application.models import Address, ApplicantAddress, Education
+from application.models import Address, ApplicantAddress, Education, Major
 from widgets import ThaiSelectDateWidget
 from commons.local import APP_TITLE_FORM_CHOICES
 from django.forms.util import ErrorList
@@ -188,3 +188,8 @@ class EducationForm(forms.ModelForm):
         model = Education
         exclude = ['applicant']
 
+
+class SingleMajorPreferenceForm(forms.Form):
+    major = forms.ModelChoiceField(queryset=Major.objects.all(),
+                                   label='สาขาวิชา',
+                                   empty_label='ยังไม่ได้เลือก')

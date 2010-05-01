@@ -134,7 +134,7 @@ ADMISSION_YEAR = 53
 SUBMISSION_METHOD_APPLICATION_ID_OFFSET = 2
 
 # maximum number of choices
-MAX_MAJOR_RANK = 3
+MAX_MAJOR_RANK = 1
 
 from datetime import datetime, timedelta
 

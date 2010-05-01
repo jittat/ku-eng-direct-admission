@@ -30,6 +30,19 @@ def extract_ranks(post_data, major_list):
         ranks.append(rank_dict[r])
     return ranks
 
+def assign_major_pref_to_applicant(applicant, major_ranks):
+    if applicant.has_major_preference():
+        preference = applicant.preference
+    else:
+        preference = MajorPreference()
+            
+    preference.majors = major_ranks
+
+    preference.applicant = applicant
+    preference.save()
+    applicant.add_related_model('major_preference',
+                                save=True,
+                                smart=True)
 
 def handle_major_form(request, applicant=None):
     if applicant==None:
@@ -46,19 +59,7 @@ def handle_major_form(request, applicant=None):
         # chooses no majors
         errors = ['ต้องเลือกอย่างน้อยหนึ่งอันดับ']
     else:
-        if applicant.has_major_preference():
-            preference = applicant.preference
-        else:
-            preference = MajorPreference()
-            
-        preference.majors = major_ranks
-
-        preference.applicant = applicant
-        preference.save()
-        applicant.add_related_model('major_preference',
-                                    save=True,
-                                    smart=True)
-
+        assign_major_pref_to_applicant(applicant, major_ranks)
         return (True, major_ranks, None)
 
     return (False, major_ranks, errors)
