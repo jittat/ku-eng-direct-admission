@@ -150,6 +150,7 @@ def applicant_major_single_choice(request):
                                            [form.cleaned_data['major'].number])
             return HttpResponseRedirect(reverse('apply-doc-menu'))
     else:
+        prev_major = None
         if applicant.has_major_preference():
             pref = applicant.preference.majors
             if len(pref)==0:
