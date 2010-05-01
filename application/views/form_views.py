@@ -158,7 +158,10 @@ def applicant_major_single_choice(request):
             else:
                 majors = dict([(int(m.number), m) for m in Major.get_all_majors()])
                 prev_major = majors[pref[0]]
-        form = SingleMajorPreferenceForm(initial={'major': prev_major.id})
+        if prev_major!=None:
+            form = SingleMajorPreferenceForm(initial={'major': prev_major.id})
+        else:
+            form = SingleMajorPreferenceForm()
 
     # add step info
     form_data = {}
