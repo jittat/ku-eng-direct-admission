@@ -420,8 +420,6 @@ def review_document(request, applicant_id, return_to_manual=False):
                                 'can_request_password': can_request_password })
 
 
-APPLICANTS_PER_PAGE = 200
-
 def get_applicants_from_submission_infos(submission_infos):
     applicants = []
     for s in submission_infos:
@@ -429,6 +427,45 @@ def get_applicants_from_submission_infos(submission_infos):
         app.submission_info = s
         applicants.append(app)
     return applicants
+
+
+@login_required
+def auto_review_all_apps(request):
+    submission_infos = SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=False).select_related(depth=1)
+    applicants = get_applicants_from_submission_infos(submission_infos)
+
+    passed_count = 0
+
+    for applicant in applicants:
+        doc_name_list = get_applicant_doc_name_list(applicant)
+        completed_review_fields = CompletedReviewField.get_for_applicant(applicant)
+        completed_names = set([rf.short_name for rf in completed_review_fields])
+        failed = False
+        for field in doc_name_list:
+            if field not in completed_names:
+                failed = True
+                break
+        if failed:
+            continue
+
+        # have already submitted all doc from round 1
+        passed_count += 1
+
+        submission_info = applicant.submission_info
+        submission_info.has_been_reviewed = True
+        submission_info.doc_reviewed_at = datetime.now()
+        submission_info.doc_reviewed_complete = True
+        submission_info.save()
+
+        # add a log entry
+        log = Log.create("Auto review doc",
+                         request.user.username,
+                         applicant_id=int(applicant.id),
+                         applicantion_id=submission_info.applicantion_id)
+        send_validation_successful_by_email(applicant)
+
+    request.session['notice'] = 'ตรวจผ่านทั้งสิ้น %d คน' % (passed_count,)
+    return HttpResponseRedirect(reverse('review-ticket'))
 
 
 def get_applicants_using_update_review_time_diff(time_diff, review_status=None):
@@ -443,6 +480,8 @@ def get_applicants_using_update_review_time_diff(time_diff, review_status=None):
             submission_infos.filter(doc_reviewed_complete=review_status))
     return get_applicants_from_submission_infos(submission_infos)
 
+
+APPLICANTS_PER_PAGE = 200
 
 @login_required
 def list_applicant(request, reviewed=True, pagination=True):

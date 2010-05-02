@@ -15,6 +15,8 @@ urlpatterns = patterns(
     url(r'^gen-password/(\d+)/$', 'generate_password', 
         name='review-gen-password'),
 
+    url(r'^reviewall/$', 'auto_review_all_apps',
+        name='review-auto-review-all'),
 
     url(r'^list/complete/$', 'list_applicant',
         { 'reviewed': True }, name='review-list-complete'),
