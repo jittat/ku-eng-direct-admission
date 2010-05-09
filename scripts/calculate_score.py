@@ -22,7 +22,10 @@ SCORE_STATS = [
       'pat3': ScoreStat(97.86, 28.56, 260) },
     { 'gat': ScoreStat(106.78, 55.59, 292.5),
       'pat1': ScoreStat(63.56, 25.90, 270),
-      'pat3': ScoreStat(86.73, 24.64, 237) }
+      'pat3': ScoreStat(86.73, 24.64, 237) },
+    { 'gat': ScoreStat(130.82, 58.27, 295),
+      'pat1': ScoreStat(63.97, 30.86, 294),
+      'pat3': ScoreStat(103.19, 42.46, 276) }
     ]
 EXAM_COUNT = len(SCORE_STATS)
 

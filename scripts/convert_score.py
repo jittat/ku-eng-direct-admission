@@ -6,33 +6,48 @@ computing KU Eng normalized score.
 import codecs
 import sys
 
+BASE_YEAR = 2552
+EXAM_PER_YEAR = 3
+EXAM_COUNT = 4
+
 file_name = sys.argv[1]
 output_name = sys.argv[2]
 
-HEAD_SKIP = 14
-
 columns = [('nat_id', 2), 
-           ('first_name', 5),
-           ('last_name', 6),
-           ('round', 11),
-           ('gat',34), 
-           ('pat1',12), 
-           ('pat3', 15)]
-
-pos = {'gat': 0, 'pat1': 1, 'pat3': 2}
+           ('first_name', 3),
+           ('last_name', 4),
+           ('year',6),
+           ('round', 7),
+           ('subject',8), 
+           ('score_type',9), 
+           ('score', 10)]
 
 def extract_columns(line):
     result = {}
-    items = line.split(',')
+    items = line.strip().split(',')
+    if len(items)!=10:
+        return None
     for c in columns:
         result[c[0]] = items[c[1]-1]
     return result
+
+SCORE_POS = {'GAT ': 0, 'PAT 1 ': 1, 'PAT 3 ': 2}
+SUBJECT_COUNT = len(SCORE_POS.keys())
+
+def score_pos(year, r, subject):
+    ri = int(r[-1])
+    exam_num = (int(year) - BASE_YEAR) * EXAM_PER_YEAR + ri
+    for s in SCORE_POS.keys():
+        if subject.startswith(s):
+            return (exam_num - 1) * SUBJECT_COUNT + SCORE_POS[s]
+    return -1
+    
 
 f = codecs.open(file_name, encoding='utf-8', mode='r')
 fout = codecs.open(output_name, encoding='utf-8', mode='w')
 
 lines = f.readlines()
-lines = lines[14:]
+lines = lines[1:]
 
 scores = {}
 full_name = {}
@@ -40,32 +55,25 @@ full_name = {}
 for l in lines:
     result = extract_columns(l)
 
-    if result['nat_id'] == '':
-        result['nat_id'] = old_result['nat_id']
-        result['first_name'] = old_result['first_name']
-        result['last_name'] = old_result['last_name']
+    if result==None:
+        print 'BAD LINE:', l
+        continue
 
-    #print result['first_name'], result['last_name'], result['gat'], result['pat1'], result['pat3']
+    if result['score_type']!=u'คะแนนรวม':
+        continue
 
     nat_id = result['nat_id']
     if nat_id not in scores:
-        scores[nat_id] = [0] * 9
+        scores[nat_id] = [0] * EXAM_COUNT * SUBJECT_COUNT
         full_name[nat_id] = (result['first_name'], result['last_name'])
 
-    r = int(result['round'][-1]) - 1
-    for p,i in pos.iteritems():
-        try:
-            scores[nat_id][r * 3 + i] = float(result[p])
-        except:
-            pass
-
-    old_result = result
+    p = score_pos(result['year'], result['round'], result['subject'])
+    if (p!=-1) and (result['score']!='-'):
+        scores[nat_id][p] = float(result['score'])
 
 for nat_id in scores.iterkeys():
-    print >> fout, u'%s,%s,%s,%s' % (
+    print >> fout, u'%s,%s' % (
         nat_id,
-        full_name[nat_id][0],
-        full_name[nat_id][1],
         ','.join([str(f) for f in scores[nat_id]]))
 
 fout.close()
