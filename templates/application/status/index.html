@@ -81,7 +81,16 @@
 
   <p>
     <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
-    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}
+    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
+
+    <b>สถานะการยืนยันการเข้ารับพิจารณาคัดเลือก (สำหรับรอบ 2):</b>
+    {% if round2_confirmation %}
+      {{ round2_confirmation.get_is_confirmed_display }}<br/>
+      <b>การขอรับพิจารณาเพิ่มเติมในสาขาวิศวกรรมสำรวจ:</b> {{ round2_confirmation.get_is_applying_for_survey_engr_display }}
+    {% else %}
+      ยังไม่ได้ยืนยัน
+    {% endif %}
+    <br/>
 
     {% comment %} <!--- submission result --->
 

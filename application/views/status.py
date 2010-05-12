@@ -21,8 +21,8 @@ from application.views import redirect_to_applicant_first_page
 from application.forms import StatusRequestForm
 
 from review.models import ReviewFieldResult
-
 from result.models import AdmissionResult
+from confirmation.models import Round2ApplicantConfirmation
 
 @submitted_applicant_required
 def index(request):
@@ -47,6 +47,11 @@ def index(request):
     show_admission_result = settings.SHOW_ADMISSION_RESULTS
     show_final_admission_result = settings.SHOW_FINAL_ADMISSION_RESULTS
 
+    try:
+        round2_confirmation = request.applicant.round2_confirmation
+    except Round2ApplicantConfirmation.DoesNotExist:
+        round2_confirmation = None
+
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'show_admission_result':
@@ -62,6 +67,7 @@ def index(request):
                                     supplement_submission_deadline_passed(),
                                 'admission_major_pref_deadline_passed':
                                     admission_major_pref_deadline_passed(),
+                                'round2_confirmation': round2_confirmation,
                                 'notice': notice,
                                 'can_log_out': True })
 
