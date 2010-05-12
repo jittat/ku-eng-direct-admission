@@ -21,4 +21,6 @@ urlpatterns = patterns(
     url(r'^info/(\d+)/$', 'interview_info', name='confirmation-info'),
 
     url(r'^list/(.*?)/?$', confirmation_resource),
+
+    url(r'^round2/$', 'confirm_round2', name='confirmation-round2'),
 )

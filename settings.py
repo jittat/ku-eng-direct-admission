@@ -12,7 +12,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_ENGINE = 'django.db.backends.mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'onlineadmission'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'onlineadmission'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'o-adm-for-dev'         # Not used with sqlite3.

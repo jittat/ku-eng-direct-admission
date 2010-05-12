@@ -1,0 +1,77 @@
+{% extends "application/status/base.html" %}
+
+{% load adm_info %}
+
+{% block body %}
+  {% load adm_steps %}{% step_bar "ยืนยันการเข้ารับการพิจารณาในโครงการรับตรง (รอบที่ 2)" %}
+
+  <p>
+    <b>ผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+    <b>สาขาที่สมัคร:</b> {{ applicant.preference.get_major_list.0 }}<br/>
+  </p>
+
+  <form method="post" action="{% url confirmation-round2 %}">
+    <table style="margin-left: 10px">
+      <tr>
+	<td colspan="3" style="color: #eeeeee; background: #333333; text-align:center;">
+	  กรุณาเลือกยืนยันตามที่ต้องการ
+	</td>
+      </tr>
+      <tr>
+	<td style="text-align: right">
+	  การยืนยันการขอรับพิจารณาคัดเลือก:
+	</td>
+	<td>
+	  {{ form.is_confirmed }}
+	</td>
+	<td>{{ form.is_confirmed.errors }}</td>
+      </tr>
+      <tr>
+	<td style="border-bottom: 1px solid gray">
+	</td>
+	<td colspan="2" class="hint" style="border-bottom: 1px solid gray">
+	  เลือก "ยืนยัน" ถ้าต้องการให้พิจารณารายชื่อในโครงการรับตรง (รอบที่
+	  2)<br/> ในส่วนของลำดับสำรอง
+	</td>
+      </tr>
+      <tr>
+	<td style="text-align: right">
+	  ในกรณีที่ไม่ได้รับคัดเลือกในสาขาที่สมัครไว้ครั้งแรก<br/>
+	  ต้องการให้พิจารณาในสาขาวิศวกรรมสำรวจหรือไม่
+	</td>
+	<td>
+	  {{ form.is_applying_for_survey_engr }}
+	</td>
+	<td>{{ form.is_applying_for_survey_engr.errors }}</td>
+      </tr>
+      <tr>
+	<td style="border-bottom: 1px solid gray">
+	</td>
+	<td colspan="2" class="hint" style="border-bottom: 1px solid gray">
+	  เลือก "ต้องการ" ถ้าต้องการให้คณะนำชื่อของคุณร่วมพิจารณารายชื่อ<br/>
+	  ในสาขาวิศวกรรมสำรวจด้วย ในกรณีที่คุณไม่ผ่านการคัดเลือกในสาขาที่ต้องการ
+	</td>
+      </tr>
+    </table>
+    <div class="submission-bar">
+      <input id="change-button" type="submit" name="submit" value="เก็บข้อมูล"/>
+      <input id="cancel-button" type="submit" name="cancel" value="ยกเลิก"/>
+    </div>
+  </form>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#change-button").click(function() {
+        return confirm("คุณแน่ใจที่จะยืนยันตามที่เลือกไว้หรือไม่?\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
+      });
+      $("#cancel-button").click(function() {
+        {% if not has_submitted %}
+          return confirm("คุณต้องการยกเลิกการแก้ไขนี้?\nเนื่องจากคุณยังไม่เคยยืนยันให้พิจารณาการสมัครเลย การยกเลิกนี้จะถือว่าคุณสละสิทธิ์\nถ้าต้องการยกเลิกกด OK ถ้าต้องการกลับไปแก้ไขต่อกด Cancel");
+        {% else %}
+          return confirm("คุณต้องการยกเลิกการแก้ไขนี้?\nถ้าต้องการยกเลิกกด OK ถ้าต้องการกลับไปแก้ไขต่อกด Cancel");
+        {% endif %}
+      });
+    });
+  </script>
+
+{% endblock body %}

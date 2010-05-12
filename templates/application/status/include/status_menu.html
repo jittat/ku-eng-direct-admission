@@ -69,14 +69,25 @@
       </div>
     </a>
   {% endif %}
-  {% if not applicant.online_doc_submission %}
-  {% if not submission_info.has_received_doc %}
-  <div class="small-vert-sept"></div>
-  <a class="in-button" href="{% url update-postal-sub %}">
-    <div class="button">
-      เปลี่ยนวิธีการส่งหลักฐานเป็นแบบออนไลน์
-    </div>
-  </a>
+
+  {% if applicant.submission_info.doc_reviewed_complete %}
+    <div class="small-vert-sept"></div>
+    <a class="in-button" href="{% url confirmation-round2 %}">
+      <div class="button">
+        ยืนยันการเข้ารับพิจารณาคัดเลือก<br/>
+	โครงการรับตรง (รอบที่ 2)
+      </div>
+    </a>
   {% endif %}
+
+  {% if not applicant.online_doc_submission %}
+    {% if not submission_info.has_received_doc %}
+      <div class="small-vert-sept"></div>
+      <a class="in-button" href="{% url update-postal-sub %}">
+	<div class="button">
+	  เปลี่ยนวิธีการส่งหลักฐานเป็นแบบออนไลน์
+	</div>
+      </a>
+    {% endif %}
   {% endif %}
 </div>

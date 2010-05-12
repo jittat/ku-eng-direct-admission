@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -106,6 +107,21 @@ class AdmissionConfirmation(models.Model):
 
     class Meta:
         ordering = ['-confirmed_at']
+
+class Round2ApplicantConfirmation(models.Model):
+    applicant = models.OneToOneField(Applicant, related_name='round2_confirmation')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(
+        choices=((True,u'ยืนยัน'),
+                 (False,u'สละสิทธิ์')),
+        default=True,
+        verbose_name=u'การยืนยันการขอรับพิจารณาคัดเลือก')
+    is_applying_for_survey_engr = models.BooleanField(
+        choices=((True,u'ต้องการ'),
+                 (False,u'ไม่ต้องการ')),
+        default=False,
+        verbose_name=u'ถ้าไม่ได้คัดเลือกในสาขาที่สมัครในตอนแรก ต้องการให้พิจารณาคัดเลือกในสาขาวิศวกรรมสำรวจหรือไม่?')
+
 
 # REST api
 from django_restapi.resource import Resource

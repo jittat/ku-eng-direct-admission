@@ -11,7 +11,10 @@ from commons.models import Log
 from application.models import Applicant, SubmissionInfo, Major, Education, PersonalInfo
 from result.models import NIETSScores, AdmissionResult
 
-from models import AdmissionMajorPreference, AdmissionConfirmation
+from models import AdmissionMajorPreference, AdmissionConfirmation, Round2ApplicantConfirmation
+
+from django import forms
+from django.forms import ModelForm
 
 def get_higher_ranked_majors(majors, current_major):
     result = []
@@ -571,3 +574,61 @@ def show_confirmation_second_round(request):
 def admin_show_confirmation_second_round(request, app_id):
     applicant = get_object_or_404(Applicant, pk=app_id)
     return render_confirmation_form_second_round(request, applicant)
+
+
+#
+# ROUND2 ADMISSION
+#
+
+class Round2ConfirmationForm(ModelForm):
+    class Meta:
+        model = Round2ApplicantConfirmation
+        exclude = ('applicant',)
+
+@submitted_applicant_required
+def confirm_round2(request):
+    applicant = request.applicant
+    
+    if not applicant.submission_info.doc_reviewed_complete:
+        return HttpResponseForbidden()
+
+    try:
+        confirmation = applicant.round2_confirmation
+        has_submitted = True
+    except Round2ApplicantConfirmation.DoesNotExist:
+        confirmation = Round2ApplicantConfirmation()
+        confirmation.applicant = applicant
+        has_submitted = False
+
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            if has_submitted:
+                request.session['notice'] = 'ตัวเลือกการยืนยันไม่ถูกแก้ไข'
+            else:
+                request.session['notice'] = 'ไม่ยืนยันการขอรับพิจารณาในการสมัครโครงการรับตรง (รอบที่ 2)'
+            return HttpResponseRedirect(reverse('status-index'))
+        else:
+            form = Round2ConfirmationForm(request.POST, instance=confirmation)
+            if form.is_valid():
+                confirmation = form.save()
+
+                Log.create("Confirmation round 2 - id: %d, from: %s, choices: %d,%d" %
+                           (applicant.id, 
+                            request.META['REMOTE_ADDR'],
+                            confirmation.is_confirmed,
+                            confirmation.is_applying_for_survey_engr),
+                           applicant_id=applicant.id,
+                           applicantion_id=applicant.submission_info.applicantion_id)
+
+                request.session['notice'] = 'จัดเก็บตัวเลือกการยืนยันเรียบร้อย'
+                return HttpResponseRedirect(reverse('status-index'))
+    else:
+        form = Round2ConfirmationForm(instance = confirmation)
+
+
+    return render_to_response('confirmation/round2_confirmation.html',
+                              { 'applicant': applicant,
+                                'form': form,
+                                'has_submitted': has_submitted })
+
+

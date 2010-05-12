@@ -29,7 +29,7 @@ urlpatterns = patterns(
     url(r'^status/ticket/$', 'status.show_ticket', name='status-show-ticket'),
     url(r'^status/request/$', 'status.request_status', name='status-request'),
 
-    # upadte
+    # update
     url(r'^update/majors/$', 'update.update_majors', name='update-majors'),
     url(r'^update/education/$', 'update.update_education', 
         name='update-education'),
