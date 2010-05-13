@@ -72,6 +72,19 @@ def supplement_submission_deadline_passed():
         pass
     return False
 
+def round2_confirmation_deadline_passed():
+    try:
+        deadline = settings.ROUND2_CONFIRMATION_DEADLINE
+        if deadline != None:
+            return datetime.now() >= deadline
+        else:
+            return False
+    except:
+        pass
+    return False
+
+    
+
 def admission_major_pref_deadline_passed():
     try:
         deadline = settings.ADMISSION_MAJOR_PREF_DEADLINE

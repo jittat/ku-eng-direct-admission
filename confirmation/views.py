@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
 from commons.decorators import submitted_applicant_required
-from commons.utils import admission_major_pref_deadline_passed
+from commons.utils import admission_major_pref_deadline_passed, round2_confirmation_deadline_passed
 from commons.models import Log
 from application.models import Applicant, SubmissionInfo, Major, Education, PersonalInfo
 from result.models import NIETSScores, AdmissionResult
@@ -590,6 +590,9 @@ def confirm_round2(request):
     applicant = request.applicant
     
     if not applicant.submission_info.doc_reviewed_complete:
+        return HttpResponseForbidden()
+
+    if round2_confirmation_deadline_passed():
         return HttpResponseForbidden()
 
     try:

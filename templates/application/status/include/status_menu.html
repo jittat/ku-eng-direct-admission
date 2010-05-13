@@ -71,6 +71,7 @@
   {% endif %}
 
   {% if applicant.submission_info.doc_reviewed_complete %}
+    {% if not round2_confirmation_deadline_passed %}
     <div class="small-vert-sept"></div>
     <a class="in-button" href="{% url confirmation-round2 %}">
       <div class="button">
@@ -78,6 +79,7 @@
 	โครงการรับตรง (รอบที่ 2)
       </div>
     </a>
+    {% endif %}
   {% endif %}
 
   {% if not applicant.online_doc_submission %}

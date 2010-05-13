@@ -6,7 +6,7 @@ from django.conf import settings
 
 from commons.decorators import applicant_required
 from commons.decorators import submitted_applicant_required
-from commons.utils import submission_deadline_passed, supplement_submission_deadline_passed, admission_major_pref_deadline_passed
+from commons.utils import submission_deadline_passed, supplement_submission_deadline_passed, admission_major_pref_deadline_passed, round2_confirmation_deadline_passed
 
 from commons.email import send_status_by_email_no_applicant
 from commons.email import send_status_by_email_not_submitted
@@ -68,6 +68,8 @@ def index(request):
                                 'admission_major_pref_deadline_passed':
                                     admission_major_pref_deadline_passed(),
                                 'round2_confirmation': round2_confirmation,
+                                'round2_confirmation_deadline_passed':
+                                    round2_confirmation_deadline_passed(),
                                 'notice': notice,
                                 'can_log_out': True })
 
