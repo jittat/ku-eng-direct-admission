@@ -38,6 +38,18 @@ def time_to_supplement_submission_deadline():
         pass
     return timedelta.max  # no deadline
 
+def time_to_round2_confirmation_deadline():
+    try:
+        deadline = settings.ROUND2_CONFIRMATION_DEADLINE
+        if deadline != None:
+            return deadline - datetime.now()
+        else:
+            return timedelta.max
+    except:
+        pass
+    return timedelta.max  # no deadline
+
+
 def submission_deadline_passed():
     try:
         deadline = settings.SUBMISSION_DEADLINE

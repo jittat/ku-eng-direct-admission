@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.template import Library
 
 from commons.utils import admin_email
-from commons.utils import time_to_submission_deadline, time_to_supplement_submission_deadline
+from commons.utils import time_to_submission_deadline, time_to_supplement_submission_deadline, time_to_round2_confirmation_deadline
 
 register = Library()
 
@@ -18,7 +18,14 @@ def adm_submission_deadline_warning():
         return ('<div class="deadline-bar"><span class="deadline">เหลือเวลาอีก %d ชั่วโมง %d นาที ก่อนหมดเวลายื่นหลักฐานเพิ่มเติม</span></div>' %
                 (supplement_time_left.seconds/3600, 
                  supplement_time_left.seconds%3600/60))
+    round2_time_left = time_to_round2_confirmation_deadline()
+    if (round2_time_left > timedelta(0)) and (round2_time_left < timedelta(hours=3)):
+        return ('<div class="deadline-bar"><span class="deadline">เหลือเวลาอีก %d ชั่วโมง %d นาที ก่อนหมดเวลายืนยันการเข้าพิจารณาคัดเลือกโครงการรับตรง (รอบที่ 2) ลำดับสำรอง</span></div>' %
+                (round2_time_left.seconds/3600, 
+                 round2_time_left.seconds%3600/60))
+
     return ''
+
 
 adm_submission_deadline_warning = register.simple_tag(adm_submission_deadline_warning)
 
