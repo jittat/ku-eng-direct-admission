@@ -14,41 +14,13 @@ def validate_phone_number(phone_number):
     return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
-    application_id = forms.CharField(required=False)
+    #email = forms.EmailField()
+    #application_id = forms.CharField(required=False)
+    national_id = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        if 'email' not in cleaned_data:
-            return cleaned_data
-        email = cleaned_data.get('email')
-        application_id = cleaned_data.get('application_id')
-
-        if email!='' and application_id=='':
-            return cleaned_data
-
-        if email!='' and application_id!='':  # use two identity
-            del cleaned_data['email']
-            del cleaned_data['application_id']
-            self._errors['application_id'] = ErrorList(
-                ['ไม่สามารถป้อนทั้งอีเมล์และหมายเลขพร้อมกัน'])
-            return cleaned_data
-
-        import re
-        if not re.match(r'53[123]\d{5}', application_id):
-            self._errors['application_id'] = ErrorList(
-                ['หมายเลขประจำตัวไม่ถูกต้อง'])
-            del cleaned_data['application_id']
-
-        return cleaned_data
-
     def uses_email(self):
-        return True
-        cleaned_data = self.cleaned_data
-        if 'email' not in cleaned_data:
-            return False
-        return self.cleaned_data['email'] != ''
+        return False
 
 
 class ForgetPasswordForm(forms.Form):
@@ -76,6 +48,7 @@ class RegistrationForm(forms.Form):
     last_name = forms.CharField(label=u'นามสกุล')
     email = forms.EmailField(label=u'อีเมล์')
     email_confirmation = forms.EmailField(label=u'ยืนยันอีเมล์')
+    national_id = forms.CharField(label=u'รหัสประจำตัวประชาชน')
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -96,7 +69,8 @@ class RegistrationForm(forms.Form):
         return Applicant(title=self.cleaned_data['title'],
                          first_name=self.cleaned_data['first_name'],
                          last_name=self.cleaned_data['last_name'],
-                         email=self.cleaned_data['email'])
+                         email=self.cleaned_data['email'],
+                         national_id=self.cleaned_data['national_id'])
 
 
 class ActivationNameForm(forms.Form):

@@ -38,23 +38,16 @@ def login(request):
         if form.is_valid():
             passwd = form.cleaned_data['password']
 
-            if form.uses_email():
-                email = form.cleaned_data['email']
-
-                try:
-                    applicant = Applicant.objects.filter(email=email).all()[0]
-                except Exception:
-                    applicant = None
+            national_id = form.cleaned_data['national_id']
+            applicants = list(Applicant.objects.filter(national_id=national_id).all())
+            if len(applicants)!=0:
+                applicant = applicants[0]
             else:
-                application_id = form.cleaned_data['application_id']
-                submission_info = SubmissionInfo.find_by_ticket_number(application_id)
-                if submission_info!=None:
-                    applicant = submission_info.applicant
-                else:
-                    applicant = None
+                applicant = None
 
             if applicant!=None:
                 if applicant.activation_required:
+                    email = applicant.email
                     return render_to_response(
                         'application/registration/activation-required.html',
                         { 'email': email })

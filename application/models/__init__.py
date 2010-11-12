@@ -19,6 +19,10 @@ class Applicant(models.Model):
     last_name = models.CharField(max_length=300,
                                  verbose_name="นามสกุล")
     email = models.EmailField(unique=True)
+    national_id = models.CharField(max_length=20,
+                                   verbose_name="เลขประจำตัวประชาชน",
+                                   unique=True)
+
     hashed_password = models.CharField(max_length=100)
 
     has_logged_in = models.BooleanField(default=False)
@@ -501,8 +505,6 @@ class SubmissionInfo(models.Model):
 
 class PersonalInfo(models.Model):
     applicant = models.OneToOneField(Applicant, related_name="personal_info")
-    national_id = models.CharField(max_length=20,
-                                   verbose_name="เลขประจำตัวประชาชน")
     birth_date = models.DateField(verbose_name="วันเกิด")
     nationality = models.CharField(max_length=50,
                                    verbose_name="สัญชาติ")
@@ -510,6 +512,12 @@ class PersonalInfo(models.Model):
                                  verbose_name="เชื้อชาติ")
     phone_number = models.CharField(max_length=35,
                                     verbose_name="หมายเลขโทรศัพท์")
+
+    def __getattr__(self,name):
+        if name=='national_id':
+            if self.applicant:
+                return self.applicant.national_id
+        raise AttributeError()
 
 class Address(models.Model):
     number = models.CharField(max_length=20,

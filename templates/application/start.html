@@ -14,7 +14,7 @@
 <div class="front-body">
   <h1>
     การสมัครเข้าศึกษาต่อคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์<br/>
-    โครงการรับตรง (รอบที่ 2)
+    โครงการรับตรงประจำปีการศึกษา 2554
   </h1>
 
   {% adm_submission_deadline_warning %}
@@ -55,11 +55,11 @@
 	    <table class="header-left">
 	      <tr>
 		<th width="45%">
-		  <label for="id_email">อีเมล์:</label>
+		  <label for="id_national_id">รหัสประจำตัวประชาชน:</label>
 		</th>
 		<td width="55%">
-		  {{ form.email.errors }}
-		  {{ form.email }}
+		  {{ form.national_id.errors }}
+		  {{ form.national_id }}
 		</td>
 	      </tr>
 	      {% comment %}
