@@ -589,37 +589,6 @@ class Education(models.Model):
     school_province = models.CharField(max_length=25,
                                        choices=PROVINCE_CHOICES,
                                        verbose_name=u"จังหวัด")
-
-    # test score
-    uses_gat_score = models.BooleanField(
-        choices=((True,u"GAT/PAT"),
-                (False,u"ANET")),
-        default=True,
-        verbose_name=u"คะแนนที่ใช้สมัคร")
-    gpax = models.FloatField(verbose_name="GPAX")
-    gat = models.FloatField(blank=True, null=True,
-                            verbose_name="คะแนน GAT")
-    gat_date = models.ForeignKey(GPExamDate,
-                                 blank=True, null=True,
-                                 verbose_name="วันสอบ GAT",
-                                 related_name="gat_score_set")
-    pat1 = models.IntegerField(blank=True, null=True,
-                               verbose_name="คะแนน PAT 1")
-    pat1_date = models.ForeignKey(GPExamDate,
-                                  blank=True, null=True,
-                                  verbose_name="วันสอบ PAT 1",
-                                  related_name="pat1_score_set")
-    pat3 = models.IntegerField(blank=True, null=True,
-                               verbose_name="คะแนน PAT 3")
-    pat3_date = models.ForeignKey(GPExamDate,
-                                  blank=True, null=True,
-                                  verbose_name="วันสอบ PAT 3",
-                                  related_name="pat3_score_set")
-    anet = models.IntegerField(blank=True, null=True,
-                               verbose_name="คะแนน A-NET")
-    anet_total_score = models.FloatField(blank=True, null=True,
-                                         verbose_name="คะแนนรวมตามรายการคำนวณคะแนนของสกอ.")
-
     alt_name = models.CharField(max_length=300,
                                 default="",
                                 blank=True,
@@ -633,7 +602,6 @@ class Education(models.Model):
 
     def fix_boolean_fields(self):
         self.has_graduated = bool(self.has_graduated)
-        self.uses_gat_score = bool(self.uses_gat_score)
 
     def __unicode__(self):
         if self.has_graduated:

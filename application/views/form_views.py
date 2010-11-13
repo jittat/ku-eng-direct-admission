@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -42,7 +42,7 @@ FORM_STEPS = [
     ('ที่อยู่','apply-address'),
     ('ข้อมูลการศึกษา','apply-edu'),
     ('อันดับสาขาวิชา','apply-majors'),
-    ('หลักฐานการสมัคร','apply-doc-menu'),
+    ('ยืนยันข้อมูล','apply-confirm'),
     ]
 
 FORM_STEP_DICT = build_form_step_dict(FORM_STEPS)
@@ -51,7 +51,7 @@ def get_allowed_form_steps(applicant):
     if applicant==None:
         return FORM_STEP_DICT['apply-personal-info']
     if applicant.has_major_preference():
-        return FORM_STEP_DICT['apply-doc-menu']
+        return FORM_STEP_DICT['apply-confirm']
     if applicant.has_educational_info():
         return FORM_STEP_DICT['apply-majors']
     if applicant.has_address():
@@ -200,7 +200,7 @@ def applicant_major(request):
         result, major_list, errors = handle_major_form(request)
 
         if result:
-            return HttpResponseRedirect(reverse('apply-doc-menu'))
+            return HttpResponseRedirect(reverse('apply-confirm'))
 
         pref_ranks = MajorPreference.major_list_to_major_rank_list(major_list)
         form_data = prepare_major_form(applicant, pref_ranks, errors)
@@ -223,6 +223,9 @@ def applicant_major(request):
 @within_submission_deadline
 @active_applicant_required
 def applicant_doc_menu(request):
+    return HttpResponseForbidden()
+
+
     if settings.FORCE_UPLOAD_DOC:
         return HttpResponseRedirect(reverse('upload-index'))
 
@@ -246,8 +249,23 @@ def info_confirm(request):
 
     if request.method == 'POST':
         if 'submit' in request.POST:
+            return HttpResponseRedirect(reverse('apply-conditions'))
+        else:
+            return render_to_response('application/submission/not_submitted.html')
+
+    return render_to_response('application/confirm.html',
+                              {'applicant': applicant })
+    
+
+@within_submission_deadline
+@active_applicant_required
+def applicant_conditions(request):
+    applicant = request.applicant
+
+    if request.method == 'POST':
+        if 'submit' in request.POST:
             try:
-                applicant.submit(Applicant.SUBMITTED_BY_MAIL)
+                applicant.submit(Applicant.SUBMITTED_ONLINE)
             except Applicant.DuplicateSubmissionError:
                 return render_to_response(
                     'commons/submission_already_submitted.html',
@@ -258,9 +276,10 @@ def info_confirm(request):
         else:
             return render_to_response('application/submission/not_submitted.html')
 
-    return render_to_response('application/confirm.html',
+    return render_to_response('application/conditions.html',
                               {'applicant': applicant })
     
+
 
 @applicant_required
 def submission_ticket(request):

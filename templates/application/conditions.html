@@ -1,0 +1,23 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}Information Confirmation{% endblock %}
+
+{% block form-body %}
+<div class="app-form">
+  {% load adm_steps %}{% step_bar "ยอมรับเงื่อนไขการสมัคร" %}
+  <p>
+    กรุณาตรวจสอบอ่านและพิจารณาเงื่อนไขในการสมัครต่อไปนี้
+  </p>
+
+  <form action="{% url apply-conditions %}" method="post">
+    <div class="submission-bar">
+      <div style="float: right">
+	<input type="submit" name="submit" value="ยอมรับและยืนยันการสมัคร"/>
+	<input type="submit" name="cancel" value="ไม่ยอมรับ"/>
+      </div>
+      <b>ข้าพเจ้ายอมรับเงื่อนไขในการสมัครดังกล่าวแล้ว</b>
+      <br style="clear:both"/>
+    </div>
+  </form>
+</div>
+{% endblock %}

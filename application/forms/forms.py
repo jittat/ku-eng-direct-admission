@@ -83,8 +83,6 @@ THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
 
 class PersonalInfoForm(forms.ModelForm):
-    national_id = forms.CharField(max_length=13,
-                                  label=u"รหัสประจำตัวประชาชน")
     birth_date = forms.DateField(
         widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS),
         label=u"วันเกิด")
@@ -127,40 +125,6 @@ class AddressForm(forms.ModelForm):
 
 
 class EducationForm(forms.ModelForm):
-    # TODO: add form validation
-
-    def clean_gpax(self):
-        gpax = self.cleaned_data['gpax']
-        if gpax < 0 or gpax > 4:
-            raise forms.ValidationError("เกรดเฉลี่ยไม่ถูกต้อง")
-        return self.cleaned_data['gpax']
-
-    def validate_score_in_range(self, name, display_name, 
-                                score_min, score_max):
-        try:
-            score = self.cleaned_data[name]
-        except:
-            raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
-        if (score == None) or (score < score_min) or (score > score_max):
-            raise forms.ValidationError("คะแนน %s ไม่ถูกต้อง" % (display_name,))
-        return score
-
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        if cleaned_data['uses_gat_score']:
-            self.validate_score_in_range('gat', 'GAT', 0, 300)
-            self.validate_score_in_range('pat1', 'PAT1', 0, 300)
-            self.validate_score_in_range('pat3', 'PAT3', 0, 300)
-        else:
-            self.validate_score_in_range('anet', 'A-NET', 0, 100)
-            if cleaned_data['anet'] < 35:
-                sc = self.cleaned_data['anet_total_score']
-                if sc==None:
-                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 ให้ป้อนคะแนนรวมเพื่อพิจารณาด้วย")
-                elif sc < 5000:
-                    raise forms.ValidationError("คะแนน A-NET น้อยกว่า 35 จะต้องมีคะแนนรวมอย่างน้อย 5000")
-        return cleaned_data
-
     class Meta:
         model = Education
         exclude = ['applicant']

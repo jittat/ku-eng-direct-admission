@@ -6,20 +6,5 @@
       {{ education.school_city }} 
       {{ education.school_provice }}
     </li>
-    <li>GPAX: {{ education.gpax }}
-    <li>
-      {% if education.uses_gat_score %}
-        สมัครโดยใช้คะแนน GAT/PAT<br/>
-        <ul>
-	  <li>GAT: {{ education.gat }} คะแนน สอบเมื่อ {{ education.gat_date }}</li>
-	  <li>PAT1: {{ education.pat1 }} คะแนน สอบเมื่อ {{ education.pat1_date }}</li>
-	  <li>PAT3: {{ education.pat3 }} คะแนน สอบเมื่อ {{ education.pat3_date }}</li>
-      {% else %}
-        สมัครโดยใช้คะแนน A-NET {{ education.anet }} คะแนน
-	{% if education.anet_total_score %}
-          <br/>คะแนนรวม {{ education.anet_total_score }} คะแนน
-        {% endif %}
-      {% endif %}
-    </li>
   </ul>
 {% endwith %}
