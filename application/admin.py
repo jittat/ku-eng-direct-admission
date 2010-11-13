@@ -2,6 +2,7 @@ from django.contrib import admin
 from models import Applicant, SubmissionInfo, PersonalInfo
 from models import Address, ApplicantAddress
 from models import Education, Major, GPExamDate
+from models import ApplyingCondition
 
 admin.site.register(SubmissionInfo)
 admin.site.register(PersonalInfo)
@@ -10,6 +11,7 @@ admin.site.register(GPExamDate)
 admin.site.register(Education)
 admin.site.register(Major)
 admin.site.register(ApplicantAddress)
+admin.site.register(ApplyingCondition)
 
 class PersonalInfoInline(admin.StackedInline):
     model = PersonalInfo

@@ -3,7 +3,7 @@ h1 {
 
 body {
   background: white;
-  font-family: "Helvetica Neue",Arial,Helvetica,Geneva,sans-serif; }
+  font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif; }
 
 #footer {
   margin-top: 5px;
@@ -173,9 +173,9 @@ ul.errorlist {
   background: #e0e0e0; }
   .progress-container .progress-bar {
     width: 100%;
-    border: 1px solid #999; }
+    border: 1px solid #999999; }
   .progress-container .progress-indicator {
-    background: #8a9;
+    background: #88aa99;
     width: 0;
     height: 4px; }
 
@@ -356,3 +356,8 @@ table#niets-scores {
   padding: 5px;
   border: 1px solid gray;
   -moz-border-radius: 5px; }
+
+table#condition-table td {
+  padding: 0 10px; }
+table#condition-table tr.open {
+  background: #fff0f0; }

@@ -7,12 +7,31 @@
   {% load adm_steps %}{% step_bar "ยอมรับเงื่อนไขการสมัคร" %}
   <p>
     กรุณาตรวจสอบอ่านและพิจารณาเงื่อนไขในการสมัครต่อไปนี้
+    จากนั้นให้คลิ๊กยอมรับก่อนจะสามารถยืนยันการสมัครได้
   </p>
 
   <form action="{% url apply-conditions %}" method="post">
+    <table id="condition-table">
+      {% for c in conditions %}
+        <tr class="condition-tr-{{ c.number }} open">
+	  <td>
+	    {{ c.number }}.&nbsp;&nbsp;{{ c.body }}<br/>
+	    <div style="padding-left: 100px">
+	      <input type="checkbox" 
+		     class="condition-checkbox" 
+		     name="checkbox-{{ c.number }}" 
+		     id="checkbox-{{ c.number }}">
+	      ยอมรับ
+	    </div>
+	  </td>
+	</tr>
+    {% endfor %}
+    </table>
+    <br/>
     <div class="submission-bar">
       <div style="float: right">
-	<input type="submit" name="submit" value="ยอมรับและยืนยันการสมัคร"/>
+	<input type="submit" name="submit" id="submit-button" 
+	       value="ยอมรับและยืนยันการสมัคร"/>
 	<input type="submit" name="cancel" value="ไม่ยอมรับ"/>
       </div>
       <b>ข้าพเจ้ายอมรับเงื่อนไขในการสมัครดังกล่าวแล้ว</b>
@@ -20,4 +39,27 @@
     </div>
   </form>
 </div>
+
+<script type="text/javascript">
+  $(function() {
+    {% for c in conditions %}
+      $("#checkbox-{{ c.number }}").data("cond_id",{{ c.number }});
+      $("#checkbox-{{ c.number }}").click(function() {
+        var cid = $(this).data("cond_id");
+        if(this.checked)
+          $(".condition-tr-" + cid).removeClass("open");
+        else
+          $(".condition-tr-" + cid).addClass("open");
+
+        var all_checked = true;
+        $(".condition-checkbox").each(function(index, elt) {
+          if(!$(elt).attr("checked"))
+            all_checked = false;
+        });
+        $("#submit-button").attr("disabled",!all_checked);
+      });
+    {% endfor %}
+    $("#submit-button").attr("disabled",true);
+  });
+</script>
 {% endblock %}

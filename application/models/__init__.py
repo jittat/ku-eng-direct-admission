@@ -745,3 +745,15 @@ class PasswordRequestLog(models.Model):
         else:
             self.num_requested_today = 1
 
+
+class ApplyingCondition(models.Model):
+    number = models.IntegerField(unique=True, 
+                             verbose_name=u'หมายเลข')
+    body = models.TextField(verbose_name=u'เงื่อนไข')
+
+    class Meta:
+        ordering = ['number']
+
+    def __unicode__(self):
+        return u'%d %s' % (self.number, self.body[:30])
+

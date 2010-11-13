@@ -19,6 +19,7 @@ from application.models import Applicant
 from application.models import PersonalInfo
 from application.models import Address, ApplicantAddress, Education
 from application.models import Major, MajorPreference
+from application.models import ApplyingCondition
 
 from application.forms import PersonalInfoForm, AddressForm, EducationForm, SingleMajorPreferenceForm
 from application.forms.handlers import handle_major_form
@@ -262,22 +263,30 @@ def info_confirm(request):
 def applicant_conditions(request):
     applicant = request.applicant
 
+    conditions = ApplyingCondition.objects.all()
+
     if request.method == 'POST':
         if 'submit' in request.POST:
-            try:
-                applicant.submit(Applicant.SUBMITTED_ONLINE)
-            except Applicant.DuplicateSubmissionError:
-                return render_to_response(
-                    'commons/submission_already_submitted.html',
-                    { 'applicant': applicant })
+            all_checked = True
+            for c in conditions:
+                if 'checkbox-' + str(c) not in request.POST:
+                    all_checked = False
+            if all_checked:
+                try:
+                    applicant.submit(Applicant.SUBMITTED_ONLINE)
+                except Applicant.DuplicateSubmissionError:
+                    return render_to_response(
+                        'commons/submission_already_submitted.html',
+                        { 'applicant': applicant })
 
-            send_submission_confirmation_by_email(applicant)
-            return HttpResponseRedirect(reverse('apply-success'))
+                send_submission_confirmation_by_email(applicant)
+                return HttpResponseRedirect(reverse('apply-success'))
         else:
             return render_to_response('application/submission/not_submitted.html')
 
     return render_to_response('application/conditions.html',
-                              {'applicant': applicant })
+                              {'applicant': applicant,
+                               'conditions': conditions })
     
 
 @applicant_required
