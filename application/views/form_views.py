@@ -272,7 +272,7 @@ def applicant_conditions(request):
                     { 'applicant': applicant })
 
             send_submission_confirmation_by_email(applicant)
-            return HttpResponseRedirect(reverse('apply-ticket'))
+            return HttpResponseRedirect(reverse('apply-success'))
         else:
             return render_to_response('application/submission/not_submitted.html')
 
@@ -280,15 +280,27 @@ def applicant_conditions(request):
                               {'applicant': applicant })
     
 
+@applicant_required
+def submission_success(request):
+    if not request.applicant.is_submitted:
+        return render_to_response('application/submission/ticket_not_submitted.html')
+
+    return render_to_response('application/submission/success.html',
+                              {'applicant': request.applicant})
 
 @applicant_required
 def submission_ticket(request):
     if not request.applicant.is_submitted:
         return render_to_response('application/submission/ticket_not_submitted.html')
 
+    amount = 350
+    amount_str = u'สามร้อยห้าสิบบาทถ้วน'
+
     verification = request.applicant.verification_number()
-    return render_to_response('application/submission/success.html',
-                              {'applicant': request.applicant,
+    return render_to_response('application/payin/ticket.html',
+                              {'amount': amount,
+                               'amount_str': amount_str,
+                               'applicant': request.applicant,
                                'verification': verification })
         
     

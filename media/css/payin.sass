@@ -1,0 +1,67 @@
+@mixin solid-frame
+  border: solid 1px black
+
+.aright
+  text-align: right
+
+.acenter
+  text-align: center
+
+td.withframe
+  @include solid-frame
+
+.payin-content
+  font-family: "Angsana New"
+  font-size: 120%
+
+  .outside-frame
+    @include solid-frame
+    padding-top: 5px
+
+  .inside-box
+    padding: 0px 10px 10px 10px
+
+  .top-header
+    text-align: right
+    height: 50px
+    border-bottom: 1px solid black    
+
+  .top-right-box
+    float: right
+    width: 50%
+    margin-bottom: 10px
+    margin-left: 10px
+
+  .app-info-box
+    @include solid-frame
+
+  .amount-container
+    table
+      width: 100%
+      border-collapse: collapse
+
+      td
+        padding: 5px
+
+      td.amount-str
+        font-size: 110%
+        background: #f0f0f0
+
+  .bottom-container
+    margin-top: 10px
+
+    .office-info
+      float: right  
+      width: 30%
+
+      table
+        width: 100%
+        border-collapse: collapse
+
+        td
+          padding: 5px
+
+  #cut-sept
+    border-top: 1px dashed black
+    margin: 20px 0px
+

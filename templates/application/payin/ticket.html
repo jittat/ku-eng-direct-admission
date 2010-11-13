@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load adm_media %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/payin.css" />
+{% endblock %}
+
+{% block body %}
+<div class="payin-content">
+  {% with "สำหรับผู้สมัคร" as rcpt %}
+    {% include "application/payin/box.html" %}
+  {% endwith %}
+  <div id="cut-sept"></div>
+  {% with "สำหรับธนาคาร" as rcpt %}
+    {% include "application/payin/box.html" %}
+  {% endwith %}
+</div>
+{% endblock %}

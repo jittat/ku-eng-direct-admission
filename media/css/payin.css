@@ -1,0 +1,49 @@
+.aright {
+  text-align: right; }
+
+.acenter {
+  text-align: center; }
+
+td.withframe {
+  border: solid 1px black; }
+
+.payin-content {
+  font-family: "Angsana New";
+  font-size: 120%; }
+  .payin-content .outside-frame {
+    border: solid 1px black;
+    padding-top: 5px; }
+  .payin-content .inside-box {
+    padding: 0px 10px 10px 10px; }
+  .payin-content .top-header {
+    text-align: right;
+    height: 50px;
+    border-bottom: 1px solid black; }
+  .payin-content .top-right-box {
+    float: right;
+    width: 50%;
+    margin-bottom: 10px;
+    margin-left: 10px; }
+  .payin-content .app-info-box {
+    border: solid 1px black; }
+  .payin-content .amount-container table {
+    width: 100%;
+    border-collapse: collapse; }
+    .payin-content .amount-container table td {
+      padding: 5px; }
+    .payin-content .amount-container table td.amount-str {
+      font-size: 110%;
+      background: #f0f0f0; }
+  .payin-content .bottom-container {
+    margin-top: 10px; }
+    .payin-content .bottom-container .office-info {
+      float: right;
+      width: 30%; }
+      .payin-content .bottom-container .office-info table {
+        width: 100%;
+        border-collapse: collapse; }
+        .payin-content .bottom-container .office-info table td {
+          padding: 5px; }
+  .payin-content #cut-sept {
+    border-top: 1px dashed black;
+    margin: 20px 0px; }

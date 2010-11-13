@@ -1,0 +1,50 @@
+<div class="outside-frame">
+  <div class="top-header">
+    {{ rcpt }}
+  </div>
+
+  <div class="inside-box">
+
+    <div class="top-right-box">
+      สาขา/Branch................. วันที่/Date...............<br/>
+      <div class="app-info-box">
+	ชื่อ-นามสกุล {{ applicant.full_name }}<br/>
+	เลขที่บัตรประชาชน/Customer No {{ applicant.national_id }}<br/>
+	หมายเลขอ้างอิง (Ref2)<br/>
+      </div>
+    </div>
+    คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน เพื่อเข้าบัญชี
+    โครงการรับตรง คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์<br/>
+    <br/>
+    ธนาคารไทยพาณิชย์ เลขที่บัญชี 235-3-00079-3 (มหาวิทยาลัยเกษตรศาสตร์ บางเขน)<br/>
+    <br style="clear: both"/>
+
+    <div class="amount-container">
+      <table>
+	<tr>
+	  <td>รับชำระด้วยเงินสดเท่านั้น</td>
+	  <td class="withframe aright" width="25%">จำนวนเงิน/Amount</td>
+	  <td class="withframe acenter" width="25%">{{ amount }}</td>
+	  <td class="withframe" width="10%">บาท/Baht</td>
+	</tr>
+	<tr>
+	  <td class="withframe" width="40%">จำนวนเงินเป็นตัวอักษร/Amount in words</td>
+	  <td colspan="3" class="withframe acenter amount-str">{{ amount_str }}</td>
+	</tr>
+      </table>
+    </div>
+
+    <div class="bottom-container">
+      <div class="office-info">
+	<table width="100%">
+	  <tr><td class="acenter withframe">สำหรับเจ้าหน้าที่</td></tr>
+	  <tr><td class="withframe">ผู้รับเงิน/ผู้รับมอบ</td></tr>
+	</table>
+      </div>
+      ชื่อผู้นำฝาก/Deposit by.............................<br/>
+      โทรศัพท์/Telephone................................
+    </div>
+
+    <br style="clear: both"/>
+  </div>
+</div>
