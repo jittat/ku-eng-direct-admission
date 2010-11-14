@@ -55,7 +55,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s<br/>
 รหัสผ่านของคุณคือ %(password)s
 
 </pre>
-คุณสามารถเข้าใช้ระบบได้โดยป้อนอีเมล์นี้ (%(email)s) และป้อนรหัสผ่านด้านบน<br/>
+คุณสามารถเข้าใช้ระบบได้โดยป้อนหมายเลขประจำตัวประชาชน (%(national_id)s) และป้อนรหัสผ่านด้านบน<br/>
 <br/>
 ถ้าคุณได้รับเมล์นี้โดยไม่ได้ลงทะเบียน อาจมีผู้ไม่หวังดีแอบอ้างนำอีเมล์คุณไปใช้ กรุณาช่วยแจ้งผู้ดูแล้วด้วย</br>
 <br/>
@@ -63,7 +63,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s<br/>
 """
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'email': applicant.get_email(), 
+    'national_id': applicant.get_email(), 
     'password': password }
 )
     adm_send_mail(applicant.get_email(), subject, message, force)
