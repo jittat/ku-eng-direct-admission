@@ -63,7 +63,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s<br/>
 """
 % { 'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
-    'national_id': applicant.get_email(), 
+    'national_id': applicant.national_id,
     'password': password }
 )
     adm_send_mail(applicant.get_email(), subject, message, force)
