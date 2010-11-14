@@ -268,7 +268,6 @@ def applicant_conditions(request):
     if request.method == 'POST':
         if 'submit' in request.POST:
             all_checked = True
-            print request.POST
             for c in conditions:
                 if 'checkbox-' + str(c.number) not in request.POST:
                     all_checked = False
