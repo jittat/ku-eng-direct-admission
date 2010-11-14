@@ -102,23 +102,20 @@ def send_submission_confirmation_by_email(applicant, force=False):
     """
     sends submission confirmation
     """
-    subject = 'ยืนยันการสมัครตรง (รอบ 2) คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
+    subject = 'ยืนยันการสมัครตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
 
-    if applicant.online_doc_submission():
-        greeting = u"จดหมายอิเล็กทรอนิกส์ฉบับนี้ ยืนยันว่าคณะวิศวกรรมศาสตร์ได้รับใบสมัครของคุณแล้ว โดยคุณได้อัพโหลดหลักฐานทั้งหมดทางออนไลน์ อย่างไรก็ตามหลักฐานทั้งหมดจะต้องผ่านการตรวจสอบความถูกต้องเสียก่อนการสมัครจึงเสร็จสิ้นสมบูรณ์"
-    else:
-        greeting = u"จดหมายอิเล็กทรอนิกส์ฉบับนี้ ยืนยันว่าคณะวิศวกรรมศาสตร์ได้รับข้อมูลพื้นฐานในการสมัครของคุณแล้ว อย่างไรก็ตามคุณเลือกที่จะส่งหลักฐานทางไปรษณีย์ ดังนั้นการสมัครจะสมบูรณ์ก็ต่อเมื่อทางคณะได้รับหลักฐานและตรวจสอบแล้ว"
+    greeting = u"จดหมายอิเล็กทรอนิกส์ฉบับนี้ ยืนยันว่าคณะวิศวกรรมศาสตร์ได้รับใบสมัครของคุณแล้ว"
 
     message = (
 u"""เรียนคุณ %(firstname)s %(lastname)s
 
 %(greeting)s
 
-เลขประจำตัวผู้สมัครที่คุณได้รับคือ %(ticket)s
+หมายเลขประจำตัวประชาชนคือ %(national_id)s
 รหัสยืนยันคือ %(verification)s
 โดยการสมัครได้สมัครโดยใช้อีเมล์ %(email)s
 
-คุณสามารถเข้าสู่ระบบรับสมัครเพื่อตรวจสอบสถานะใบสมัครได้โดยใช้อีเมล์ %(email)s 
+คุณสามารถเข้าสู่ระบบรับสมัครเพื่อตรวจสอบสถานะใบสมัครได้โดยใช้รหัสประจำตัวประชาชนของคุณ
 
 ขอบคุณ
 โครงการรับตรง คณะวิศวกรรมศาสตร์"""
@@ -126,7 +123,7 @@ u"""เรียนคุณ %(firstname)s %(lastname)s
     'firstname': applicant.first_name, 
     'lastname': applicant.last_name,
     'email': applicant.get_email(), 
-    'ticket': applicant.ticket_number(),
+    'national_id': applicant.national_id,
     'verification': applicant.verification_number(),
     'submission_method': applicant.get_doc_submission_method_display(),
     }

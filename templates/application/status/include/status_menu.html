@@ -1,95 +1,19 @@
 <div class="login-box">
-  {% if applicant.can_resubmit_online_doc %}
-    {% if not supplement_submission_deadline_passed %}
-      <center>สำหรับการแก้ไขหลักฐานที่ส่งออนไลน์</center>
-      <a id="id_online_doc_resubmission" class="in-button" href="{% url upload-update %}">
-	<div class="button-blue">
-	  แก้ไขหลักฐานที่ไม่ผ่านการตรวจ
-	</div>
-      </a>
-      <div class="small-vert-sept"></div>
-    {% endif%}
-  {% endif %}
   <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
     <div class="button">
-      ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว{% if not applicant.online_doc_submission %}<br/>และพิมพ์ใบนำส่งหลักฐาน{% endif %}
+      ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว
     </div>
   </a>
   <div class="small-vert-sept"></div>
-  {% if submission_deadline_passed %}
-    <center>
-      การแก้ไขข้อมูลต่าง ๆ ในใบสมัครไม่สามารถทำได้แล้ว<br/>
-      เนื่องจากหมดเขตรับสมัคร<br/>
-      {% if applicant.can_submit_supplements %}
-        อย่างไรก็ตาม ผู้สมัครสามารถส่งหลักฐานเพิ่มเติมออนไลน์ได้จนถึงวันที่ 18 ธ.ค. 52
-      
-        {% if not applicant.online_doc_submission %}
-          <div class="small-vert-sept"></div>
-          <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
-            <div class="button-blue">
-              ส่งหลักฐานเพิ่มเติม
-            </div>
-          </a>
-	{% else %}
-          {% if not applicant.can_resubmit_online_doc or applicant.has_supplements %}
-            <div class="small-vert-sept"></div>
-            <a id="id_edu-update-button" class="in-button" href="{% url supplement-index %}">
-              <div class="button-blue">
-                ส่งหลักฐานเพิ่มเติม
-              </div>
-            </a>
-
-	    {% if applicant.can_resubmit_online_doc %}
-  	      <center>
-		สำหรับผู้ที่ส่งหลักฐานแบบออนไลน์
-		สามารถเลือกส่งหลักฐานที่ไม่ผ่านการตรวจกลับมาให้คณะใหม่
-		ผ่านทางการแก้ไขหลักฐานที่ส่งไปแล้ว (ลิงก์อันบนสุด)
-		หรือผ่านทางการส่งหลักฐานเพิ่มเติมก็ได้ (ลิงก์อันนี้)
-		หลักฐานที่ส่งจากทั้งสองวิธีจะถูกเก็บแยกกัน
-		แต่ทีมงานจะดูหลักฐานจากทั้งสองวิธีเสมอเมื่อตรวจเอกสาร
-	      </center>
-	    {% endif %}
-	  {% endif %}
-        {% endif %}
-      {% endif %}
-    </center>
-  {% else %}
-    <center>การแก้ไขข้อมูลที่ได้ยืนยันแล้ว</center>
-    {% if submission_info.can_update_info %}
-      <a id="id_edu-update-button" class="in-button" href="{% url update-education %}">
-        <div class="button">
-          แก้ไขข้อมูลการศึกษาและคะแนนสอบ
-        </div>
-      </a>
-      <div class="small-vert-sept"></div>
-    {% endif %}	
-    <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
-      <div class="button">
-        แก้ไขอันดับสาขาวิชา
-      </div>
-    </a>
-  {% endif %}
-
-  {% if applicant.submission_info.doc_reviewed_complete %}
-    {% if not round2_confirmation_deadline_passed %}
-    <div class="small-vert-sept"></div>
-    <a class="in-button" href="{% url confirmation-round2 %}">
-      <div class="button">
-        ยืนยันการเข้ารับพิจารณาคัดเลือก<br/>
-	โครงการรับตรง (รอบที่ 2)
-      </div>
-    </a>
-    {% endif %}
-  {% endif %}
-
-  {% if not applicant.online_doc_submission %}
-    {% if not submission_info.has_received_doc %}
-      <div class="small-vert-sept"></div>
-      <a class="in-button" href="{% url update-postal-sub %}">
-	<div class="button">
-	  เปลี่ยนวิธีการส่งหลักฐานเป็นแบบออนไลน์
-	</div>
-      </a>
-    {% endif %}
-  {% endif %}
+  <a id="id_payin-button" class="in-button" href="{% url apply-ticket %}" target="_blank">
+    <div class="button">
+      พิมพ์ใบชำระค่าสมัครเพื่อชำระเงินที่ธนาคาร
+    </div>
+  </a>
+  <div class="small-vert-sept"></div>
+  <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
+    <div class="button">
+      แก้ไขอันดับสาขาวิชา
+    </div>
+  </a>
 </div>

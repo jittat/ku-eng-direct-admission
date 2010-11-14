@@ -32,44 +32,10 @@ def index(request):
         del request.session['notice']
 
     submission_info = request.applicant.submission_info
-    if submission_info.has_been_reviewed:
-        review_results = ReviewFieldResult.get_applicant_review_error_results(request.applicant)
-    else:
-        review_results = None
-
-    if request.applicant.has_admission_result():
-        admission_result = request.applicant.admission_result
-    else:
-        admission_result = AdmissionResult()
-        admission_result.is_admitted = False
-        admission_result.is_waitlist = False
-
-    show_admission_result = settings.SHOW_ADMISSION_RESULTS
-    show_final_admission_result = settings.SHOW_FINAL_ADMISSION_RESULTS
-
-    try:
-        round2_confirmation = request.applicant.round2_confirmation
-    except Round2ApplicantConfirmation.DoesNotExist:
-        round2_confirmation = None
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
-                                'show_admission_result':
-                                    show_admission_result,
-                                'show_final_admission_result':
-                                    show_final_admission_result,
-                                'admission_result': admission_result,
                                 'submission_info': submission_info,
-                                'review_results': review_results,
-                                'submission_deadline_passed':
-                                    submission_deadline_passed(),
-                                'supplement_submission_deadline_passed':
-                                    supplement_submission_deadline_passed(),
-                                'admission_major_pref_deadline_passed':
-                                    admission_major_pref_deadline_passed(),
-                                'round2_confirmation': round2_confirmation,
-                                'round2_confirmation_deadline_passed':
-                                    round2_confirmation_deadline_passed(),
                                 'notice': notice,
                                 'can_log_out': True })
 

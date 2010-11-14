@@ -15,7 +15,7 @@
       {% for c in conditions %}
         <tr class="condition-tr-{{ c.number }} open">
 	  <td>
-	    {{ c.number }}.&nbsp;&nbsp;{{ c.body }}<br/>
+	    {{ c.number }}.&nbsp;&nbsp;{{ c.body|safe }}<br/>
 	    <div style="padding-left: 100px">
 	      <input type="checkbox" 
 		     class="condition-checkbox" 

@@ -23,149 +23,34 @@
   <div class="right-box">
     <br/>
     {% include "application/status/include/status_menu.html" %}
-
-    {% comment %}
-    <small>
-      <ul>
-	<li>
-	  <b>การแก้ไขข้อมูลการสมัคร</b>
-	  ระบบจะอนุญาตให้แก้ไขได้จนกระทั่งทางคณะได้ตรวจสอบหลักฐานที่ยื่นมาเท่านั้น
-	  โดยในช่วงก่อนวันที่ 10 ธ.ค. คณะจะเว้นระยะเผื่อให้มีเวลาแก้ข้อมูลได้อย่างน้อย
-	  3 วัน
-	</li>
-	<li>
-	  <b>การแก้ไขอันดับสาขาวิชา</b> สามารถแก้ได้จนสิ้นสุดวันที่ 15 ธ.ค. 52
-	</li>
-      </ul>
-    </small>
-    {% endcomment %}
   </div>
   
   <!--- *************************** --->
 
-  {% comment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
-
-  {% if submission_deadline_passed %}
-  <div class="normal-msg" style="width: 510px; margin-top:5px;">
-    <center><b>ขณะนี้หมดเวลารับสมัครแล้ว</b></center>
-    <p>
-      ผู้สมัครจะไม่สามารถแก้ไขใบสมัครและข้อมูลได้อีกแล้ว
-      อย่างไรก็ตามทาง<b>คณะจะเปิดให้ผู้สมัครแบบออนไลน์ที่ส่งหลักฐานผิดพลาดได้แก้ไขหลักฐาน
-      หรือส่งหลักฐานเพิ่มเติมใหม่ แต่จะต้องส่งผ่านทางระบบออนไลน์เท่านั้น</b>
-      (<a href="http://admission.eng.ku.ac.th/node/1109">อ่านรายละเอียดเพิ่มเติม</a>)
-    </p>
-    <p>
-      ระบบสำหรับส่งหลักฐานเพิ่มเติมแบบออนไลน์สำหรับผู้ที่สมัครแบบออนไลน์
-      (ไม่ว่าจะเลือกส่งหลักฐานทางไปรษณีย์หรือทางออนไลน์) จะใช้งานได้ในวันที่ 17
-      ธ.ค. 52 และจะเปิดให้ส่งหลักฐานแก้ไขได้จนถึงวันที่ 18 ธ.ค. 52
-    </p>
-    {% if applicant.online_doc_submission %}
-      <p>
-	ผู้สมัครที่ส่งหลักฐานทางออนไลน์ จะสามารถแก้ไขหลักฐานที่ไม่ผ่านการตรวจ
-	ได้จนถึงวันที่ 18 ธ.ค. 52 เช่นกัน อย่างไรก็ตาม
-	ในกรณีที่หลักฐานที่ส่งไปยังไม่ได้รับการตรวจ ผู้สมัครในกลุ่มดังกล่าว
-	ยังสามารถใช้ระบบส่งหลักฐานเพิ่มเติมเพื่อส่งหลักฐานที่คาดว่าจะส่งผิดมาใหม่ได้อีกด้วย
-      </p>
-    {% endif %}
-    <p>
-      สำหรับผู้ที่ทราบว่าตนเองส่งหลักฐานผิดพลาดแล้ว
-      สามารถส่งหลักฐานเพิ่มเติมทางระบบออนไลน์ในวันดังกล่าวได้
-      <b>โดยไม่จำเป็นต้องรอให้ได้รับผลการตรวจก่อน</b>
-    </p>
-  </div>
-  {% endif %}
-
-  {% endcomment %} <!---  INFORMATION ON HOW TO FURTHER SUBMIT DOCS --->
-
-  <!--- ******** ADMISSION INFORMATION ******** --->
-
   <p>
     <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
-    <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
-
-    <b>สถานะการยืนยันการเข้ารับพิจารณาคัดเลือก (สำหรับรอบ 2):</b>
-    {% if round2_confirmation %}
-      {{ round2_confirmation.get_is_confirmed_display }}<br/>
-      <b>การขอรับพิจารณาเพิ่มเติมในสาขาวิศวกรรมสำรวจ:</b> {{ round2_confirmation.get_is_applying_for_survey_engr_display }}
-    {% else %}
-      ยังไม่ได้ยืนยัน
-    {% endif %}
-    <br/>
-
-    {% comment %} <!--- submission result --->
-
-    {% if show_final_admission_result %}
-      <!--- FINAL ADMISSION RESULTS --->
-      
-      <div class="light-frame">
-	{% include "application/status/include/final_admission_result.html" %}
-      </div>
-
-    {% else %}
-      <!--- FIRST ROUND ADMISSION RESULTS --->
-
-      <div class="light-frame">
-        {% if show_admission_result %}
-          {% include "application/status/include/admission_result.html" %}
-        {% endif %}
-      </div>
-      {% if show_admission_result and admission_result.is_admitted %}
-        <div class="light-frame">
-	  <center>
-	    <b>สถานะการยืนยันสิทธิ์:</b> {% if applicant.has_confirmed %}ยืนยันสิทธิ์แล้ว (บันทึกข้อมูลเมื่อ {{ applicant.admission_confirmation.confirmed_at|date:"j N" }}){% else %}ยังไม่ได้ยืนยันสิทธิ์{% endif %}
-	  </center>
-	</div>
-	<div class="light-frame">
-	  {% if not admission_major_pref_deadline_passed %}
-    	    <center>
-	      คุณต้องยืนยันสาขาวิชาที่ต้องการพิจารณาคัดเลือก<br/>
-	      <small>สามารถยืนยันการเลือกสาขาวิชาได้ถึงเวลา 23:59 ของวันที่ 3 ก.พ. 2553</small>
-	    </center>
-	    <a href="{% url confirmation-pref %}" class="in-button">
-	      <div class="button-blue">
-		เข้าสู่ระบบยืนยันอันดับการเลือกสาขา
-	      </div>
-	    </a>
-	  {% else %}
-	    <center>
-	      <b>หมดเวลาการยืนยันอันดับการเลือกสาขาแล้ว</b><br/>
-	      สามารถติดตามผลการจัดอันดับได้ในวันที่ 5 ก.พ. 2553<br/>
-	      คณะวิศวกรรมศาสตร์จะแจ้งผลทางอีเมล์และทางระบบตรวจสอบสถานะการสมัครนี้
-	    </center>
-	  {% endif %}
-	</div>
-      {% else %}
-	<div class="light-frame">
-	  <center>
-	    <b>ประกาศการเรียกรายชื่อเพิ่มเติม</b><br/> ในวันที่ 5 ก.พ. 2553
-	    คณะวิศวกรรมศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาต่อเพิ่มเติม
-	    โดยจะประกาศรายชื่อจากทั้งผู้สมัครที่มีชื่อในรายชื่อสำรอง
-	    และผู้สมัครที่อาจไม่มีชื่ออยู่ในรายชื่อสำรองตั้งแต่แรก<br/>
-	    การประกาศจะทำผ่านทางอีเมล์และผ่านทางระบบตรวจสอบสถานะการสมัครนี้
-	  </center>
-	</div>
-      {% endif %}
-    {% endif %}
-
-    {% endcomment %} <!--- submission result --->
-
+    <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.national_id }}<br/>
+    <table id="doc-status-table">
+      <tr>
+	<th>สถานะการชำระค่าสมัคร</th>
+	<th>วันที่ได้รับ</th>
+      </tr>
+      <tr>
+	{% if submission_info.is_paid %}
+	  <td>ชำระแล้ว</td>
+	  <td>{{ submission_info.paid_at|date:"j N y" }}</td>
+        {% else %}
+	  <td>ยังไม่ได้รับข้อมูลการชำระ</td>
+	  <td>ยังไม่ได้รับ</td>
+	{% endif %}  
+      </tr>
+    </table>
   </p>
 
-  <!--- ******** DOCUMENT STATUS ******** --->
-
-  {% if not show_final_admission_result %}
-    {% include "application/status/include/document_status.html" %}
-  {% endif %}
   <p>
     คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a>
     เพื่อตรวจสอบรายละเอียด{% if not applicant.online_doc_submission %}และพิมพ์ใบนำส่งหลักฐาน{% endif %}
   </p>
-
-  {% comment %}
-  <p>
-    คุณสามารถแก้ข้อมูลการศึกษาและอันดับสาขาวิชาที่เลือกได้โดยกดเลือกจากเมนูด้านขวามือ
-  </p>
-  {% endcomment %}
 
   <p>
     ถ้ามีข้อขัดข้องหรือข้อผิดพลาดกรุณาแจ้งผู้ดูแลทางอีเมล์ {% load adm_info %}{% adm_admin_email_link %}

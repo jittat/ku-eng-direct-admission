@@ -399,6 +399,12 @@ class SubmissionInfo(models.Model):
     salt = models.CharField(max_length=30)
 
     submitted_at = models.DateTimeField(auto_now_add=True)
+
+    is_paid = models.BooleanField(default=False)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    
+    ######################################################
+    
     doc_received_at = models.DateTimeField(blank=True, 
                                            null=True,
                                            default=None)

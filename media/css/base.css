@@ -361,3 +361,9 @@ table#condition-table td {
   padding: 0 10px; }
 table#condition-table tr.open {
   background: #fff0f0; }
+table#condition-table span.super-highlight {
+  font-size: 110%;
+  font-weight: bold; }
+  table#condition-table span.super-highlight b {
+    font-size: 115%;
+    color: red; }
