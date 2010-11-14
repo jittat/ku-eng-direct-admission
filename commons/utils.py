@@ -13,6 +13,10 @@ def redirect_to_index(request):
     # go back to front page, will be changed later
     return HttpResponseRedirect(reverse(settings.INDEX_PAGE))
 
+##########################################
+#   DEADLINE
+#
+
 def redirect_to_deadline_error():
     return HttpResponseRedirect(reverse('commons-deadline-error'))
 
@@ -84,7 +88,6 @@ def round2_confirmation_deadline_passed():
     return False
 
     
-
 def admission_major_pref_deadline_passed():
     try:
         deadline = settings.ADMISSION_MAJOR_PREF_DEADLINE
@@ -132,5 +135,17 @@ def extract_variable_from_session_or_none(session, name):
             pass
     return value
 
+
+def validate_national_id(nat_id):
+    if len(nat_id)!=13:
+        return False
+    s = 0
+    for i in range(12):
+        try:
+            s += int(nat_id[i])*(13-i)
+        except:
+            return False
+    last_num = (11 - (s % 11)) % 10
+    return nat_id[12] == str(last_num)
 
 

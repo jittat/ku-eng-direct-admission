@@ -8,6 +8,7 @@ from application.models import Applicant, PersonalInfo
 from application.models import Address, ApplicantAddress, Education, Major
 from widgets import ThaiSelectDateWidget
 from commons.local import APP_TITLE_FORM_CHOICES
+from commons.utils import validate_national_id
 from django.forms.util import ErrorList
 
 def validate_phone_number(phone_number):
@@ -49,21 +50,35 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(label=u'อีเมล์')
     email_confirmation = forms.EmailField(label=u'ยืนยันอีเมล์')
     national_id = forms.CharField(label=u'รหัสประจำตัวประชาชน')
+    national_id_confirmation = forms.CharField(label=u'ยืนยันรหัสประจำตัวประชาชน')
+
+    def check_confirmation(self, field_name, field_name_confirmation, error_message):
+        f = self.cleaned_data.get(field_name)
+        f_confirmation = self.cleaned_data.get(field_name_confirmation)
+
+        if f and f_confirmation and (
+            f != f_confirmation):
+
+            self._errors[field_name_confirmation] = ErrorList(
+                [error_message])
+            del self.cleaned_data[field_name]
+            del self.cleaned_data[field_name_confirmation]
 
     def clean(self):
         cleaned_data = self.cleaned_data
-        email = cleaned_data.get('email')
-        email_confirmation = cleaned_data.get('email_confirmation')
-
-        if email and email_confirmation and (
-            email != email_confirmation): 
-
-            self._errors['email_confirmation'] = ErrorList(
-                ['อีเมล์ที่ยืนยันไม่ตรงกัน'])
-            del cleaned_data['email']
-            del cleaned_data['email_confirmation']
-
+        self.check_confirmation('email', 'email_confirmation',
+                           u'อีเมล์ที่ยืนยันไม่ตรงกัน')
+        self.check_confirmation('national_id', 'national_id_confirmation',
+                           u'รหัสประจำตัวประชาชนที่ยืนยันไม่ตรงกัน')
         return cleaned_data
+
+    def clean_national_id(self):
+        nat = self.cleaned_data['national_id']
+        
+        if not validate_national_id(nat):
+            raise forms.ValidationError(u'รหัสประชาชนที่ป้อนไม่ถูกต้อง')
+        return nat
+
 
     def get_applicant(self):
         return Applicant(title=self.cleaned_data['title'],
