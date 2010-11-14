@@ -43,13 +43,11 @@ def index(request):
 # this is for showing step bar
 SHOW_UPLOAD_FORM_STEPS_ONLINE = [
     ('ดูข้อมูลที่ใช้สมัคร','status-show'),
-    ('ดูหลักฐานที่อัพโหลดแล้ว','upload-show'),
     ('กลับไปหน้าสถานะใบสมัคร','status-index'),
     ]
 
 SHOW_UPLOAD_FORM_STEPS_POSTAL = [
     ('ดูข้อมูลที่ใช้สมัคร','status-show'),
-    ('ดูและพิมพ์ใบนำส่ง','status-show-ticket'),
     ('กลับไปหน้าสถานะใบสมัคร','status-index'),
     ]
 
