@@ -44,6 +44,10 @@ td.withframe {
         border-collapse: collapse; }
         .payin-content .bottom-container .office-info table td {
           padding: 5px; }
+  .payin-content .ku-eng-logo {
+    float: left;
+    margin-right: 5px;
+    margin-top: 2px; }
   .payin-content #cut-sept {
     border-top: 1px dashed black;
     margin: 20px 0px; }

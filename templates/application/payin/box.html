@@ -1,3 +1,4 @@
+{% load adm_media %}
 <div class="outside-frame">
   <div class="top-header">
     {{ rcpt }}
@@ -6,16 +7,18 @@
   <div class="inside-box">
 
     <div class="top-right-box">
-      สาขา/Branch................. วันที่/Date...............<br/>
+      สาขา/Branch........................... วันที่/Date..........................<br/>
       <div class="app-info-box">
 	ชื่อ-นามสกุล {{ applicant.full_name }}<br/>
 	เลขที่บัตรประชาชน/Customer No {{ applicant.national_id }}<br/>
-	หมายเลขอ้างอิง (Ref2)<br/>
+	หมายเลขอ้างอิง (Ref2) {{ applicant.verification_number }}<br/>
       </div>
     </div>
+    <div class="ku-eng-logo"><img src="{% media_url %}/image/payin/ku.png"/></div>
     คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน เพื่อเข้าบัญชี
-    โครงการรับตรง คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์<br/>
-    <br/>
+    โครงการรับตรง คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์
+    <br style="clear: left"/>
+    <img src="{% media_url %}/image/payin/scb.png"/>
     ธนาคารไทยพาณิชย์ เลขที่บัญชี 235-3-00079-3 (มหาวิทยาลัยเกษตรศาสตร์ บางเขน)<br/>
     <br style="clear: both"/>
 
