@@ -586,8 +586,8 @@ class Education(models.Model):
 
     # school information
     has_graduated = models.BooleanField(
-        choices=((False,u"กำลังเรียนระดับมัธยมศึกษาปีที่ 6"),
-                 (True,u"จบการศึกษาระดับมัธยมศึกษาปีที่ 6")),
+        choices=((False,u"กำลังเรียนระดับมัธยมศึกษาปีที่ 6 หรือเทียบเท่า"),
+                 (True,u"จบการศึกษาระดับมัธยมศึกษาปีที่ 6 หรือเทียบเท่า")),
         verbose_name=u"ระดับการศึกษา")
     school_name = models.CharField(max_length=100,
                                    verbose_name=u"โรงเรียน")
