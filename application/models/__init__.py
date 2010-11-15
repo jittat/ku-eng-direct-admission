@@ -116,6 +116,14 @@ class Applicant(models.Model):
             return applicants[0]
 
     @staticmethod
+    def get_applicant_by_national_id(nat_id):
+        applicants = Applicant.objects.filter(national_id=nat_id).all()
+        if len(applicants)==0:
+            return None
+        else:
+            return applicants[0]
+
+    @staticmethod
     def get_active_offline_applicants():
         return Applicant.objects.filter(is_offline=True).filter(is_submitted=False)
 

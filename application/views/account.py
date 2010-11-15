@@ -89,7 +89,7 @@ def logout(request):
         return redirect_to_index(request)
 
 
-def dupplicate_email_error(applicant, email, first_name, last_name):
+def duplicate_email_error(applicant, email, first_name, last_name):
     # query set is lazy, so we have to force it, using list().
     old_registrations = list(applicant.registrations.all())  
 
@@ -100,12 +100,39 @@ def dupplicate_email_error(applicant, email, first_name, last_name):
     send_activation_by_email(applicant, new_registration.activation_key)
     applicant.activation_required = True
     applicant.save()
-    return render_to_response('application/registration/dupplicate.html',
+    return render_to_response('application/registration/duplicate.html',
                               { 'applicant': applicant,
                                 'email': email,
                                 'old_registrations': old_registrations,
                                 'new_registration': new_registration,
                                 'step_name': "อีเมล์นี้มีการลงทะเบียนไว้แล้ว ต้องมีการยืนยันอีเมล์" })
+
+
+def validate_email_and_national_id(email, national_id):
+    applicant = Applicant.get_applicant_by_national_id(national_id)
+    if applicant!=None:
+        return (False, 'national_id', applicant)
+    else:
+        applicant = Applicant.get_applicant_by_email(email)
+        if applicant!=None:
+            return (False, 'email', applicant)
+        else:
+            return (True, None, None)
+    
+
+def registration_error(error_field,
+                       applicant, email, national_id, first_name, last_name):
+    if error_field == 'email':
+        return duplicate_email_error(applicant,
+                                     email,
+                                     first_name,
+                                     last_name)
+    else:
+        return render_to_response(
+            'application/registration/duplicate-nat-id-error.html',
+            { 'national_id': national_id,
+              'step_name': u'เกิดปัญหาในการลงทะเบียน เนื่องจากมีการใช้รหัสประจำตัวประชาชนซ้ำ'})
+
 
 @within_submission_deadline
 def register(request):
@@ -117,20 +144,29 @@ def register(request):
             email = form.cleaned_data['email']
             first_name=form.cleaned_data['first_name']
             last_name=form.cleaned_data['last_name']
+            national_id=form.cleaned_data['national_id']
 
-            applicant = Applicant.get_applicant_by_email(email)
+            result, error_field, applicant = (
+                validate_email_and_national_id(email,
+                                               national_id))
 
-            if applicant==None:
+            if result:
                 try:
                     applicant = form.get_applicant()
                     passwd = applicant.random_password()
                     applicant.save()
                 except IntegrityError:
                     # somehow, it gets error
-                    return dupplicate_email_error(applicant,
-                                                  email,
-                                                  first_name,
-                                                  last_name)
+
+                    result, error_field, applicant = (
+                        validate_email_and_national_id(email,
+                                                       national_id))
+                    return registration_error(error_field,
+                                              applicant,
+                                              email,
+                                              national_id,
+                                              first_name,
+                                              last_name)
                 
                 registration = Registration(
                     applicant=applicant,
@@ -144,19 +180,28 @@ def register(request):
                      'step_name': "การลงทะเบียนเรียบร้อย" })
             else:
                 if not applicant.has_logged_in:
-                    return dupplicate_email_error(applicant,
-                                                  email,
-                                                  first_name,
-                                                  last_name)
+                    return registration_error(error_field,
+                                              applicant,
+                                              email,
+                                              national_id,
+                                              first_name,
+                                              last_name)
 
-                # e-mail has been registered and logged in
+                # e-mail or national id has been registered and logged in
                 from django.forms.util import ErrorList
                 from commons.utils import admin_email
-                form._errors['__all__'] = ErrorList([
-"""อีเมล์นี้ถูกลงทะเบียนและถูกใช้แล้ว ถ้าอีเมล์นี้เป็นของคุณจริงและยังไม่เคยลงทะเบียน
-กรุณาติดต่อผู้ดูแลระบบทางอีเมล์ <a href="mailto:%(email)s">%(email)s</a> หรือทางเว็บบอร์ด
-อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % {'email': admin_email()}])
 
+                if error_field == 'email':
+                    dup_obj = u'อีเมล์'
+                else:
+                    dup_obj = u'รหัสประจำตัวประชาชน'
+
+                form._errors['__all__'] = ErrorList([
+"""%(dup_obj)sนี้ถูกลงทะเบียนและถูกใช้แล้ว ถ้าอีเมล์นี้เป็นของคุณจริงและยังไม่เคยลงทะเบียน
+กรุณาติดต่อผู้ดูแลระบบทางอีเมล์ <a href="mailto:%(email)s">%(email)s</a> หรือทางเว็บบอร์ด
+อาจมีผู้ไม่ประสงค์ดีนำอีเมล์คุณไปใช้""" % {'dup_obj': dup_obj,
+                                 'email': admin_email()}])
+                
     else:
         form = RegistrationForm()
     return render_to_response('application/registration/register.html',
@@ -229,10 +274,10 @@ def forget_password(request):
             if applicant.can_request_password():
 
                 if applicant.activation_required:
-                    return dupplicate_email_error(applicant,
-                                                  email,
-                                                  applicant.first_name,
-                                                  applicant.last_name)
+                    return duplicate_email_error(applicant,
+                                                 email,
+                                                 applicant.first_name,
+                                                 applicant.last_name)
 
                 new_pwd = applicant.random_password()
                 applicant.save()

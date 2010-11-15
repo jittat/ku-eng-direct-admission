@@ -1,0 +1,22 @@
+{% extends "application/formbase.html" %}
+
+{% block title %}ลงทะเบียนเพื่อเข้าใช้ระบบ: ล้มเหลว มีการลงทะเบียนด้วยรหัสประชาชนซ้ำ{% endblock %}
+
+{% block form-body %} 
+  {% if step_name %}
+    {% load adm_steps %}{% step_bar step_name %}
+    <br/>
+  {% endif %}
+  <div class="normal-msg">
+    มีการลงทะเบียนด้วยรหัสประชาชน {{ national_id }} แล้ว<br/> <br/>
+    ถ้าคุณเป็นเจ้าของรหัสประชาชนนี้ กรุณาแจ้งผู้ดูแลระบบ ที่ {% load adm_info %}{% adm_admin_email_link %} เพื่อตรวจสอบ<br/>
+    อาจเป็นไปได้ที่มีผู้อื่นนำรหัสประจำตัวประชาชนของคุณไปใช้ <br/>
+    หรือในกรณีที่คุณไม่สามารถเข้าใช้อีเมล์แรกที่ลงทะเบียนไว้ได้
+    กรุณาแจ้งผู้ดูแลระบบเพื่อช่วยแก้ไข
+  </div>
+  {% if not no_first_page_link %}
+    <p>
+      กลับไป<a href="{% url apply-start %}">หน้าแรกเพื่อเข้าใช้ระบบ</a></p>
+    </p>
+  {% endif %}
+{% endblock %}
