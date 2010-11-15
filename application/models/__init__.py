@@ -356,7 +356,7 @@ class Applicant(models.Model):
             import hashlib
             h = hashlib.md5()
             h.update(key.encode('utf-8'))
-            return str(int(float.fromhex(h.hexdigest()[:10])))
+            return str(int(float.fromhex(h.hexdigest()[:8])))
         except SubmissionInfo.DoesNotExist:
             return None
 
