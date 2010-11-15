@@ -22,11 +22,13 @@
   <div class="login-box" style="text-align: center">
     <a class="in-button" href="{% url apply-ticket %}" target="_blank">
       <div id="reg-button" class="button big">
-	พิมพ์ใบนำฝากสำหรับธนาคาร
+	พิมพ์ใบชำระเงินค่าสมัครสำหรับธนาคาร
 	<img src="{% media_url %}/image/Next.png"/>
       </div>
     </a>
   </div>
+
+  {% include "application/include/ticket_printing.html" %}
 
   <br/>
   <p>

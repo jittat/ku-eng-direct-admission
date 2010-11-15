@@ -17,7 +17,7 @@ td.withframe {
     padding: 0px 10px 10px 10px; }
   .payin-content .top-header {
     text-align: right;
-    height: 50px;
+    height: 35px;
     border-bottom: 1px solid black; }
   .payin-content .top-right-box {
     float: right;
@@ -25,7 +25,8 @@ td.withframe {
     margin-bottom: 10px;
     margin-left: 10px; }
   .payin-content .app-info-box {
-    border: solid 1px black; }
+    border: solid 1px black;
+    font-size: 110%; }
   .payin-content .amount-container table {
     width: 100%;
     border-collapse: collapse; }
@@ -51,3 +52,5 @@ td.withframe {
   .payin-content #cut-sept {
     border-top: 1px dashed black;
     margin: 20px 0px; }
+  .payin-content .ku-eng-title {
+    font-size: 90%; }
