@@ -21,8 +21,6 @@
 
   <div class="right-box">
 
-    {% if "second_round_admission"|feature_is_enabled %}
-
       {% if submission_deadline_passed %}
         <div class="login-box">
           <center><b>หมดเวลารับสมัครออนไลน์แล้ว</b></center>
@@ -103,20 +101,6 @@
 	  <a href="{% url apply-forget %}">ลืมรหัสผ่านหรือขอรหัสผ่านใหม่</a>
 	</center>
       </div>
-    {% else %}
-
-      <div class="login-box">
-        <center>
-	  <br/>
-	  <br/>
-          <b>ระบบยังไม่เปิดให้บริการ กรุณารอก่อน</b>
-	  <br/>	
-	  <br/>
-	  <br/>
-	</center>
-      </div>
-
-    {% endif %}
 
     <br/>
 
@@ -170,15 +154,85 @@
     <h2>กำหนดการรับสมัคร</h2>
     <table class="schedule">
       <tr>
-	<td width="30%">
+	<td style="padding-right: 10px; text-align:center">
 	  16 พ.ย. 53 - 15 ธ.ค. 53
-	  </td>
+	</td>
 	<td>
 	  รับสมัครผ่านเว็บไซต์
 	</td>
       </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  22 ธ.ค. 53
+	</td>
+	<td>ประกาศรายชื่อผู้มีสิทธิเข้ารับการคัดเลือก</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  19 ม.ค. 54
+	</td>
+	<td>ประกาศรายชื่อผู้มีสิทธิ์ได้รับคัดเลือกให้เข้าศึกษารอบที่ 1</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  19 ม.ค. 54 - 24 ม.ค. 54
+	</td>
+	<td>ผู้มีสิทธิ์เข้าศึกษารอบที่ 1 ยืนยันสิทธิ์</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  26 ม.ค. 54
+	</td>
+	<td>
+	  ประกาศรายชื่อผู้มีสิทธิ์ได้รับคัดเลือกให้เข้าศึกษารอบที่ 2<br/>
+	  (สำหรับผู้ที่ยังอยู่ในระบบและมิได้สละสิทธิ์ในรอบที่ 1)
+	</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  26 ม.ค. 54 - 31 ม.ค. 54
+	</td>
+	<td>ผู้มีสิทธิ์เข้าศึกษารอบที่ 2 ยืนยันสิทธิ์</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  2 ก.พ. 54
+	</td>
+	<td>
+	  ประกาศรายชื่อผู้มีสิทธิ์ได้รับคัดเลือกให้เข้าศึกษารอบที่ 3<br/>
+	  (สำหรับผู้ที่ยังอยู่ในระบบและมิได้สละสิทธิ์ในรอบที่ 2)
+	</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  2 ก.พ. 54 - 7 ก.พ. 54
+	</td>
+	<td>ผู้มีสิทธิ์เข้าศึกษารอบที่ 3 ยืนยันสิทธิ์</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  9 ก.พ. 54
+	</td>
+	<td>
+	  ประกาศรายชื่อผู้มีสิทธิ์ได้รับคัดเลือกให้เข้าศึกษารอบที่ 4<br/>
+	  (สำหรับผู้ที่ยังอยู่ในระบบและมิได้สละสิทธิ์ในรอบที่ 3)
+	</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  9 ก.พ. 54 - 14 ก.พ. 54
+	</td>
+	<td>ผู้มีสิทธิ์เข้าศึกษารอบที่ 4 ยืนยันสิทธิ์</td>
+      </tr>
+      <tr>
+	<td style="padding-right: 10px; text-align:center">
+	  20 ก.พ. 54
+	</td>
+	<td>ประกาศรายชื่อผู้มีสิทธิ์เข้าศึกษาทั้งหมด</td>
+      </tr>
     </table>
 
+    <br/>
     อ่าน<a href="http://admission.eng.ku.ac.th/information/2554/direct">ข้อมูลเพิ่มเติมเกี่ยวกับการรับตรงปีการศึกษา 2554</a>
   </p>
   <p>
