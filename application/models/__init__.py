@@ -339,8 +339,9 @@ class Applicant(models.Model):
 
     def verification_number(self):
         try:
-            key = u"%s-%s-%s-%s" % (
+            key = u"%s-%s-%s-%s-%s" % (
                 self.submission_info.salt,
+                self.national_id,
                 self.email,
                 self.first_name,
                 self.last_name)
