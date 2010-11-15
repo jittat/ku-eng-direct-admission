@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -149,3 +150,53 @@ def validate_national_id(nat_id):
     return nat_id[12] == str(last_num)
 
 
+def validate_phone_number(phone_number):
+    u"""
+    >>> validate_phone_number('081-111-1111')
+    True
+    >>> validate_phone_number('0811111111')
+    True
+    >>> validate_phone_number('081-11-1111')
+    False
+    >>> validate_phone_number('02-942-8555')
+    True
+    >>> validate_phone_number('029428555')
+    True
+    >>> validate_phone_number(u'02-942-8555 ต่อ 1234')
+    True
+    >>> validate_phone_number(u'029428555 ต่อ 1234')
+    True
+    >>> validate_phone_number('029428555 ext 1234')
+    True
+    >>> validate_phone_number('029428555 # 1234')
+    True
+    >>> validate_phone_number('02-942-85554 ต่อ 1234')
+    False
+    >>> validate_phone_number('034123234')
+    True
+    """
+    if re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number)==None:
+        return False
+    
+    indicies = [index for index in 
+                [phone_number.find(ext) for ext in [u'#',u'ต่อ',u'ext']]
+                if index != -1]
+
+    if len(indicies)!=0:
+        i = min(indicies)
+    else:
+        i = len(phone_number)
+
+    if i!=-1:
+        digits = ''.join([s for s in  phone_number[:i] if s.isdigit()])
+        if (len(digits) < 9) or (not digits[0]=='0'):
+            return False
+        if digits[1]=='8':
+            return len(digits)==10
+        else:
+            return len(digits)==9
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

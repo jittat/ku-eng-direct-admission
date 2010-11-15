@@ -8,11 +8,8 @@ from application.models import Applicant, PersonalInfo
 from application.models import Address, ApplicantAddress, Education, Major
 from widgets import ThaiSelectDateWidget
 from commons.local import APP_TITLE_FORM_CHOICES
-from commons.utils import validate_national_id
+from commons.utils import validate_national_id, validate_phone_number
 from django.forms.util import ErrorList
-
-def validate_phone_number(phone_number):
-    return re.match(u'^([0-9\\- #]|ต่อ|ext)+$', phone_number) != None
 
 class LoginForm(forms.Form):
     #email = forms.EmailField()
