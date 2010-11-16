@@ -20,7 +20,14 @@
     list-style-type: disc; }
 
 table.schedule {
-  font-size: 90%; }
+  font-size: 90%;
+  border-collapse: collapse; }
+  table.schedule td {
+    border: 1px solid grey; }
+  table.schedule td.date {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px; }
 
 .right-box {
   margin-left: 20px;
