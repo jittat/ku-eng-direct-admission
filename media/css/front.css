@@ -63,6 +63,8 @@ div.button {
   vertical-align: middle;
   padding-top: 5px;
   padding-bottom: 5px; }
+  div.button:hover {
+    background: #10a010; }
   div.button img {
     vertical-align: middle;
     border: none; }
@@ -83,6 +85,8 @@ div.button-blue {
   padding-bottom: 5px;
   background: darkblue;
   border: 1px double black; }
+  div.button-blue:hover {
+    background: #10a010; }
   div.button-blue img {
     vertical-align: middle;
     border: none; }

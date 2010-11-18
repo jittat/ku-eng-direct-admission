@@ -1,0 +1,26 @@
+<table class="header-left">
+  <tr>
+    <th><label>ผู้สมัคร:</label></th>
+    <td>{{ applicant.full_name }}</td>
+  </tr>
+  <tr>
+    <th>วันเกิด:</th>
+    <td>{{ form.birth_date }} {{ form.birth_date.errors }} </td>
+  </tr>
+  <tr>
+    <th>สัญชาติ:</th>
+    <td>{{ form.nationality }} {{ form.nationality.errors }} </td>
+  </tr>
+  <tr>
+    <th>เชื้อชาติ:</th>
+    <td>{{ form.ethnicity }} {{ form.ethnicity.errors }} </td>
+  </tr>
+  <tr>
+    <th>โทรศัพท์:</th>
+    <td>{{ form.phone_number }} {{ form.phone_number.errors }}</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td class="hint" colspan="2">ใส่ขีดได้ ตัวอย่างเช่น 08-1234-5678  ในการระบุหมายเลขภายใน ใช้ 'ต่อ' หรือ '#' เช่น 02-234-5442 ต่อ 1234 หรือ 023-456-7890 # 111</td>
+  </tr>
+</table>

@@ -1,22 +1,28 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django import forms
 
 from commons.decorators import submitted_applicant_required
 from commons.decorators import within_submission_deadline
-from commons.utils import submission_deadline_passed, redirect_to_deadline_error
+from commons.utils import submission_deadline_passed, redirect_to_deadline_error, validate_phone_number
 
 from application.views.form_views import prepare_major_form
 from application.forms.handlers import handle_major_form
 from application.forms.handlers import assign_major_pref_to_applicant
 from application.forms.handlers import handle_education_form
+from application.forms.handlers import handle_personal_info_form
 from application.forms import EducationForm, SingleMajorPreferenceForm
-from application.models import Applicant, MajorPreference, Major
+from application.models import Applicant, MajorPreference, Major, PersonalInfo
 
+from commons.local import APP_TITLE_FORM_CHOICES
 from commons.email import send_sub_method_change_notice_by_email
+
+from application.forms.widgets import ThaiSelectDateWidget
 
 def update_major_single_choice(request):
     applicant = request.applicant
@@ -116,11 +122,88 @@ def update_education(request):
                                'applicant': applicant })
 
 
+THIS_YEAR = datetime.date.today().year
+APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
+
+class PersonalInfoWithFullnameForm(forms.Form):
+    title = forms.ChoiceField(choices=APP_TITLE_FORM_CHOICES)
+    first_name = forms.CharField(label=u'ชื่อ')
+    last_name = forms.CharField(label=u'นามสกุล')
+    birth_date = forms.DateField(
+        widget=ThaiSelectDateWidget(years=APPLICANT_BIRTH_YEARS),
+        label=u"วันเกิด")
+    phone_number = forms.CharField(label=u'หมายเลขโทรศัพท์')
+    nationality = forms.CharField(label="สัญชาติ")
+    ethnicity = forms.CharField(label="เชื้อชาติ")    
+    
+    def clean_phone_number(self):
+        if not validate_phone_number(self.cleaned_data['phone_number']):
+            raise forms.ValidationError("หมายเลขโทรศัพท์ไม่ถูกต้อง")
+        return self.cleaned_data['phone_number']
+
+
+@within_submission_deadline
+@submitted_applicant_required
+def update_personal_info(request):
+    applicant = request.applicant
+    old_personal_info = applicant.get_personal_info_or_none()
+    if not old_personal_info:
+        return HttpResponseRedirect(reverse('status-index'))
+        
+    if (request.method=='POST') and ('cancel' not in request.POST):
+        form = PersonalInfoWithFullnameForm(
+            request.POST,
+            initial={
+                'birth_date': old_personal_info.birth_date,
+                'nationality': old_personal_info.nationality,
+                'ethnicity': old_personal_info.ethnicity,
+                'phone_number': old_personal_info.phone_number,
+                'title': applicant.title,
+                'first_name': applicant.first_name,
+                'last_name': applicant.last_name
+                })
+        if form.is_valid():
+            old_personal_info.birth_date = form.cleaned_data['birth_date']
+            old_personal_info.nationality = form.cleaned_data['nationality']
+            old_personal_info.ethnicity = form.cleaned_data['ethnicity']
+            old_personal_info.phone_number = form.cleaned_data['phone_number']
+            old_personal_info.save()
+
+            applicant.title = form.cleaned_data['title']
+            applicant.first_name = form.cleaned_data['first_name']
+            applicant.last_name = form.cleaned_data['last_name']
+            applicant.save()
+            request.session['notice'] = 'การแก้ไขข้อมูลการส่วนตัวเรียบร้อย'
+            return HttpResponseRedirect(reverse('status-index'))
+
+    elif 'cancel' in request.POST:
+        request.session['notice'] = 'ข้อมูลส่วนตัวไม่ถูกเปลี่ยนแปลง'
+        return HttpResponseRedirect(reverse('status-index'))
+    else:
+        form = PersonalInfoWithFullnameForm(
+            initial={
+                'birth_date': old_personal_info.birth_date,
+                'nationality': old_personal_info.nationality,
+                'ethnicity': old_personal_info.ethnicity,
+                'phone_number': old_personal_info.phone_number,
+                'title': applicant.title,
+                'first_name': applicant.first_name,
+                'last_name': applicant.last_name
+                })
+
+    return render_to_response('application/update/personal.html',
+                              {'form': form,
+                               'can_log_out': True,
+                               'applicant': applicant })
+
+
 @within_submission_deadline
 @submitted_applicant_required
 def update_to_postal_submission(request):
+    return HttpResponseRedirect(reverse('status-index'))
 
     applicant = request.applicant
+        
 
     if request.method == 'POST': 
 
