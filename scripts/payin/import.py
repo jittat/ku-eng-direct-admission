@@ -1,4 +1,8 @@
 import sys
+if len(sys.argv)!=2:
+    print "Usage: python import.py [payin.txt]"
+    quit()
+
 import os
 import datetime
 
@@ -12,9 +16,12 @@ bootstrap(__file__)
 
 from application.models import Applicant
 
-filename = '../../data/payin/KU3.TXT'
+filename = sys.argv[1]
 
 lines = open(filename).readlines()
+
+updated_count = 0
+error_count = 0
 
 for ln in lines:
     if len(ln)!=0 and ln[0]=='D':
@@ -25,11 +32,20 @@ for ln in lines:
         applicants = Applicant.objects.filter(national_id=national_id)
         if len(applicants)!=0:
             applicant = applicants[0]
-            submission_info = applicant.submission_info
+            try:
+                submission_info = applicant.submission_info
+            except:
+                error_count += 1
+                print "ERROR (no submission info):", applicant, applicant.verification_number(), verification
+                continue
+                
             if applicant.verification_number() != verification:
                 print "ERROR:", applicant, applicant.verification_number(), verification
+                error_count += 1
             else:
                 submission_info.is_paid = True
                 submission_info.paid_at = datetime.datetime.today()
                 submission_info.save()
-                print "UPDATED:", applicant
+                updated_count += 1
+
+print updated_count, 'updated, with ', error_count, 'errors'
