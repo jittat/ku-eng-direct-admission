@@ -1,49 +1,30 @@
 {% load adm_media %}
 {% if applicant.is_submitted %}
   <td>{{ applicant.ticket_number }}</td>
-  <td>{% passed_icon result.ticket %}</td>
 {% else %}
   <td>-</td>
-  <td></td>
 {% endif %}
 
 <td>{{ applicant.full_name }}</td>
 
 {% if applicant.is_submitted %}
   <td>{{ applicant.verification_number|slice:":8" }}</td>
-  <td>{% passed_icon result.verinum %}</td>
   <td>{{ applicant.submission_info.submitted_at|date:"H:i, j N" }}</td>
+{% else %}
+  <td></td>
+  <td></td>
+{% endif %}
+{% if applicant.submission_info.is_paid %}
+  <td style="text-align:center">{% passed_icon %}</td>
+  <td>{{ applicant.submission_info.paid_at|date:"j N" }}</td>
 {% else %}
   <td>-</td>
   <td></td>
-  <td>ไม่ได้ยืนยัน</td>
 {% endif %}
 
 <td>
-  {{ applicant.get_doc_submission_method_display }}
-</td>
-
-<td>
-  {% if applicant.is_submitted %}
-    {% include "review/include/doc_received_status.html" %}
-    {% if applicant.submission_info.has_been_reviewed %}
-      | ตรวจเอกสารแล้ว ({% if applicant.submission_info.doc_reviewed_complete %}ผ่าน{% else %}ไม่ผ่าน{% endif %}{% passed_icon applicant.submission_info.doc_reviewed_complete %})
-    {% endif %}
-    {% if applicant.submission_info.can_be_reviewed %}
-      | [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
-    {% else %}
-      | อยู่ในช่วงรอการแก้ไข
-    {% endif %}
-  {% else %}
-    อีเมล์: {{ applicant.email }}
-    {% if user and user.is_staff %}
-      [<a href="{% url admin:application_applicant_change applicant.id %}">admin</a>]
-    {% endif %}
-  {% endif %}
-  {% if force_review_link %}
-    [<a href="{% url review-show applicant.id %}">ตรวจเอกสาร</a>]
-  {% endif %}
-  {% if applicant.admission_result and applicant.admission_result.is_admitted %}
-    [<a href="{% url confirmation-info applicant.id %}" target="_blank">ข้อมูลสัมภาษณ์</a>]
+  อีเมล์: {{ applicant.email }}
+  {% if user and user.is_staff %}
+    [<a href="{% url admin:application_applicant_change applicant.id %}">admin</a>]
   {% endif %}
 </td>
