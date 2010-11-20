@@ -29,34 +29,13 @@ from models import ReviewField, ReviewFieldResult, CompletedReviewField
 from supplement.models import Supplement
 
 def find_basic_statistics():
-    manual_app_count = Applicant.objects.filter(is_offline=True).count()
-    submitted_manual_app_count = Applicant.get_submitted_offline_applicants().count()
     total_submitted_app_count = SubmissionInfo.objects.count()
+    paid_app_count = SubmissionInfo.objects.filter(is_paid=True).count()
     stat = {
-        'online_app_registered': 
-        Applicant.objects.count() - manual_app_count,
-        'app_qualified': SubmissionInfo.get_qualified_submissions().count(),
+        'online_app_registered': Applicant.objects.count(),
         'app_submitted': total_submitted_app_count,
-        'online_app_submitted':
-            total_submitted_app_count - submitted_manual_app_count,
-        'app_submitted_postal':
-            Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_BY_MAIL).count(),
-        'app_submitted_online':
-            Applicant.objects.filter(doc_submission_method=Applicant.SUBMITTED_ONLINE).count(),
-        'app_submitted_offline':
-            submitted_manual_app_count,
-        'app_received': {
-            'reviewed': SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=True).count(),
-            'not_reviewed': SubmissionInfo.objects.filter(doc_received_at__isnull=False).filter(has_been_reviewed=False).count(),
-            }
+        'app_paid':  paid_app_count,
         }
-    stat['app_received']['total'] = (
-        stat['app_received']['reviewed'] +
-        stat['app_received']['not_reviewed'])
-    stat['app_received']['online'] = (
-        stat['app_received']['total'] -
-        submitted_manual_app_count)
-    stat['app_online_wait'] = stat['online_app_submitted'] - stat['app_received']['online']
     return stat
 
 @login_required
