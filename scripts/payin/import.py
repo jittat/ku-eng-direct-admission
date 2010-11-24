@@ -47,5 +47,7 @@ for ln in lines:
                 submission_info.paid_at = datetime.datetime.today()
                 submission_info.save()
                 updated_count += 1
+        else:
+            print "ERROR: NAT ID NOT FOUND", national_id
 
 print updated_count, 'updated, with ', error_count, 'errors'
