@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from random import randint
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
@@ -32,10 +34,12 @@ def index(request):
         del request.session['notice']
 
     submission_info = request.applicant.submission_info
+    random_seed = 1000000 + randint(0,8999999)
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
+                                'random_seed': random_seed,
                                 'notice': notice,
                                 'can_log_out': True })
 
