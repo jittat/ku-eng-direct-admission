@@ -38,6 +38,8 @@ urlpatterns = patterns(
         name='update-personal-info'),
     url(r'^update/education/$', 'update.update_education', 
         name='update-education'),
+    url(r'^update/address/$', 'update.update_address', 
+        name='update-address'),
 
     # -- do not allow updating edu info and postal sub
     #

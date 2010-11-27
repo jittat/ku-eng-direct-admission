@@ -5,25 +5,25 @@
 <script type="text/javascript" src="{% load adm_media %}{% media_url %}/js/major_selection.js"></script>
 {% endblock %}
 
-{% block title %}แก้ข้อมูลการศึกษา{% endblock %}
+{% block title %}แก้ข้อมูลที่อยู่{% endblock %}
 
 {% block form-body %}
   {% load adm_steps %}
-  {% step_bar "แก้ไขข้อมูลการศึกษา" %}
+  {% step_bar "แก้ไขข้อมูลที่อยู่" %}
 
-  <form action="{% url update-education %}" method="post">
+  <form action="{% url update-address %}" method="post">
     <div id="edu-form" class="app-form">
-      {% include "application/forms/education.html" %}
+      {% include "application/forms/address.html" %}
     </div>
     <div class="submission-bar">
-      <input id="change-button" type="submit" name="submit" value="แก้ไขข้อมูลการศึกษา"/>
+      <input id="change-button" type="submit" name="submit" value="แก้ไขที่อยู่"/>
       <input id="cancel-button" type="submit" name="cancel" value="ยกเลิก"/>
     </div>
   </form>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#change-button").click(function() {
-        return confirm("คุณแน่ใจที่จะแก้ไขข้อมูลการศึกษาหรือไม่?\nข้อมูลที่ป้อนเข้าไปใหม่นี้จะเข้าไปแทนข้อมูลเก่าทันที\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
+        return confirm("คุณแน่ใจที่จะแก้ไขที่อยู่หรือไม่?\nข้อมูลที่ป้อนเข้าไปใหม่นี้จะเข้าไปแทนข้อมูลเก่าทันที\nถ้าต้องการยืนยันกด OK ถ้าไม่ต้องการเปลี่ยนกด Cancel");
       });
       $("#cancel-button").click(function() {
         return confirm("คุณต้องการยกเลิกการแก้ไขนี้?\nถ้าต้องการยกเลิกกด OK ถ้าต้องการกลับไปแก้ไขต่อกด Cancel");

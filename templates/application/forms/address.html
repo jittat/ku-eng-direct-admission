@@ -1,0 +1,23 @@
+<table class="two-columns">
+  <tr>
+    <td>
+      <div class="field-group">
+	<h2>ที่อยู่ตามทะเบียนบ้าน</h2>
+	{% with home_address_form as form %}
+          {% include "application/address_form.html" %}
+	{% endwith %}
+      </div>
+    </td><td>
+      <div class="field-group">
+	<h2>สถานที่ติดต่อได้ทางไปรษณีย์
+	  <button id="address-copy">
+	    เหมือนกับทะเบียนบ้าน
+	  </button>
+	</h2>
+	{% with contact_address_form as form %}
+          {% include "application/address_form.html" %}
+ 	{% endwith %}
+      </div>
+    </td>
+  </tr>
+</table>

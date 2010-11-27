@@ -15,6 +15,7 @@ from application.views.form_views import prepare_major_form
 from application.forms.handlers import handle_major_form
 from application.forms.handlers import assign_major_pref_to_applicant
 from application.forms.handlers import handle_education_form
+from application.forms.handlers import handle_address_form
 from application.forms.handlers import handle_personal_info_form
 from application.forms import EducationForm, SingleMajorPreferenceForm
 from application.models import Applicant, MajorPreference, Major, PersonalInfo
@@ -118,6 +119,27 @@ def update_education(request):
                                'can_log_out': True,
                                'applicant': applicant })
 
+
+@within_submission_deadline
+@submitted_applicant_required
+def update_address(request):
+    applicant = request.applicant
+    if not applicant.has_address():
+        return HttpResponseForbidden()
+
+    result, hform, cform = handle_address_form(request)
+    if result:
+        request.session['notice'] = 'การแก้ไขที่อยุ่เรียบร้อย'
+        return HttpResponseRedirect(reverse('status-index'))
+    elif 'cancel' in request.POST:
+        request.session['notice'] = 'ข้อมูลที่อยู่ไม่ถูกแก้ไข'
+        return HttpResponseRedirect(reverse('status-index'))
+
+    return render_to_response('application/update/address.html', 
+                              { 'home_address_form': hform,
+                                'contact_address_form': cform,
+                                'can_log_out': True,
+                                'applicant': applicant })
 
 THIS_YEAR = datetime.date.today().year
 APPLICANT_BIRTH_YEARS = range(THIS_YEAR-30,THIS_YEAR-10)
