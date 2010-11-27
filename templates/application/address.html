@@ -12,15 +12,4 @@
     </div>
   </form>
 </div>
-<script>
-  $("#address-copy").click(function (e) {
-    items = ['number', 'village_number', 'village_name',
-             'road', 'district', 'city', 'province',
-             'postal_code', 'phone_number'];
-    jQuery.each(items, function () {
-      $("#id_contact-" + this).val($("#id_home-" + this).val());
-    });
-    return false;
-  });
-</script>
 {% endblock %}

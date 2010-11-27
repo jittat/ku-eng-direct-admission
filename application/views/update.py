@@ -129,7 +129,7 @@ def update_address(request):
 
     result, hform, cform = handle_address_form(request)
     if result:
-        request.session['notice'] = 'การแก้ไขที่อยุ่เรียบร้อย'
+        request.session['notice'] = 'การแก้ไขที่อยู่เรียบร้อย'
         return HttpResponseRedirect(reverse('status-index'))
     elif 'cancel' in request.POST:
         request.session['notice'] = 'ข้อมูลที่อยู่ไม่ถูกแก้ไข'
