@@ -102,9 +102,6 @@ def update_majors(request):
 @submitted_applicant_required
 def update_education(request):
     applicant = request.applicant
-    if not applicant.submission_info.can_update_info():
-        return HttpResponseRedirect(reverse('status-index'))
-        
     old_education = applicant.get_educational_info_or_none()
 
     result, form = handle_education_form(request, old_education)
