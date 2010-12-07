@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 if len(sys.argv)!=2:
     print "Usage: python import.py [payin.txt]"
@@ -40,7 +41,7 @@ for ln in lines:
                 continue
                 
             if applicant.verification_number() != verification:
-                print "ERROR:", applicant, applicant.verification_number(), verification
+                print "ERROR:", applicant, national_id, applicant.verification_number(), verification
                 error_count += 1
             else:
                 submission_info.is_paid = True
