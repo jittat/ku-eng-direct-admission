@@ -6,6 +6,7 @@
 {% endif %}
 
 <td>{{ applicant.full_name }}</td>
+<td>{{ applicant.national_id }}</td>
 
 {% if applicant.is_submitted %}
   <td>{{ applicant.verification_number|slice:":8" }}</td>
