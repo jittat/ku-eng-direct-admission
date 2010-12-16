@@ -25,11 +25,11 @@ i = 0
 appeared = {}
 
 for applicant in applicants.itervalues():
-    if not applicant.submission_info.doc_reviewed_complete:
+    if not applicant.submission_info.is_paid:
         continue
-    nat_id = applicant.personal_info.national_id
+    nat_id = applicant.national_id
     if nat_id not in appeared:
-        print >> f, "%d,%s,%s,%s" % (
+        print >> f, '%d,"%s","%s","%s"' % (
             (i+1), 
             applicant.personal_info.national_id, 
             applicant.first_name,
