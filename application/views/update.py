@@ -60,7 +60,7 @@ def update_major_single_choice(request):
                               form_data)
     
 
-@within_submission_deadline
+#@within_submission_deadline
 @submitted_applicant_required
 def update_majors(request):
     if settings.MAX_MAJOR_RANK == 1:
