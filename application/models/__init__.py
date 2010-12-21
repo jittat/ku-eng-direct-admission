@@ -253,6 +253,10 @@ class Applicant(models.Model):
         except:
             return False
 
+
+    def is_eligible(self):
+        return self.is_submitted and self.submission_info.is_paid
+
     ######################
     # methods for authentication
 
@@ -396,6 +400,7 @@ class Applicant(models.Model):
         submission_info.is_resubmitted = True
         submission_info.resubmitted_at = datetime.now()
         submission_info.save()
+
 
 class SubmissionInfo(models.Model):
     """
