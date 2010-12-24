@@ -25,7 +25,13 @@ SCORE_STATS = [
       'pat3': ScoreStat(86.73, 24.64, 237) },
     { 'gat': ScoreStat(130.82, 58.27, 295),
       'pat1': ScoreStat(63.97, 30.86, 294),
-      'pat3': ScoreStat(103.19, 42.46, 276) }
+      'pat3': ScoreStat(103.19, 42.46, 276) },
+    { 'gat': ScoreStat(128.43, 61.32, 300),
+      'pat1': ScoreStat(56.26, 25.92, 300),
+      'pat3': ScoreStat(83.54, 35.78, 300) },
+    { 'gat': ScoreStat(139.38, 67.85, 300),
+      'pat1': ScoreStat(48.34, 23.45, 300),
+      'pat3': ScoreStat(121.25, 41.56, 300) }
     ]
 EXAM_COUNT = len(SCORE_STATS)
 
@@ -35,48 +41,35 @@ class ApplicantScore:
     
     It is created from a line in score export, which can be a GAT/PAT line:
 
-    >>> a = ApplicantScore("1869900153422,3.240000,gatpat,0,0,160,159.5,216,0,0,0,0")
+    >>> a = ApplicantScore("1350100262126,0,0,0,124.0,174.0,155.0,187.06,96.0,108.0,203.62,114.0,123.0,246.5,190.0,171.0,251.0,96.0,198.0")
     >>> a.nat_id
-    '1869900153422'
-    >>> print a.gpax
-    3.24
+    '1350100262126'
     >>> a.scores
-    {'pat1': [0.0, 216.0, 0.0], 'pat3': [160.0, 0.0, 0.0], 'gat': [0.0, 159.5, 0.0]}
-
-    also with A-Net line:
-
-    >>> b = ApplicantScore("1869900153422,3.240000,anet,75") 
-    >>> b.scores
-    {'anet': 75.0}
+    {'pat1': [0.0, 174.0, 96.0, 114.0, 190.0, 96.0], 'pat3': [0.0, 155.0, 108.0, 123.0, 171.0, 198.0], 'gat': [0.0, 124.0, 187.06, 203.62, 246.5, 251.0]}
 
     Then, if you're using GAT/PAT, you can use it to calculate the
     normalized score.
 
-    >>> c = ApplicantScore("1,3.5,gatpat,200,200,200,200,200,200,200,200,200")
+    >>> c = ApplicantScore("1,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200")
     >>> print round(c.get_best_normalized_score('gat'),7)
     0.6719173
     >>> print round(c.get_best_normalized_score('pat1'),7)
-    0.8292471
+    0.9042111
     >>> print round(c.get_best_normalized_score('pat3'),7)
     0.7873123
     >>> print round(c.get_score(),3)
-    7813.89
+    7876.882
 
-    NOTE: It currently doesn't work with A-Net.
+    >>> d = ApplicantScore("1,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250")
+    >>> print round(d.get_score(),3)
+    9020.444
 
-    >>> print b.get_score()
-    0
     """
     def __init__(self, st):
         items = st.split(',')
         self.nat_id = items[0]
-        self.gpax = float(items[1])
-        self.is_gatpat = (items[2]=='gatpat')
-        if self.is_gatpat:
-            self.scores = ApplicantScore.extract_gatpat_scores(
-                [float(s) for s in items[3:]])
-        else:
-            self.scores = {'anet': float(items[3])}
+        self.scores = ApplicantScore.extract_gatpat_scores(
+            [float(s) for s in items[1:]])
         
     @staticmethod
     def extract_gatpat_scores(score_list):
@@ -104,17 +97,13 @@ class ApplicantScore:
         return best_score
 
     def get_score(self):
-        if self.is_gatpat:
-            gat = self.get_best_normalized_score('gat')
-            pat1 = self.get_best_normalized_score('pat1')
-            pat3 = self.get_best_normalized_score('pat3')
-            score = ((self.gpax/4.0*0.1) + 
-                     gat * 0.2 +
-                     pat1 * 0.2 + 
-                     pat3 * 0.5)
-            return 10000.0 * score
-        else:
-            return 0
+        gat = self.get_best_normalized_score('gat')
+        pat1 = self.get_best_normalized_score('pat1')
+        pat3 = self.get_best_normalized_score('pat3')
+        score = (gat * 0.25 +
+                 pat1 * 0.25 + 
+                 pat3 * 0.5)
+        return 10000.0 * score
 
 def main():
     applicant_scores = []
