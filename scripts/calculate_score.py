@@ -64,6 +64,30 @@ class ApplicantScore:
     >>> print round(d.get_score(),3)
     9020.444
 
+    >>> d = ApplicantScore("1,150,150,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    >>> print round(d.get_score(),3)
+    6061.757
+
+    >>> d = ApplicantScore("1,0,0,0,150,150,150,0,0,0,0,0,0,0,0,0,0,0,0")
+    >>> print round(d.get_score(),3)
+    6059.953
+
+    >>> d = ApplicantScore("1,0,0,0,0,0,0,150,150,150,0,0,0,0,0,0,0,0,0")
+    >>> print round(d.get_score(),3)
+    6445.388
+
+    >>> d = ApplicantScore("1,0,0,0,0,0,0,0,0,0,150,150,150,0,0,0,0,0,0")
+    >>> print round(d.get_score(),3)
+    5831.532
+
+    >>> d = ApplicantScore("1,0,0,0,0,0,0,0,0,0,0,0,0,150,150,150,0,0,0")
+    >>> print round(d.get_score(),3)
+    6200.5
+
+    >>> d = ApplicantScore("1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,150,150,150")
+    >>> print round(d.get_score(),3)
+    5918.007
+
     """
     def __init__(self, st):
         items = st.split(',')
