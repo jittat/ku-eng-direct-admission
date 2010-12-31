@@ -135,10 +135,18 @@ SCORE_STATS = [
       'pat3': ScoreStat(97.86, 28.56, 260) },
     { 'gat': ScoreStat(106.78, 55.59, 292.5),
       'pat1': ScoreStat(63.56, 25.90, 270),
-      'pat3': ScoreStat(86.73, 24.64, 237) }
+      'pat3': ScoreStat(86.73, 24.64, 237) },
+    { 'gat': ScoreStat(130.82, 58.27, 295),
+      'pat1': ScoreStat(63.97, 30.86, 294),
+      'pat3': ScoreStat(103.19, 42.46, 276) },
+    { 'gat': ScoreStat(128.43, 61.32, 300),
+      'pat1': ScoreStat(56.26, 25.92, 300),
+      'pat3': ScoreStat(83.54, 35.78, 300) },
+    { 'gat': ScoreStat(139.38, 67.85, 300),
+      'pat1': ScoreStat(48.34, 23.45, 300),
+      'pat3': ScoreStat(121.25, 41.56, 300) }
     ]
 EXAM_COUNT = len(SCORE_STATS)
-
 
 class NIETSScores(models.Model):
     applicant = models.OneToOneField(Applicant,
@@ -190,15 +198,12 @@ class NIETSScores(models.Model):
                 raw_score = x
         return best_score, raw_score
 
-    def get_score(self, gpax=None):
+    def get_score(self)
         gat, gs = self.get_best_normalized_score('gat')
         pat1, p1s = self.get_best_normalized_score('pat1')
         pat3, p3s = self.get_best_normalized_score('pat3')
-        if gpax==None:
-            gpax = self.applicant.education.gpax
-        score = ((gpax/4.0*0.1) + 
-                 gat * 0.2 +
-                 pat1 * 0.2 + 
+        score = (gat * 0.255 +
+                 pat1 * 0.25 + 
                  pat3 * 0.5)
         return 10000.0 * score
 

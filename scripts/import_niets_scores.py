@@ -14,31 +14,30 @@ bootstrap(__file__)
 from result.models import NIETSScores
 from application.models import Applicant, PersonalInfo
 
-infos = PersonalInfo.objects.select_related(depth=1).all()
-info_dict = {}
-for i in infos:
-    if i.national_id in info_dict:
-        info_dict[i.national_id].append(i)
-    else:
-        info_dict[i.national_id] = [i]
+
+EXAM_COUNT = 6
 
 f = open(file_name)
 
 for line in f:
     items = line.split(',')
-    if len(items)>0 and len(items)!=12:
+    if len(items)>0 and len(items) != 1 + 3*EXAM_COUNT:
         print 'Score file format error'
         quit()
 
-    print items[0]
-    personal_infos = info_dict[items[0]]
-    for p in personal_infos:
-        app = p.applicant
-        try:
-            scores = app.NIETS_scores
-        except:
-            scores = NIETSScores()
+    nat_id = items[0]
+    print nat_id
+    apps = Applicant.objects.filter(national_id=nat_id)
+    if len(apps)!=1:
+        print 'Error applicant:', nat_id
+        continue
 
-        scores.score_list = ','.join(items[3:])
-        scores.applicant = app
-        scores.save()
+    app = apps[0]
+    try:
+        scores = app.NIETS_scores
+    except:
+        scores = NIETSScores()
+
+    scores.score_list = ','.join(items[1:])
+    scores.applicant = app
+    scores.save()
