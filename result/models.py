@@ -198,7 +198,7 @@ class NIETSScores(models.Model):
                 raw_score = x
         return best_score, raw_score
 
-    def get_score(self)
+    def get_score(self):
         gat, gs = self.get_best_normalized_score('gat')
         pat1, p1s = self.get_best_normalized_score('pat1')
         pat3, p3s = self.get_best_normalized_score('pat3')
