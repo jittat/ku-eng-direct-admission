@@ -590,6 +590,21 @@ class GPExamDate(models.Model):
     month_year = models.CharField(max_length=20,
                                   verbose_name="เดือนและปีของการสอบ")
 
+    dates = None
+
+    @staticmethod
+    def cache_dates():
+        if not GPExamDate.dates:
+            GPExamDate.dates = dict([(d.id, d) for d in GPExamDate.objects.all()])
+
+    @staticmethod
+    def get_by_id(id):
+        GPExamDate.cache_dates()
+        try:
+            return GPExamDate.dates[id]
+        except:
+            return None
+
     def __unicode__(self):
         return self.month_year
 

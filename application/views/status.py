@@ -18,13 +18,28 @@ from commons.email import send_admission_status_by_mail
 from commons.email import send_final_admission_status_by_mail
 from commons.email import send_admission_status_problem_by_mail
 
-from application.models import Applicant
+from application.models import Applicant, GPExamDate
 from application.views import redirect_to_applicant_first_page
 from application.forms import StatusRequestForm
 
 from review.models import ReviewFieldResult
-from result.models import AdmissionResult
+from result.models import AdmissionResult 
 from confirmation.models import Round2ApplicantConfirmation
+
+def prepare_exam_scores(applicant):
+    try:
+        cal_scores = applicant.NIETS_scores.as_calculated_list_by_exam_round()
+    except:
+        cal_scores = None
+    if not cal_scores:
+        return None
+
+    scores = []
+    for i in range(len(cal_scores)):
+        scores.append({'date': GPExamDate.get_by_id(i+1),
+                       'scores': cal_scores[i]})
+    return scores
+        
 
 @submitted_applicant_required
 def index(request):
@@ -33,12 +48,15 @@ def index(request):
         notice = request.session['notice']
         del request.session['notice']
 
+    exam_scores = prepare_exam_scores(request.applicant)
+
     submission_info = request.applicant.submission_info
     random_seed = 1000000 + randint(0,8999999)
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
+                                'exam_scores': exam_scores,
                                 'random_seed': random_seed,
                                 'notice': notice,
                                 'can_log_out': True })

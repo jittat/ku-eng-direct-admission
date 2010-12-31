@@ -153,6 +153,20 @@ class NIETSScores(models.Model):
                                      related_name='NIETS_scores')
     score_list = models.CharField(max_length=200)
 
+    @staticmethod
+    def extract_gatpat_scores(score_list):
+        scores = {'gat': [0] * EXAM_COUNT,
+                  'pat1': [0] * EXAM_COUNT,
+                  'pat3': [0] * EXAM_COUNT}
+
+        i = 0
+        for e in range(EXAM_COUNT):
+            for exam in ['gat','pat1','pat3']:
+                scores[exam][e] = score_list[i]
+                i += 1
+
+        return scores
+
     def as_list(self):
         if self.score_list!='':
             return [float(s) for s in self.score_list.split(',')]
@@ -170,20 +184,32 @@ class NIETSScores(models.Model):
                 l = l[3:]
             return out
 
-    
-    @staticmethod
-    def extract_gatpat_scores(score_list):
-        scores = {'gat': [0] * EXAM_COUNT,
-                  'pat1': [0] * EXAM_COUNT,
-                  'pat3': [0] * EXAM_COUNT}
-
-        i = 0
+    def as_calculated_list_by_exam_round(self):
+        all_scores = self.as_list_by_exam_round()
+        exams = ['gat','pat1','pat3']
+        scores = []
+        best_scores = dict([(ex,(0,None)) for ex in exams])
         for e in range(EXAM_COUNT):
-            for exam in ['gat','pat1','pat3']:
-                scores[exam][e] = score_list[i]
-                i += 1
+            rscores = {}
+            i = 0
+            for exam_name in exams:
+                x = all_scores[e][i]
+                n = SCORE_STATS[e][exam_name].cal_score(x) * 10000
+                rscores[exam_name] = {
+                    'raw': x,
+                    'normalized': n,
+                    'selected': False
+                    }
+                
+                if n > best_scores[exam_name][0]:
+                    best_scores[exam_name] = (n, rscores[exam_name])
+                
+                i+=1
+            scores.append(rscores)
 
-        return scores
+        for ex in exams:
+            best_scores[ex][1]['selected'] = True
+        return scores        
 
     def get_best_normalized_score(self, test_name):
         all_scores = self.as_list()

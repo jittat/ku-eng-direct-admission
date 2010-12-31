@@ -26,6 +26,20 @@
     "fields": {
       "month_year": "มีนาคม 2553"
     }
+  },
+  {
+    "model": "application.gpexamdate",
+    "pk": 5,
+    "fields": {
+      "month_year": "กรกฎาคม 2553"
+    }
+  },
+  {
+    "model": "application.gpexamdate",
+    "pk": 6,
+    "fields": {
+      "month_year": "ตุลาคม 2553"
+    }
   }
 ]
 

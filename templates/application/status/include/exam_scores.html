@@ -1,0 +1,27 @@
+<b>ผลคะแนนจากสทศ.:</b>
+{% if exam_scores %}
+  <table id="score-report-table">
+    <tr>
+      <th>รอบ</th>
+      <th>GAT</th>
+      <th></th>
+      <th>PAT1</th>
+      <th></th>
+      <th>PAT3</th>
+      <th></th>
+    </tr>
+    {% for s in exam_scores %}
+      <tr class="{% cycle 'odd' 'even' %}">
+	<td>{{ s.date }}</td>
+	<td>{{ s.scores.gat.raw|floatformat:2 }}</td>
+	<td {% if s.scores.gat.selected %}class="selected"{% endif %}>{{ s.scores.gat.normalized|floatformat:2 }}</td>
+	<td>{{ s.scores.pat1.raw|floatformat:2 }}</td>
+	<td {% if s.scores.pat1.selected %}class="selected"{% endif %}>{{ s.scores.pat1.normalized|floatformat:2 }}</td>
+	<td>{{ s.scores.pat3.raw|floatformat:2 }}</td>
+	<td {% if s.scores.pat3.selected %}class="selected"{% endif %}>{{ s.scores.pat3.normalized|floatformat:2 }}</td>
+      </tr>
+    {% endfor %}  
+  </table>
+{% else %}
+  ไม่มีข้อมูล
+{% endif %}
