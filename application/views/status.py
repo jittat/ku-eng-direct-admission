@@ -28,17 +28,30 @@ from confirmation.models import Round2ApplicantConfirmation
 
 def prepare_exam_scores(applicant):
     try:
-        cal_scores = applicant.NIETS_scores.as_calculated_list_by_exam_round()
+        niets_scores = applicant.NIETS_scores
     except:
-        cal_scores = None
-    if not cal_scores:
+        niets_scores = None
+    if not niets_scores:
         return None
 
+    cal_scores = niets_scores.as_calculated_list_by_exam_round()
     scores = []
+
+    test_names = ['gat','pat1','pat3']
+    test_norm_scores = dict([(n,[]) for n in test_names])
+
     for i in range(len(cal_scores)):
         scores.append({'date': GPExamDate.get_by_id(i+1),
                        'scores': cal_scores[i]})
-    return scores
+        for n in test_names:
+            test_norm_scores[n].append(cal_scores[i][n]['normalized'])
+
+    best_scores = dict([(n,max(test_norm_scores[n])) for n in test_names])
+    final_score = niets_scores.get_score()
+
+    return { 'scores': scores, 
+             'best_scores': best_scores,
+             'final_score': final_score }
         
 
 @submitted_applicant_required

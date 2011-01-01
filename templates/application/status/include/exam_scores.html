@@ -1,6 +1,6 @@
 <b>ผลคะแนนจากสทศ.:</b>
 {% if exam_scores %}
-  <table id="score-report-table">
+  <table id="niets-scores">
     <tr>
       <th>รอบ</th>
       <th>GAT</th>
@@ -10,7 +10,7 @@
       <th>PAT3</th>
       <th></th>
     </tr>
-    {% for s in exam_scores %}
+    {% for s in exam_scores.scores %}
       <tr class="{% cycle 'odd' 'even' %}">
 	<td>{{ s.date }}</td>
 	<td>{{ s.scores.gat.raw|floatformat:2 }}</td>
@@ -21,6 +21,21 @@
 	<td {% if s.scores.pat3.selected %}class="selected"{% endif %}>{{ s.scores.pat3.normalized|floatformat:2 }}</td>
       </tr>
     {% endfor %}  
+    <tr>
+      <td>คะแนนดีที่สุด</td>
+      <td></td>
+      <td class="selected">{{ exam_scores.best_scores.gat|floatformat:2 }}</td>
+      <td></td>
+      <td class="selected">{{ exam_scores.best_scores.pat1|floatformat:2 }}</td>
+      <td></td>
+      <td class="selected">{{ exam_scores.best_scores.pat3|floatformat:2 }}</td>
+    </tr>
+    <tr class="final-score">
+      <td>คะแนนที่ใช้พิจารณา</td>
+      <td colspan="6" style="text-align: center">
+	{{ exam_scores.final_score|floatformat:2 }}
+      </td>
+    </tr>
   </table>
 {% else %}
   ไม่มีข้อมูล

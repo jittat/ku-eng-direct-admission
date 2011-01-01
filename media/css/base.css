@@ -278,27 +278,6 @@ table#doc-status-table td {
     -webkit-border-radius: 5px;
     border-radius: 5px; }
 
-table#score-report-table th {
-  background: #000070;
-  color: white;
-  padding-left: 5px;
-  padding-right: 5px; }
-table#score-report-table tr.odd {
-  background: #e0e0e0; }
-table#score-report-table tr.even {
-  background: #d0d0d0; }
-table#score-report-table td {
-  padding-left: 10px;
-  padding-right: 10px; }
-table#score-report-table tr.odd {
-  background: #f0f0f0; }
-table#score-report-table tr.even {
-  background: #e0e0e0; }
-table#score-report-table td.selected {
-  background: white;
-  font-weight: bold;
-  color: red; }
-
 table#supplement-list th {
   background: #000070;
   color: white;
@@ -350,6 +329,16 @@ table#niets-scores {
     text-align: right; }
   table#niets-scores tr.best {
     background: #e0e0e0; }
+  table#niets-scores tr.odd {
+    background: #f0f0f0; }
+  table#niets-scores tr.even {
+    background: #e0e0e0; }
+  table#niets-scores td.selected {
+    background: white;
+    font-weight: bold;
+    color: red; }
+  table#niets-scores tr.final-score {
+    font-weight: bold; }
 
 #supplement-form {
   margin-top: 10px;
