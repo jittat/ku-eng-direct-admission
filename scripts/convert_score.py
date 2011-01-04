@@ -27,8 +27,12 @@ columns = [('nat_id', 4),
 def extract_columns(line):
     result = {}
     items = line.strip().split(',')
-    for c in columns:
-        result[c[0]] = items[c[1]]
+    try:
+        for c in columns:
+            result[c[0]] = items[c[1]]
+    except:
+        print 'ERROR: ', line
+        quit()
     return result
 
 SCORE_POS = {'gat': 0, 'pat1': 1, 'pat3': 2}

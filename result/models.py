@@ -228,7 +228,7 @@ class NIETSScores(models.Model):
         gat, gs = self.get_best_normalized_score('gat')
         pat1, p1s = self.get_best_normalized_score('pat1')
         pat3, p3s = self.get_best_normalized_score('pat3')
-        score = (gat * 0.255 +
+        score = (gat * 0.25 +
                  pat1 * 0.25 + 
                  pat3 * 0.5)
         return 10000.0 * score
