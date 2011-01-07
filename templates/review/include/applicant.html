@@ -5,7 +5,7 @@
   <td>-</td>
 {% endif %}
 
-<td>{{ applicant.full_name }}</td>
+<td><a href="{% url review-show-app applicant.id %}">{{ applicant.full_name }}</a></td>
 <td>{{ applicant.national_id }}</td>
 
 {% if applicant.is_submitted %}

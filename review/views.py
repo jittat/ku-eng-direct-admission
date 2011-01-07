@@ -168,7 +168,8 @@ def search(request):
                               { 'form': form,
                                 'applicant_count': applicant_count,
                                 'applicants': applicants,
-                                'display': display })
+                                'display': display,
+                                'force_review_link': True })
 
 
 @login_required
@@ -824,3 +825,17 @@ def supplement_img_view(request, filename):
             return HttpResponseNotFound()
     except ValueError:
         return HttpResponseNotFound()
+
+@login_required
+def show_applicant(request, applicant_id):
+    applicant = get_object_or_404(Applicant, pk=applicant_id)
+    submission_info = applicant.submission_info
+    
+    from application.views.status import prepare_exam_scores
+
+    exam_scores = prepare_exam_scores(applicant)
+
+    return render_to_response("review/show_app.html",
+                              { 'applicant': applicant,
+                                'submission_info': submission_info,
+                                'exam_scores': exam_scores })

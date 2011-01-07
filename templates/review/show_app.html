@@ -1,0 +1,22 @@
+{% extends "review/base.html" %}
+
+{% load adm_media %}
+
+{% block extra-title-bar %}ข้อมูลผู้สมัคร | {% endblock %}
+
+{% block regis-body %}
+  <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
+  <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
+  <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
+  {% if submission_info.is_paid %}<b>ชำระเงินแล้ว</b>{% else %}<b>ยังไม่ได้ชำระเงิน</b>{% endif %}<br/>
+
+  <hr/>
+  <b>อันดับการเลือก:</b>
+  {% with applicant.preference as preference %}
+    {% for m in preference.get_major_list %}
+      {{ forloop.counter }}. {{ m.number }} {{ m.name }}&nbsp;&nbsp;&nbsp;
+    {% endfor %}
+  {% endwith %}
+  <hr/>
+  {% include "application/status/include/exam_scores.html" %}
+{% endblock %}

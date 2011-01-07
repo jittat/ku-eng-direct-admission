@@ -29,8 +29,8 @@ SUBMISSION_RANK = {1: 2, # doc by mail
 
 for applicantion_id in sorted(applicants.keys()):
     applicant = applicants[applicantion_id]
-    if not applicant.submission_info.doc_reviewed_complete:
-        continue
+    #if not applicant.submission_info.doc_reviewed_complete:
+    #    continue
     majors_str = ",".join([str(m) for m in  applicant.preference.majors])
     nat_id = applicant.personal_info.national_id
     submission_method = applicant.doc_submission_method
