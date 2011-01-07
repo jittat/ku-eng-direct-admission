@@ -829,7 +829,10 @@ def supplement_img_view(request, filename):
 @login_required
 def show_applicant(request, applicant_id):
     applicant = get_object_or_404(Applicant, pk=applicant_id)
-    submission_info = applicant.submission_info
+    try:
+        submission_info = applicant.submission_info
+    except:
+        submission_info = None
     
     from application.views.status import prepare_exam_scores
 
