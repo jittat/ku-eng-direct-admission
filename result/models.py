@@ -91,9 +91,10 @@ class QualifiedApplicant(models.Model):
             self.last_name)
 
 class AdmissionResult(models.Model):
-    applicant = models.OneToOneField(Applicant, 
-                                     related_name='admission_result')
-    
+    applicant = models.ForeignKey(Applicant, 
+                                  related_name='admission_results')
+
+    round_number = models.IntegerField(default=0)
     is_admitted = models.BooleanField()
     is_waitlist = models.BooleanField()
     
@@ -101,17 +102,17 @@ class AdmissionResult(models.Model):
 
     additional_info = models.TextField(null=True)
 
-    is_final_admitted = models.BooleanField(default=False)
-    final_admitted_major = models.ForeignKey(Major, null=True, 
-                                             related_name='final_results')
+    class Meta:
+        ordering = ['round_number']
 
     @staticmethod
     def new_for_applicant(applicant):
         res = AdmissionResult(applicant=applicant,
                               is_admitted=False,
-                              is_waitlist=False,
-                              is_final_admitted=False)
+                              is_waitlist=False)
         return res
+
+
 
 class ScoreStat:
 

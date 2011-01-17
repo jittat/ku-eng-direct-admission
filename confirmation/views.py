@@ -62,9 +62,7 @@ def update_admission_major_preference(pref, applicant,
 @submitted_applicant_required
 def pref(request):
     applicant = request.applicant
-    admitted = False
-    if applicant.has_admission_result():
-        admitted = applicant.admission_result.is_admitted
+    admitted = applicant.is_admitted()
 
     if not admitted:
         raise Http404
@@ -73,7 +71,7 @@ def pref(request):
     if admission_major_pref_deadline_passed():
         return render_to_response('confirmation/pref_deadline_passed.html')
 
-    admission_result = applicant.admission_result
+    admission_result = applicant.get_latest_admission_result()
 
     preferred_majors = applicant.preference.get_major_list()
     higher_majors = get_higher_ranked_majors(preferred_majors, 
@@ -475,6 +473,12 @@ def confirmation_payment_net_download(request):
 
 @login_required
 def confirm(request, preview=False):
+    """
+    Obsoleted.
+    """
+
+    return HttpResponseForbidden()
+
     if request.method != 'POST':
         return HttpResponseForbidden()
     if not request.user.has_perm('confirmation.add_admissionconfirmation'):

@@ -8,6 +8,7 @@ from application.models import Applicant
 class AdmissionMajorPreference(models.Model):
     applicant = models.OneToOneField(Applicant,
                                      related_name='admission_major_preference')
+    round_number = models.IntegerField(default=0)
     is_accepted_list = IntegerListField()
 
     class PrefType():
@@ -44,12 +45,13 @@ class AdmissionMajorPreference(models.Model):
     def new_for_applicant(applicant):
         pref = AdmissionMajorPreference()
         pref.applicant = applicant
-        if ((not applicant.has_admission_result()) or
-            (not applicant.admission_result.is_admitted)):
+        admission_result = applicant.get_latest_admission_result()
+        if ((not admission_result) or
+            (not admission_result.is_admitted)):
             pref.is_accepted_list = []
             return pref
 
-        admitted_major = applicant.admission_result.admitted_major
+        admitted_major = admission_result.admitted_major
         majors = applicant.preference.get_major_list()
         mcount = len(majors)
         alist = [0] * mcount
@@ -67,9 +69,9 @@ class AdmissionMajorPreference(models.Model):
         applicant = self.applicant
         if not applicant:
             return False
-        if not applicant.has_admission_result():
-            return False
-        return applicant.admission_result.is_admitted
+        
+        admission_result = applicant.get_latest_admission_result()
+        return (admission_result) and (admission_result.is_admitted)
 
 
     def get_accepted_majors(self):
@@ -88,7 +90,7 @@ class AdmissionMajorPreference(models.Model):
         if not self.is_applicant_admitted():
             return AdmissionMajorPreference.PrefType.WITHDRAWN
         accepted_majors = self.get_accepted_majors()
-        assigned_majors = self.applicant.admission_result.admitted_major
+        assigned_majors = self.applicant.get_latest_admission_result().admitted_major
 
         if len(accepted_majors)==0:
             return AdmissionMajorPreference.PrefType.WITHDRAWN

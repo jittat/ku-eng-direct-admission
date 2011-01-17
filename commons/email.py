@@ -508,8 +508,9 @@ u"""เรียนผู้ใช้อีเมล์ %(email)s
 def send_admission_status_by_mail(applicant, force=False):
     subject = u'ผลการสมัครเข้าศึกษาต่อแบบรับตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
 
-    if applicant.has_admission_result():
-        if applicant.admission_result.is_waitlist:
+    if applicant.has_admission_results():
+        adm_result = applicant.get_latest_admission_result()
+        if adm_result.is_waitlist:
             result = u"""คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้จาก<a href="http://admission.eng.ku.ac.th/adm/%s">หน้าประกาศผล</a>
 สำหรับผู้ที่มีรายชื่ออยู่ในรายชื่อสำรอง คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าสอบสัมภาษณ์ในวันศุกร์ที่ 5 กุมภาพันธ์ 2553 ทางเว็บไซด์ <a href="http://admission.eng.ku.ac.th">โครงการรับตรง (http://admission.eng.ku.ac.th)</a>""" % (reverse("result-set-index", args=["waitlist"]),)
         else:
@@ -521,9 +522,9 @@ def send_admission_status_by_mail(applicant, force=False):
 หมายเหตุ: สาขาที่ได้รับคัดเลือกอาจมีการเปลี่ยนแปลงได้ แต่จะเป็นสาขาที่อยู่ในอันดับที่ดีขึ้นเท่านั้น""" % {
                 'url': reverse('result-set-index', args=['admitted']),
                 'major':
-                    (applicant.admission_result.admitted_major.number + ' ' + 
-                     applicant.admission_result.admitted_major.name),
-                'add_info': applicant.admission_result.additional_info }
+                    (adm_result.admitted_major.number + ' ' + 
+                     adm_result.admitted_major.name),
+                'add_info': adm_result.additional_info }
     else:
         result = u"""คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์รอบที่ 1 อย่างไรก็ตาม ในวันที่ 5 ก.พ. 2553 จะมีการประกาศรายชื่อผู้มีสิทธิ์เพิ่มเติม กรุณาติดตามได้จากเว็บรับตรง 
 
@@ -554,8 +555,8 @@ u"""เรียนคุณ %(first_name)s %(last_name)s
 def send_final_admission_status_by_mail(applicant, force=False):
     subject = u'ผลการสมัครเข้าศึกษาต่อแบบรับตรง คณะวิศวกรรมศาสตร์ ม.เกษตรศาสตร์ บางเขน'
 
-    if applicant.has_admission_result():
-        admission_result = applicant.admission_result
+    if applicant.has_admission_results():
+        admission_result = applicant.get_latest_admission_result()
     else:
         from result.models import AdmissionResult
 

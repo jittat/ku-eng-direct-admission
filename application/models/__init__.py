@@ -203,12 +203,20 @@ class Applicant(models.Model):
             except MajorPreference.DoesNotExist:
                 return False
 
-    def has_admission_result(self):
-        try:
-            return self.admission_result != None
-        except:
-            return False
+    def has_admission_results(self):
+        return self.admission_results.count() != 0
 
+    def get_latest_admission_result(self):
+        results = list(self.admission_results.all())
+        if len(results)>0:
+            return results[-1]
+        else:
+            return None
+
+    def is_admitted(self):
+        admission_result = self.get_latest_admission_result()
+        return (admission_result) and (admission_result.is_admitted)
+    
     def get_applicant_docs_or_none(self):
         result = self.check_related_model('appdocs')
         if (result!=None) and (result==0):
