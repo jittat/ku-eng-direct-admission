@@ -1,12 +1,12 @@
 {% if admission_result %}
   {% if admission_result.is_admitted %}
     <b>ผลการคัดเลือกรอบ {{ admission_result.round_number }}:</b>
-    คุณผ่านการคัดเลือกให้เข้าศึกษาต่อแบบรับตรง<br/>
+    ขอแสดงความยินดีด้วย คุณผ่านการคัดเลือกให้เข้าศึกษาต่อแบบรับตรง<br/>
     <b>สาขาที่ได้รับการคัดเลือก:</b>
     {{ admission_result.admitted_major.number }}
     {{ admission_result.admitted_major.name }}
     <br/>
-    
+
     {% if not admission_major_pref %}
       {% include "application/status/include/new_admission_major_pref.html" %}
     {% else %}
