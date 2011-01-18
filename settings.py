@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.flatpages',
+    'django.contrib.humanize',
     'django_extensions',
     'south',
     'mailer',
@@ -144,7 +145,6 @@ SUBMISSION_CHANGE_GRACE_PERIOD = timedelta(3)
 SUBMISSION_CHANGE_GRACE_PERIOD_END = datetime(2009,12,11)
 SUBMISSION_DEADLINE = datetime(2010,5,10)
 SUPPLEMENT_DEADLINE = datetime(2010,5,10)
-ADMISSION_MAJOR_PREF_DEADLINE = datetime(2010,2,3,23,59,59)
 ROUND2_CONFIRMATION_DEADLINE = datetime(2010,5,13,17,02)
 
 ACCEPT_ONLY_GRADUATED = False

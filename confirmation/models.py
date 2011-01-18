@@ -6,8 +6,8 @@ from application.fields import IntegerListField
 from application.models import Applicant
 
 class AdmissionMajorPreference(models.Model):
-    applicant = models.OneToOneField(Applicant,
-                                     related_name='admission_major_preference')
+    applicant = models.ForeignKey(Applicant,
+                                  related_name='admission_major_preferences')
     round_number = models.IntegerField(default=0)
     is_accepted_list = IntegerListField()
 
@@ -102,10 +102,28 @@ class AdmissionMajorPreference(models.Model):
         else:
             return AdmissionMajorPreference.PrefType.MOVE_UP_STRICT
 
+    def get_display(self):
+        pref_type = self.get_pref_type()
+        if pref_type == AdmissionMajorPreference.PrefType.WITHDRAWN:
+            return u'สละสิทธิ์'
+        elif pref_type == AdmissionMajorPreference.PrefType.NO_MOVE:
+            return u'ยืนยันสิทธิ์ในสาขาที่ได้รับคัดเลือก และไม่ต้องการเข้ารับการพิจารณาเลื่อนอันดับอีก'
+        elif pref_type == AdmissionMajorPreference.PrefType.MOVE_UP_INCLUSIVE:
+            return u'ยืนยันสิทธิ์ในสาขาที่ได้รับคัดเลือก และต้องการเข้ารับการพิจารณาเลื่อนอันดับในสาขาที่อยู่ในอันดับสูงกว่า'
+        else:
+            return u'ยืนยันสิทธิ์ในสาขาที่ได้รับคัดเลือก และต้องการเข้ารับการพิจารณาเลื่อนอันดับในสาขาที่อยู่ในอันดับสูงกว่า ถ้าไม่ได้รับการพิจารณาจะสละสิทธิ์ในสาขาที่ได้รับคัดเลือกนี้'
+
+    def is_withdrawn(self):
+        pref_type = self.get_pref_type()
+        return pref_type == AdmissionMajorPreference.PrefType.WITHDRAWN
+
+
 class AdmissionConfirmation(models.Model):
-    applicant = models.OneToOneField(Applicant, related_name='admission_confirmation')
+    applicant = models.ForeignKey(Applicant, 
+                                  related_name='admission_confirmations')
+    round_number = models.IntegerField(default=0)
+    paid_amount = models.IntegerField(default=0)
     confirmed_at = models.DateTimeField(auto_now_add=True)
-    confirming_user = models.ForeignKey(User)
 
     class Meta:
         ordering = ['-confirmed_at']

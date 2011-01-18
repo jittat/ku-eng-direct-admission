@@ -6,10 +6,16 @@
 {% endblock %}
 
 {% block body %}
+<div class="small-warning">
+  {% include "application/status/include/confirmation_warning.html" %}
+</div>
 <div class="payin-content">
   {% with "สำหรับผู้สมัคร" as rcpt %}
     {% include "application/payin/box.html" %}
   {% endwith %}
+  {% if deadline %}
+    <div style="float:right"><b>ชำระภายในวันที่ {{ deadline|date:"d F" }} 2554</b></div>
+  {% endif %}
   <div id="cut-sept"></div>
   {% with "สำหรับธนาคาร" as rcpt %}
     {% include "application/payin/box.html" %}

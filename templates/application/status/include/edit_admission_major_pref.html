@@ -1,0 +1,37 @@
+{% load humanize %}
+
+<div class="light-frame">
+<p>
+  สำหรับการคัดเลือกในรอบที่ {{ current_round.number }} คุณได้เลือก: 
+  <b>{{ admission_major_pref.get_display }}</b><br/>
+</p>
+
+{% if not admission_major_pref.is_withdrawn %}
+  {% if applicant.has_confirmed %}
+  {% else %}
+    <p>
+      <h2>การยืนยันสิทธิ์ของคุณยังไม่สมบูรณ์</h2>
+      การยืนยันสิทธิ์จะยังไม่สมบูรณ์จนกว่าคุณจะได้ไปชำระเงินค่ายืนยันสิทธิ์สำหรับสาขา {{ admission_result.admitted_major.name }} เป็นเงิน {{ admission_result.admitted_major.confirmation_amount|intcomma }} บาท ที่ธนาคารไทยพาณิชย์ <b>ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554</b>  ถ้าคุณไม่ได้ไปชำระเงินภายในวันดังกล่าว จะถือว่าคุณสละสิทธิ์ &nbsp;&nbsp; <b>เมื่อคุณยืนยันสิทธิ์แล้ว ทางคณะจะส่งรายชื่อไปยัง สกอ. เพื่อตัดสิทธิ์การสอบระบบกลางต่อไป</b> (อ่านรายละเอียดด้านล่าง)
+    </p>
+
+    <center>
+      <a href="{% url status-confirm-ticket %}?{{ random_seed }}">
+	<div class="button medium">
+	  พิมพ์ใบชำระเงินสำหรับธนาคารเพื่อยืนยันสิทธิ์
+	</div>
+      </a>
+    </center>
+  {% endif %}
+{% endif %}
+
+<p>
+  คุณสามารถเปลี่ยนการเลือกของคุณได้ในรอบนี้ได้ ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554
+</p>
+
+<center>
+  <a href="{% url confirmation-pref %}">
+    <div class="button-blue medium">เปลี่ยนการเลือก</div>
+  </a>
+</center>
+
+</div>

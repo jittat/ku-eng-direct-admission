@@ -9,7 +9,7 @@ td.withframe {
 
 .payin-content {
   font-family: "Angsana New";
-  font-size: 120%; }
+  font-size: 115%; }
   .payin-content .outside-frame {
     border: solid 1px black;
     padding-top: 5px; }
@@ -54,3 +54,6 @@ td.withframe {
     margin: 20px 0px; }
   .payin-content .ku-eng-title {
     font-size: 90%; }
+
+.small-warning {
+  font-size: 55%; }

@@ -1,4 +1,5 @@
 {% load adm_media %}
+{% load humanize %}
 <div class="outside-frame">
   <div class="top-header">
     {{ rcpt }}
@@ -10,7 +11,7 @@
       <div class="app-info-box">
 	ชื่อ-นามสกุล {{ applicant.full_name }}<br/>
 	เลขที่บัตรประชาชน/Customer No {{ applicant.national_id }}<br/>
-	หมายเลขอ้างอิง (Ref2) {{ applicant.verification_number }}<br/>
+	หมายเลขอ้างอิง (Ref2) {{ verification }}<br/>
       </div>
     </div>
     <div class="ku-eng-logo"><img src="{% media_url %}/image/payin/ku.png"/></div>
@@ -24,6 +25,9 @@
     </div>
     <div style="float: left">
       ธนาคารไทยพาณิชย์ เลขที่บัญชี 235-3-00079-3 (มหาวิทยาลัยเกษตรศาสตร์ บางเขน)
+      {% if msg %}
+      <br/>เพื่อ{{ msg }}
+      {% endif %}
     </div>
     <br style="clear: both"/>
 
@@ -32,7 +36,7 @@
 	<tr>
 	  <td>รับชำระด้วยเงินสดเท่านั้น</td>
 	  <td class="withframe aright" width="25%">จำนวนเงิน/Amount</td>
-	  <td class="withframe acenter" width="25%">{{ amount }}</td>
+	  <td class="withframe acenter" width="25%">{{ amount|intcomma }}</td>
 	  <td class="withframe" width="10%">บาท/Baht</td>
 	</tr>
 	<tr>

@@ -23,7 +23,7 @@ from application.views import redirect_to_applicant_first_page
 from application.forms import StatusRequestForm
 
 from review.models import ReviewFieldResult
-from result.models import AdmissionResult 
+from result.models import AdmissionResult, AdmissionRound
 from confirmation.models import Round2ApplicantConfirmation
 
 def prepare_exam_scores(applicant):
@@ -64,13 +64,19 @@ def index(request):
     submission_info = request.applicant.submission_info
     random_seed = 1000000 + randint(0,8999999)
 
-    admission_results = request.applicant.admission_results.reverse().all()
-    current_round = 1
+    current_round = AdmissionRound.get_recent()
+    if current_round:
+        admission_result = request.applicant.get_latest_admission_result()
+        admission_major_pref = request.applicant.get_admission_major_preference(current_round.number)
+    else:
+        admission_result = None
+        admission_major_pref = None
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
-                                'admission_results': admission_results,
+                                'admission_result': admission_result,
+                                'admission_major_pref': admission_major_pref,
                                 'current_round': current_round,
                                 'random_seed': random_seed,
                                 'notice': notice,
@@ -146,6 +152,44 @@ def show_ticket(request):
                               { 'applicant': request.applicant,
                                 'form_step_info': form_step_info })
 
+
+@submitted_applicant_required
+def confirmation_ticket(request):
+    applicant = request.applicant
+    admitted = applicant.is_admitted()
+
+    if not admitted:
+        raise Http404
+
+    if not request.applicant.is_submitted:
+        return render_to_response('application/submission/ticket_not_submitted.html')
+
+    current_round = AdmissionRound.get_recent()
+    round_number = current_round.number
+    admission_result = applicant.get_latest_admission_result()
+    admission_pref = applicant.get_admission_major_preference(round_number)
+
+    if not admission_pref:
+        raise Http404
+
+    amount = admission_result.admitted_major.confirmation_amount
+    amount_str = {16000: u'หนึ่งหมื่นหกพันบาทถ้วน',
+                  36700: u'สามหมื่นหกพันเจ็ดร้อยบาทถ้วน',
+                  60700: u'หกหมื่นเจ็ดร้อยบาทถ้วน'}[amount]
+
+    deadline = current_round.last_date
+    msg = u'ยืนยันสิทธิ์การเข้าศึกษาต่อในสาขา' + admission_result.admitted_major.name
+
+    verification = request.applicant.verification_number('confirm')
+    return render_to_response('application/payin/ticket.html',
+                              {'amount': amount,
+                               'amount_str': amount_str,
+                               'applicant': request.applicant,
+                               'verification': verification,
+                               'deadline': deadline,
+                               'msg': msg })
+        
+    
 
 def request_status(request):
     notice = ''

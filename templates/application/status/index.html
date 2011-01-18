@@ -26,7 +26,7 @@
 
     {% if applicant.is_eligible %} 
       <hr/> 
-      {% if admission_results %}
+      {% if current_round %}
         {% include "application/status/include/admission_result.html" %}
       {% else %}
         <b>คุณมีสิทธิ์เข้ารับพิจารณาคัดเลือกเข้าศึกษาต่อในโครงการรับตรง ประจำปีการศึกษา 2554 กรุณารอฟังผลการคัดเลือกรอบแรกในวันที่ 19 ม.ค. 2554</b>

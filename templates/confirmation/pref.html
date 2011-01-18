@@ -10,14 +10,15 @@
 {% endblock %}
 
 {% block body %}
-  {% load adm_steps %}{% step_bar "เลือกสาขาที่ต้องการได้รับการพิจารณา" %}
+  {% load adm_steps %}{% step_bar "เลือกสาขาที่ต้องการได้รับการพิจารณาคัดเลือก และยืนยันสิทธิ์" %}
 
   <div class="light-frame">
-    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวผู้สมัคร:</b> {{ applicant.ticket_number }}<br/>
-    <b>สาขาที่ได้รับการคัดเลือกให้เข้าสัมภาษณ์</b>: 
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.ticket_number }}<br/>
+    <b>สาขาที่ได้รับการคัดเลือกในรอบที่ {{ current_round.number }}</b>: 
     {{ admission_result.admitted_major.number }}
     {{ admission_result.admitted_major.name }}
   </div>
+
   <form class="light-frame" action="" method="post">
     {% if form_check_message %}
       <div class="doc-error">
@@ -25,7 +26,7 @@
       </div>
     {% endif %}
     {% if not higher_majors %}
-        <p>คุณได้รับคัดเลือกให้เข้าสัมภาษณ์ในสาขาที่คุณเลือกไว้ในอันดับที่สูงที่สุด ({{ admission_result.admitted_major.name }}) ดังนั้นคุณจะไม่สามารถขอเลื่อนสาขาวิชาได้</p>
+        <p>สำหรับการคัดเลือกในรอบที่ {{ current_round.number }} คุณได้รับคัดเลือกให้เข้าสัมภาษณ์ในสาขาที่คุณเลือกไว้ในอันดับที่สูงที่สุด ({{ admission_result.admitted_major.name }}) ดังนั้นคุณจะไม่สามารถขอเลื่อนสาขาวิชาได้</p>
     {% endif %}
     <p>
       กรุณาเลือกข้อที่คุณต้องการ<br/>
@@ -34,7 +35,7 @@
 	    <input id="id_pref_type_no_move" type="radio" name="pref_type" value="no_move" {% if pref_type.is_no_move %}checked="checked"{% endif %}/>
 	  </td>
 	  <td>
-	    เข้าศึกษาต่อในสาขา{{ admission_result.admitted_major.name }} {% if higher_majors %}โดย<b>ไม่ต้องการเข้ารับการพิจารณาเลื่อนอันดับไปในสาขาอื่น</b>{% endif %}
+	    ขอยืนยันสิทธิ์ในการเข้าศึกษาต่อในสาขา{{ admission_result.admitted_major.name }} {% if higher_majors %}โดย<b>ไม่ต้องการเข้ารับการพิจารณาเลื่อนอันดับไปในสาขาอื่น</b>{% endif %}
 	</td></tr>
 
 	{% if higher_majors %}  <!--- SOME HIGHER MAJORS TO MOVE TO --->
@@ -43,13 +44,13 @@
 	    <input id="id_pref_type_move_up_inclusive" type="radio" name="pref_type" value="move_up_inclusive" {% if pref_type.is_move_up_inclusive %}checked="checked"{% endif %}/>
 	  </td>
 	  <td>
-	    เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้าไม่ได้รับการพิจารณาให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ ยังคงยืนยันขอใช้สิทธิ์เข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} ที่ได้รับการพิจารณาคัดเลือกไว้แล้ว
+	    ขอยืนยันสิทธิ์ในการเข้าศึกษาต่อในสาขา{{ admission_result.admitted_major.name }} เพื่อเข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้าไม่ได้รับการพิจารณาให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ ยังคงยืนยันขอใช้สิทธิ์เข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} ที่ได้รับการพิจารณาคัดเลือกไว้แล้ว
 	</td></tr>
 	<tr><td>
 	  <input id="id_pref_type_move_up_strict" type="radio" name="pref_type" value="move_up_strict" {% if pref_type.is_move_up_strict %}checked="checked"{% endif %}/>
 	  </td>
 	  <td>
-	    เข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น  แต่ถ้า<b>ไม่ได้รับการพิจารณา</b>ให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ  ขอ<b>สละสิทธิ์</b>การเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์จากโครงการรับตรงนี้<br/>
+	    ขอยืนยันสิทธิ์ในการเข้าศึกษาต่อในสาขา{{ admission_result.admitted_major.name }} เพื่อเข้ารับการพิจารณาเลื่อนสาขาไปอยู่ในอันดับที่ดีขึ้น แต่ถ้า<b>ไม่ได้รับการพิจารณา</b>ให้เลื่อนอันดับสาขาไปในอันดับที่ต้องการ  ขอ<b>สละสิทธิ์</b>การเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์จากโครงการรับตรงนี้ (คณะจะไม่คืนเงินค่ายืนยันสิทธิ์ให้)
 	</td></tr>
 
 	{% endif %}
@@ -71,6 +72,10 @@
       </p>
     </div>
 
+    <small>
+      {% include "application/status/include/confirmation_warning.html" %}
+    </small>
+  
     <div class="submission-bar">
       <input type="submit" name="submit" value="เก็บข้อมูล"/>
       <input type="submit" name="cancel" value="ยกเลิก"/>

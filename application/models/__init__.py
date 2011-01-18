@@ -207,15 +207,29 @@ class Applicant(models.Model):
         return self.admission_results.count() != 0
 
     def get_latest_admission_result(self):
-        results = list(self.admission_results.all())
-        if len(results)>0:
-            return results[-1]
+        from result.models import AdmissionRound
+        adm_round = AdmissionRound.get_recent()
+        if adm_round:
+            results = list(
+                self.admission_results.filter(
+                    round_number=adm_round.number))
+            if len(results)>0:
+                return results[0]
+            else:
+                return None
         else:
             return None
 
     def is_admitted(self):
         admission_result = self.get_latest_admission_result()
         return (admission_result) and (admission_result.is_admitted)
+    
+    def get_admission_major_preference(self,round_number):
+        prefs = self.admission_major_preferences.filter(round_number=round_number)
+        if len(prefs)!=0:
+            return prefs[0]
+        else:
+            return None
     
     def get_applicant_docs_or_none(self):
         result = self.check_related_model('appdocs')
@@ -255,11 +269,8 @@ class Applicant(models.Model):
         return self.is_submitted
 
 
-    def has_confirmed(self):
-        try:
-            return self.admission_confirmation != None
-        except:
-            return False
+    def has_confirmed(self, round_number=0):
+        return False
 
 
     def is_eligible(self):
@@ -357,14 +368,15 @@ class Applicant(models.Model):
         except SubmissionInfo.DoesNotExist:
             return None
 
-    def verification_number(self):
+    def verification_number(self,additional_salt=''):
         try:
-            key = u"%s-%s-%s-%s-%s" % (
+            key = u"%s-%s-%s-%s-%s%s" % (
                 self.submission_info.salt,
                 self.national_id,
                 self.email,
                 self.first_name,
-                self.last_name)
+                self.last_name,
+                additional_salt)
             import hashlib
             h = hashlib.md5()
             h.update(key.encode('utf-8'))
@@ -656,6 +668,8 @@ class Education(models.Model):
 class Major(models.Model):
     number = models.CharField(max_length=5)
     name = models.CharField(max_length=50)
+
+    confirmation_amount = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['number']

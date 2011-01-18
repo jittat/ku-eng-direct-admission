@@ -69,6 +69,9 @@ div.button {
     vertical-align: middle;
     border: none; }
 
+.button.medium {
+  width: 60%; }
+
 div.button-blue {
   background: green;
   color: white;
@@ -90,6 +93,11 @@ div.button-blue {
   div.button-blue img {
     vertical-align: middle;
     border: none; }
+  div.button-blue:hover {
+    background: #2020b0; }
+
+div.button-blue.medium {
+  width: 60%; }
 
 #reg-button {
   padding-left: 45px; }

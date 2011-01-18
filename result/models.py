@@ -90,6 +90,27 @@ class QualifiedApplicant(models.Model):
             self.first_name,
             self.last_name)
 
+
+class AdmissionRound(models.Model):
+    number = models.IntegerField(unique=True)
+    start_date = models.DateField()
+    last_date = models.DateField()
+    is_available = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-number']
+
+    @staticmethod
+    def get_recent():
+        rounds = AdmissionRound.objects.filter(is_available=True)
+        if len(rounds)!=0:
+            return rounds[0]
+        else:
+            return None
+
+    def __unicode__(self):
+        return "Round %d" % self.number
+
 class AdmissionResult(models.Model):
     applicant = models.ForeignKey(Applicant, 
                                   related_name='admission_results')

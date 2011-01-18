@@ -9,7 +9,7 @@ from commons.decorators import submitted_applicant_required
 from commons.utils import admission_major_pref_deadline_passed, round2_confirmation_deadline_passed
 from commons.models import Log
 from application.models import Applicant, SubmissionInfo, Major, Education, PersonalInfo
-from result.models import NIETSScores, AdmissionResult
+from result.models import NIETSScores, AdmissionResult, AdmissionRound
 
 from models import AdmissionMajorPreference, AdmissionConfirmation, Round2ApplicantConfirmation
 
@@ -43,10 +43,13 @@ def check_form_submission(post_data, higher_majors):
 def update_admission_major_preference(pref, applicant,
                                       preferred_majors,
                                       higher_majors,
+                                      round_number,
                                       post_data):
     if not pref:
         pref = AdmissionMajorPreference()
-        pref.applicant = applicant
+
+    pref.applicant = applicant
+    pref.round_number = round_number
     
     alist = [0] * len(preferred_majors)
     if post_data['pref_type'] in ['move_up_inclusive', 'move_up_strict']:
@@ -71,6 +74,8 @@ def pref(request):
     if admission_major_pref_deadline_passed():
         return render_to_response('confirmation/pref_deadline_passed.html')
 
+    current_round = AdmissionRound.get_recent()
+    round_number = current_round.number
     admission_result = applicant.get_latest_admission_result()
 
     preferred_majors = applicant.preference.get_major_list()
@@ -78,10 +83,7 @@ def pref(request):
                                              admission_result.admitted_major)
 
     
-    try:
-        admission_pref = applicant.admission_major_preference
-    except:
-        admission_pref = None
+    admission_pref = applicant.get_admission_major_preference(round_number)
 
     if admission_pref:
         pref_type = admission_pref.get_pref_type()
@@ -105,7 +107,9 @@ def pref(request):
                 admission_pref = update_admission_major_preference(
                     admission_pref,
                     applicant, preferred_majors,
-                    higher_majors, request.POST)
+                    higher_majors, 
+                    round_number,
+                    request.POST)
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
 
@@ -135,6 +139,7 @@ def pref(request):
     return render_to_response('confirmation/pref.html',
                               { 'applicant': applicant,
                                 'admission_result': admission_result,
+                                'current_round': current_round,
                                 'higher_majors': higher_majors,
                                 'majors_with_is_accepted':
                                     zip(higher_majors, is_accepted_list),
@@ -591,6 +596,11 @@ class Round2ConfirmationForm(ModelForm):
 
 @submitted_applicant_required
 def confirm_round2(request):
+    """
+    Obsoleted
+    """
+    return HttpResponseForbidden()
+
     applicant = request.applicant
     
     if not applicant.submission_info.doc_reviewed_complete:
