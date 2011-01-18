@@ -19,9 +19,9 @@
     {% if admission_result.is_waitlist %}
       คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "waitlist" %}">หน้าประกาศผลการรับสมัคร</a><br/>
     {% else %}
-      คุณไม่ผ่านการคัดเลือกในรอบที่ {{ admission_result.round_number }} อย่างไรก็ตาม โปรดติดตามการประกาศในรอบถัด ๆ ไป<br/>
+      คุณไม่ผ่านการคัดเลือกในรอบที่ {{ admission_result.round_number }} อย่างไรก็ตาม คุณยังมีสิทธิ์เข้ารับการพิจารณาในรอบถัด ๆ ไป <a href="http://admission.eng.ku.ac.th/information/2554/direct/how-to-not-accepted">อ่านรายละเอียดเพิ่มเติมที่นี่</a>
     {% endif %}
   {% endif %}
 {% else %}
-  คุณไม่ผ่านการคัดเลือกในรอบที่ {{ current_round.number }} อย่างไรก็ตาม โปรดติดตามการประกาศในรอบถัด ๆ ไป<br/>
+      คุณไม่ผ่านการคัดเลือกในรอบที่ {{ admission_result.round_number }} อย่างไรก็ตาม คุณยังมีสิทธิ์เข้ารับการพิจารณาในรอบถัด ๆ ไป <a href="http://admission.eng.ku.ac.th/information/2554/direct/how-to-not-accepted">อ่านรายละเอียดเพิ่มเติมที่นี่</a>
 {% endif %}
