@@ -61,16 +61,34 @@ def index(request):
         notice = request.session['notice']
         del request.session['notice']
 
-    exam_scores = prepare_exam_scores(request.applicant)
-
     submission_info = request.applicant.submission_info
     random_seed = 1000000 + randint(0,8999999)
+
+    admission_results = request.applicant.admission_results.reverse().all()
+    current_round = 1
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
-                                'exam_scores': exam_scores,
+                                'admission_results': admission_results,
+                                'current_round': current_round,
                                 'random_seed': random_seed,
+                                'notice': notice,
+                                'can_log_out': True })
+
+
+@submitted_applicant_required
+def show_score(request):
+    notice = ''
+    if 'notice' in request.session:
+        notice = request.session['notice']
+        del request.session['notice']
+
+    exam_scores = prepare_exam_scores(request.applicant)
+
+    return render_to_response("application/status/score.html",
+                              { 'applicant': request.applicant,
+                                'exam_scores': exam_scores,
                                 'notice': notice,
                                 'can_log_out': True })
 

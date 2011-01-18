@@ -1,0 +1,37 @@
+{% extends "application/status/base.html" %}
+
+{% load adm_info %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block body %}
+  {% with "ผลคะแนน" as step_title %}
+    {% include "application/status/include/status_menu.html" %}
+  {% endwith %}
+
+  {% adm_submission_deadline_warning %}
+
+  {% if notice %}
+    <div class="notice-bar">
+      <span class="notice">{{ notice }}</span>
+    </div>
+  {% endif %}
+
+  <p>
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+    <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.national_id }}<br/>
+
+    {% if applicant.is_eligible %} 
+      <hr/> 
+      <b>คุณมีสิทธิ์เข้ารับพิจารณาคัดเลือกเข้าศึกษาต่อในโครงการรับตรง ประจำปีการศึกษา 2554</b>
+      <hr/>
+      {% include "application/status/include/exam_scores.html" %}
+      <hr/>
+    {% endif %}
+  </p>
+
+  กลับไปหน้า<a href="{% url status-index %}">หลัก</a>
+{% endblock %}

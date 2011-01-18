@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-  {% load adm_steps %}{% step_bar "ตรวจสอบสถานะการสมัคร" %}
+  {% include "application/status/include/status_menu.html" %}
 
   {% adm_submission_deadline_warning %}
 
@@ -20,63 +20,26 @@
 
   <!--- *************************** --->
 
-  <div class="right-box">
-    <br/>
-    {% include "application/status/include/status_menu.html" %}
-    {% comment %}
-      {% include "application/include/ticket_printing.html" %}
-    {% endcomment %}
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-  </div>
-  
-  <!--- *************************** --->
-
   <p>
-    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }}<br/>
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} &nbsp;&nbsp;
     <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.national_id }}<br/>
 
     {% if applicant.is_eligible %} 
       <hr/> 
-      <b>คุณมีสิทธิ์เข้ารับพิจารณาคัดเลือกเข้าศึกษาต่อในโครงการรับตรง ประจำปีการศึกษา 2554</b>
-      <hr/>
-      {% include "application/status/include/exam_scores.html" %}
-      <hr/>
-    {% endif %}
+      {% if admission_results %}
+        {% include "application/status/include/admission_result.html" %}
+      {% else %}
+        <b>คุณมีสิทธิ์เข้ารับพิจารณาคัดเลือกเข้าศึกษาต่อในโครงการรับตรง ประจำปีการศึกษา 2554 กรุณารอฟังผลการคัดเลือกรอบแรกในวันที่ 19 ม.ค. 2554</b>
+      {% endif %}
+      <hr />
+    {% else %}
 
-    <table id="doc-status-table">
-      <tr>
-	<th>สถานะการชำระค่าสมัคร</th>
-	<th>วันที่ได้รับข้อมูลการชำระ</th>
-      </tr>
-      <tr>
-	{% if submission_info.is_paid %}
-	  <td>ชำระแล้ว</td>
-	  <td>{{ submission_info.paid_at|date:"j N y" }}</td>
-        {% else %}
-	  <td>ยังไม่ได้รับข้อมูลการชำระ</td>
-	  <td>ยังไม่ได้รับ</td>
-	{% endif %}  
-      </tr>
-    </table>
+    {% endif %}
   </p>
 
-  <ul>
-    <li>
-      ถ้าคุณชำระค่าสมัครเรียบร้อยภายในวันที่ 15 ธันวาคม 2553 คุณจะมีชื่อปรากฏในรายชื่อผู้มีสิทธิ์เข้ารับการคัดเลือก ซึ่งสามารถตรวจสอบได้ในวันที่ 22 ธันวาคม 2553  
-    </li>
-    <li>
-      ผู้สมัครอาจจะชำระเงินภายในวันที่ 15 ธ.ค. แต่ทางเราได้รับข้อมูลวันที่ 16
-      ระบบก็จะแสดงว่าได้รับข้อมูลในวันที่ 16 ด้วย อย่างไรก็ตาม ในกรณีดังกล่าว
-      ผู้สมัครได้ดำเนินการสมัครสมบูรณ์ในเวลาแล้ว
-    </li>
-    <li>
-      ภายในวันที่ 5 มกราคม 2553 ทางระบบจะแสดงข้อมูลคะแนนสอบที่ดึงจากทางสทศ. เพื่อให้ผู้สมัครได้ตรวจสอบต่อไป
-    </li>
-  </ul>
+  {% comment %}
+    {% include "application/status/include/submission_status.html" %}
+  {% endcomment %}
 
   <p>
     คุณสามารถ <a href="{% url status-show %}">ดูใบสมัครที่คุณส่งมาแล้วได้</a>

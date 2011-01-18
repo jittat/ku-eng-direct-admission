@@ -1,45 +1,9 @@
-<div class="login-box">
-  <a id="id_status-show-button" class="in-button" href="{% url status-show %}">
-    <div class="button">
-      ตรวจสอบข้อมูลในใบสมัครที่ส่งมาแล้ว
+<div class="status-menu-bar">
+  <a id="logout-link" href="{% url apply-logout %}">
+    <div class="menu-item">
+      ออกจากระบบ
     </div>
   </a>
-
-  {% comment %}
-
-  <div class="small-vert-sept"></div>
-  <a id="id_payin-button" class="in-button" href="{% url apply-ticket %}?{{ random_seed }}" target="_blank">
-    <div class="button">
-      พิมพ์ใบชำระเงินค่าสมัครเพื่อชำระเงินที่ธนาคาร
-    </div>
-  </a>
-  <div class="small-vert-sept"></div>
-  <a class="in-button" href="{% url update-personal-info %}">
-    <div class="button">
-      แก้ข้อมูลส่วนตัว
-    </div>
-  </a>
-  <div class="small-vert-sept"></div>
-  <a class="in-button" href="{% url update-education %}">
-    <div class="button">
-      แก้ข้อมูลการศึกษา
-    </div>
-  </a>
-  <div class="small-vert-sept"></div>
-  <a class="in-button" href="{% url update-address %}">
-    <div class="button">
-      แก้ข้อมูลที่อยู่
-    </div>
-  </a>
-  <center><small>สามารถแก้ข้อมูลต่าง ๆ ได้จนถึงวันที่ปิดรับสมัคร</small></center>
-  <div class="small-vert-sept"></div>
-  <a id="id_majors-update-button" class="in-button" href="{% url update-majors %}">
-    <div class="button">
-      แก้ไขอันดับสาขาวิชา
-    </div>
-  </a>
-  <center><small>สามารถแก้อันดับสาขาวิชาได้จนถึงวันที่ 31 ธ.ค. 2553</small></center>
-
-  {% endcomment %}
-
+  {% include "application/status/include/status_menu_items.html" %}
+  <b>ขั้นตอน</b> {% if step_title %}{{ step_title }}{% else %}ตรวจสอบสถานะการสมัคร{% endif %}
 </div>

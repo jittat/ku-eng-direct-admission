@@ -1,29 +1,22 @@
-<b>ผลการคัดเลือกรอบแรก:</b>
-{% if admission_result.is_admitted %}
-  คุณผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์เข้าศึกษาต่อแบบรับตรง (ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "admitted" %}">หน้าประกาศผลการรับสมัคร</a>)<br/>
-  <b>สาขาที่ได้รับการคัดเลือกให้เข้าสัมภาษณ์*:</b>
-  {{ admission_result.admitted_major.number }}
-  {{ admission_result.admitted_major.name }}
-  <br/>
-
-  {% comment %}
-  <b>ข้อมูลการสัมภาษณ์:</b> {{ admission_result.additional_info }}<br/>
-
-  <b>หมายเหตุ:</b> * สาขาที่ได้รับคัดเลือกอาจมีการเปลี่ยนแปลงได้ แต่จะเป็นสาขาที่อยู่ในอันดับที่ดีขึ้นเท่านั้น
-  {% endcomment %}
-
-  <b>การประกาศผล:</b> ผลการจัดอันดับจะประกาศในวันที่ 5 ก.พ. 2553
-{% else %}
-  {% if admission_result.is_waitlist %}
-    คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "waitlist" %}">หน้าประกาศผลการรับสมัคร</a><br/>
-    <b>สำหรับผู้ที่มีรายชื่ออยู่ในรายชื่อสำรอง คณะวิศวกรรมศาสตร์
-    มหาวิทยาลัยเกษตรศาสตร์จะประกาศรายชื่อผู้มีสิทธิ์เข้าสอบสัมภาษณ์ในวันศุกร์ที่ 5
-    กุมภาพันธ์ 2553
-    ทางเว็บไซด์ <a href="http://admission.eng.ku.ac.th">โครงการรับตรง
-    (http://admission.eng.ku.ac.th)</a></b>
+{% for admission_result in admission_results %}
+  <b>ผลการคัดเลือกรอบ {{ admission_result.round_number }}:</b>
+  {% if admission_result.is_admitted %}
+    คุณผ่านการคัดเลือกให้เข้าศึกษาต่อแบบรับตรง<br/>
+    <b>สาขาที่ได้รับการคัดเลือก:</b>
+    {{ admission_result.admitted_major.number }}
+    {{ admission_result.admitted_major.name }}
+    <br/>
+    {% if current_round == admission_result.round_number %}
+      ขั้นตอนต่อไป: แสดงเจตจำนงในการขอเข้าพิจารณา
+    {% endif %}
   {% else %}
-    คุณไม่ผ่านการคัดเลือกให้เข้ารับการสัมภาษณ์รอบที่ 1  อย่างไรก็ตาม โปรดติดตามการประกาศรายชื่อเพิ่มเติมในวันที่ 5 ก.พ. 2553<br/>
-    นอกจากนี้ยังมีช่องทางอื่นในการเข้าศึกษาต่อที่คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตบางเขน กรุณาดูข้อมูลได้ที่เว็บ <a href="http://admission.eng.ku.ac.th/information/2553">http://admission.eng.ku.ac.th</a>
+    {% if admission_result.is_waitlist %}
+      คุณมีชื่ออยู่ในรายชื่อสำรอง ดูข้อมูลเพิ่มเติมได้ที่<a href="{% url result-set-index "waitlist" %}">หน้าประกาศผลการรับสมัคร</a><br/>
+    {% else %}
+      คุณไม่ผ่านการคัดเลือกในรอบที่ {{ admission_result.round_number }} อย่างไรก็ตาม โปรดติดตามการประกาศในรอบถัด ๆ ไป<br/>
+    {% endif %}
   {% endif %}
-{% endif %}
-<br/>
+  <br/>
+{% empty %}
+  ขณะนี้ยังไม่มีข้อมูลผลการคัดเลือก
+{% endfor %}
