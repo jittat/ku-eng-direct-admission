@@ -215,13 +215,15 @@ def build_pref_stat(adm_round):
 
     majors = Major.objects.all()
 
+    major_number_dict = dict([(m.id,int(m.number)) for m in majors])
+
     pref_tab = dict([(int(m.number),[0]*4) for m in majors])
 
     for p in adm_major_prefs:
         app_id = p.applicant_id
         t = p.get_pref_type().ptype
         if app_id in app_results:
-            pref_tab[app_results[app_id].admitted_major_id][t-1] += 1
+            pref_tab[major_number_dict[app_results[app_id].admitted_major_id]][t-1] += 1
 
     pref_stat = []
     for m in majors:
