@@ -4,37 +4,28 @@
 
 {% block regis-body %}
 
-<form class="search-form" action="{% url confirmation-submit %}" method="post">
-  <p>
-    กรุณาป้อนหมายเลขประจำตัวผู้สมัครเพื่อยืนยันสิทธิ์:
-    <input type="text" name="application_id"/>
-    <input type="submit" name="confirm" value="ยืนยันสิทธิ์"/>
-  </p>
-</form>
-
 {% if notice %}
   <div class="notice-bar">
     <span class="notice">{{ notice }}</span>
   </div>
 {% endif %}
 
-<h3>สถิติการยืนยันสิทธิ์</h3>
-<ul>
-  <li>จำนวนผู้ยืนยันสิทธิ์แล้วทั้งหมด: {{ stat.total }} คน</li>
-  <li><a href="{% url confirmation-stat %}">จำนวนการยืนยันสิทธิ์แยกตามสาขา</a></li>
-</ul>
+<h3>สถิติการเลือกการพิจารณาสำหรับการคัดเลือกรอบ {{ admission_round.number }}</h3>
 
-<h3>ผู้ยืนยันสิทธิ์ล่าสุด {{ confirmations.count }} คนแรก</h3>
-<table class=applicants>
+<table class="applicants">
   <tr>
-    <th>หมายเลขผู้สมัคร</th>
-    <th>ชื่อผู้สมัคร</th>
-    <th>ยืนยันเมื่อ</th>
-  {% for confirmation in confirmations %}
-    <tr class="{% cycle "odd" "even" %}">
-      <td>{{ confirmation.applicant.ticket_number }}</td>
-      <td width="50%">{{ confirmation.applicant.full_name }}</td>
-      <td>{{ confirmation.confirmed_at|date:"H:i, j N" }}</td>
+    <th>สาขา</th>
+    <th>คงที่</th>
+    <th>เลื่อนได้</th>
+    <th>เลื่อนเท่านั้น</th>
+    <th>สละสิทธิ์</th>
+  </tr>
+  {% for stat in pref_stat %}
+    <tr class="{% cycle 'odd' 'even' %}">
+      <td>{{ stat.major.number }}</td>
+      {% for s in stat.pref_counts %}
+        <td>{{ s }}</td>
+      {% endfor %}
     </tr>
   {% endfor %}
 </table>

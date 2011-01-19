@@ -204,13 +204,36 @@ def interview_info(request, applicant_id):
     else:
         return render_unconfirmed_applicant(applicant)
 
+def build_pref_stat(adm_round):
+    results = (AdmissionResult.
+               objects.
+               filter(round_number=adm_round.number).
+               all())
+    app_results = dict([(r.applicant_id,r) for r in results])
+    
+    adm_major_prefs = AdmissionMajorPreference.objects.filter(round_number=adm_round.number).all()
+
+    majors = Major.objects.all()
+
+    pref_tab = dict([(int(m.number),[0]*4) for m in majors])
+
+    for p in adm_major_prefs:
+        app_id = p.applicant_id
+        t = p.get_pref_type().ptype
+        if app_id in app_results:
+            pref_tab[app_results[app_id].admitted_major_id][t-1] += 1
+
+    pref_stat = []
+    for m in majors:
+        pref_stat.append({'major': m,
+                          'pref_counts': pref_tab[int(m.number)]})
+    return pref_stat
+
 @login_required
 def index(request):
-    confirmations = AdmissionConfirmation.objects.select_related(depth=1).all()[:20]
+    adm_round = AdmissionRound.get_recent()
 
-    confirmation_count = AdmissionConfirmation.objects.count()
-
-    stat = { 'total': confirmation_count }
+    pref_stat = build_pref_stat(adm_round)
 
     if 'notice' in request.session:
         notice = request.session['notice']
@@ -219,8 +242,8 @@ def index(request):
         notice = ''
 
     return render_to_response('confirmation/index.html',
-                              { 'confirmations': confirmations,
-                                'stat': stat,
+                              { 'pref_stat': pref_stat,
+                                'admission_round': adm_round,
                                 'notice': notice })
 
 
