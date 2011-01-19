@@ -14,8 +14,9 @@
     <div class="admin-menu">
       <ul>
         <li>เมนู:</li>
-        <li>[<a href="{% url review-index %}">หน้าแรกของระบบดูแล</a>]<li>
-	<li>[<a href="{% url confirmation-index %}">ผลการยืนยันสิทธิ์</a>]<li>
+        <li>[<a href="{% url review-index %}">หน้าแรกของระบบดูแล</a>]</li>
+        [ผลการยืนยันสิทธิ์]
+	{% comment %}<li>[<a href="{% url confirmation-index %}">ผลการยืนยันสิทธิ์</a>]<li>{% comment %}
         <li>[<a href="{% url review-ticket %}">ค้นหาด้วยหมายเลขและชื่อเพื่อการตรวจสอบ</a>]</li>
         <li>[<a href="{% url review-search %}">ค้นหาอื่น ๆ</a>]</li>
         <li>[<a href="{% url manual-index %}">ป้อนใบสมัคร</a>]</li>
