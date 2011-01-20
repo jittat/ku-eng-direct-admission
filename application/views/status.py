@@ -70,7 +70,10 @@ def index(request):
     if current_round:
         admission_result = applicant.get_latest_admission_result()
         admission_major_pref = applicant.get_admission_major_preference(current_round.number)
-        admitted_major = admission_result.admitted_major
+        if admission_result:
+            admitted_major = admission_result.admitted_major
+        else:
+            admitted_major = None
     else:
         admission_result = None
         admission_major_pref = None
