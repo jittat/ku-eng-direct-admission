@@ -81,8 +81,13 @@ def index(request):
 
     if admitted_major and (total_amount_confirmed >= admitted_major.confirmation_amount):
         confirmation_complete = True
+        additional_payment = 0
     else:
         confirmation_complete = False
+        if admitted_major:
+            additional_payment = admitted_major.confirmation_amount - total_amount_confirmed
+        else:
+            additional_payment = 0
 
     if len(confirmations)!=0:
         recent_confirmation = confirmations[0]
@@ -98,6 +103,8 @@ def index(request):
                                 'confirmation_complete': confirmation_complete,
                                 'recent_confirmation': recent_confirmation,
                                 'confirmations': confirmations,
+                                'total_amount_confirmed': total_amount_confirmed,
+                                'additional_payment': additional_payment,
 
                                 'current_round': current_round,
                                 'random_seed': random_seed,

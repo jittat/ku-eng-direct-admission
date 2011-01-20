@@ -57,7 +57,7 @@ for ln in lines:
 
             confirmation = AdmissionConfirmation()
             confirmation.applicant = applicant
-            confirmation.amount = amount
+            confirmation.paid_amount = amount
             confirmation.round_number = round_number
             confirmation.save()
             updated_count += 1
