@@ -13,7 +13,7 @@
   {% load adm_steps %}{% step_bar "เลือกสาขาที่ต้องการได้รับการพิจารณาคัดเลือก และยืนยันสิทธิ์" %}
 
   <div class="light-frame">
-    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.ticket_number }}<br/>
+    <b>ชื่อผู้สมัคร:</b> {{ applicant.full_name }} | <b>หมายเลขประจำตัวประชาชน:</b> {{ applicant.national_id }}<br/>
     <b>สาขาที่ได้รับการคัดเลือกในรอบที่ {{ current_round.number }}</b>: 
     {{ admission_result.admitted_major.number }}
     {{ admission_result.admitted_major.name }}
