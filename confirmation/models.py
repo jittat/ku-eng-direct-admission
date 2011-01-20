@@ -11,6 +11,8 @@ class AdmissionMajorPreference(models.Model):
     round_number = models.IntegerField(default=0)
     is_accepted_list = IntegerListField()
 
+    ptype = models.IntegerField(default=0)
+
     class PrefType():
         PREF_NO_MOVE = 1
         PREF_MOVE_UP_INCLUSIVE = 2
@@ -40,6 +42,11 @@ class AdmissionMajorPreference(models.Model):
     PrefType.MOVE_UP_INCLUSIVE = PrefType(PrefType.PREF_MOVE_UP_INCLUSIVE)
     PrefType.MOVE_UP_STRICT = PrefType(PrefType.PREF_MOVE_UP_STRICT)
     PrefType.WITHDRAWN = PrefType(PrefType.PREF_WITHDRAWN)
+
+    preftype_dict = { 1: PrefType.NO_MOVE,
+                      2: PrefType.MOVE_UP_INCLUSIVE,
+                      3: PrefType.MOVE_UP_STRICT,
+                      4: PrefType.WITHDRAWN }
 
     @staticmethod
     def new_for_applicant(applicant):
@@ -86,21 +93,33 @@ class AdmissionMajorPreference(models.Model):
         return accepted_majors
 
 
-    def get_pref_type(self):
+    def set_ptype_cache(self, save=True):
         if not self.is_applicant_admitted():
-            return AdmissionMajorPreference.PrefType.WITHDRAWN
-        accepted_majors = self.get_accepted_majors()
-        assigned_majors = self.applicant.get_latest_admission_result().admitted_major
+            self.ptype = 4
 
-        if len(accepted_majors)==0:
-            return AdmissionMajorPreference.PrefType.WITHDRAWN
-        elif (len(accepted_majors)==1 and
-              accepted_majors[0].id == assigned_majors.id):
-            return AdmissionMajorPreference.PrefType.NO_MOVE
-        elif assigned_majors.id in [a.id for a in accepted_majors]:
-            return AdmissionMajorPreference.PrefType.MOVE_UP_INCLUSIVE
         else:
-            return AdmissionMajorPreference.PrefType.MOVE_UP_STRICT
+            accepted_majors = self.get_accepted_majors()
+            assigned_majors = self.applicant.get_latest_admission_result().admitted_major
+
+            if len(accepted_majors)==0:
+                self.ptype = 4
+            elif (len(accepted_majors)==1 and
+                  accepted_majors[0].id == assigned_majors.id):
+                self.ptype = 1
+            elif assigned_majors.id in [a.id for a in accepted_majors]:
+                self.ptype = 2
+            else:
+                self.ptype = 3
+
+        if save:
+            self.save()
+
+    
+    def get_pref_type(self):
+        if self.ptype==0:
+            self.set_ptype_cache()
+        return AdmissionMajorPreference.preftype_dict[self.ptype]
+
 
     def get_display(self):
         pref_type = self.get_pref_type()
@@ -112,6 +131,7 @@ class AdmissionMajorPreference(models.Model):
             return u'ยืนยันสิทธิ์ในสาขาที่ได้รับคัดเลือก และต้องการเข้ารับการพิจารณาเลื่อนอันดับในสาขาที่อยู่ในอันดับสูงกว่า'
         else:
             return u'ยืนยันสิทธิ์ในสาขาที่ได้รับคัดเลือก และต้องการเข้ารับการพิจารณาเลื่อนอันดับในสาขาที่อยู่ในอันดับสูงกว่า ถ้าไม่ได้รับการพิจารณาจะสละสิทธิ์ในสาขาที่ได้รับคัดเลือกนี้'
+
 
     def is_withdrawn(self):
         pref_type = self.get_pref_type()

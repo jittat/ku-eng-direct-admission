@@ -110,6 +110,7 @@ def pref(request):
                     higher_majors, 
                     round_number,
                     request.POST)
+                admission_pref.set_ptype_cache(save=False)
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
 
