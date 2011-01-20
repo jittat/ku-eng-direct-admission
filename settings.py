@@ -174,6 +174,8 @@ DEFAULT_RESULT_SET_NAME = 'eligible'
 SHOW_ADMISSION_RESULTS = False
 SHOW_FINAL_ADMISSION_RESULTS = False
 
+CONFIRMATION_HASH_MAGIC = 'confirm'
+
 try:
     from settings_local import *
 except ImportError:

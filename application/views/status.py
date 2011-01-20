@@ -64,19 +64,41 @@ def index(request):
     submission_info = request.applicant.submission_info
     random_seed = 1000000 + randint(0,8999999)
 
+    applicant = request.applicant
+
     current_round = AdmissionRound.get_recent()
     if current_round:
-        admission_result = request.applicant.get_latest_admission_result()
-        admission_major_pref = request.applicant.get_admission_major_preference(current_round.number)
+        admission_result = applicant.get_latest_admission_result()
+        admission_major_pref = applicant.get_admission_major_preference(current_round.number)
+        admitted_major = admission_result.admitted_major
     else:
         admission_result = None
         admission_major_pref = None
+        admitted_major = None
+
+    confirmations = applicant.admission_confirmations.all()
+    total_amount_confirmed = sum([c.paid_amount for c in confirmations])
+
+    if admitted_major and (total_amount_confirmed >= admitted_major.confirmation_amount):
+        confirmation_complete = True
+    else:
+        confirmation_complete = False
+
+    if len(confirmations)!=0:
+        recent_confirmation = confirmations[0]
+    else:
+        recent_confirmation = None
 
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
                                 'admission_result': admission_result,
                                 'admission_major_pref': admission_major_pref,
+
+                                'confirmation_complete': confirmation_complete,
+                                'recent_confirmation': recent_confirmation,
+                                'confirmations': confirmations,
+
                                 'current_round': current_round,
                                 'random_seed': random_seed,
                                 'notice': notice,
@@ -180,7 +202,7 @@ def confirmation_ticket(request):
     deadline = current_round.last_date
     msg = u'ยืนยันสิทธิ์การเข้าศึกษาต่อในสาขา' + admission_result.admitted_major.name
 
-    verification = request.applicant.verification_number('confirm')
+    verification = request.applicant.verification_number(settings.CONFIRMATION_HASH_MAGIC)
     return render_to_response('application/payin/ticket.html',
                               {'amount': amount,
                                'amount_str': amount_str,
