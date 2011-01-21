@@ -838,7 +838,10 @@ def show_applicant(request, applicant_id):
 
     exam_scores = prepare_exam_scores(applicant)
 
+    admission_results = applicant.admission_results.all()
+
     return render_to_response("review/show_app.html",
                               { 'applicant': applicant,
                                 'submission_info': submission_info,
-                                'exam_scores': exam_scores })
+                                'exam_scores': exam_scores,
+                                'admission_results': admission_results })
