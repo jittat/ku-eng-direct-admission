@@ -218,19 +218,33 @@ def build_pref_stat(adm_round):
 
     major_number_dict = dict([(m.id,int(m.number)) for m in majors])
 
-    pref_tab = dict([(int(m.number),[0]*4) for m in majors])
+    pref_tab = {} #dict([(int(m.number),[]) for m in majors])
+    for m in majors:
+        pref_tab[int(m.number)] = []
+        for i in range(4):
+            pref_tab[int(m.number)].append([0,0])
+
+    confirmed_app = set([c.applicant_id 
+                         for c in
+                         AdmissionConfirmation.objects.filter(round_number=adm_round.number).all()])
+
 
     for p in adm_major_prefs:
         app_id = p.applicant_id
         t = p.get_pref_type().ptype
         if app_id in app_results:
-            pref_tab[major_number_dict[app_results[app_id].admitted_major_id]][t-1] += 1
+            major_number = major_number_dict[app_results[app_id].admitted_major_id]
+            pref_tab[major_number][t-1][0] += 1
+            if app_id in confirmed_app:
+                pref_tab[major_number][t-1][1] += 1
 
     pref_stat = []
     for m in majors:
         pref_stat.append({'major': m,
                           'pref_counts': pref_tab[int(m.number)]})
     return pref_stat
+
+
 
 @login_required
 def index(request):

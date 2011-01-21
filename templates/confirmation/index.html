@@ -15,16 +15,19 @@
 <table class="applicants">
   <tr>
     <th>สาขา</th>
-    <th>คงที่</th>
-    <th>เลื่อนได้</th>
-    <th>เลื่อนเท่านั้น</th>
-    <th>สละสิทธิ์</th>
+    <th>ชื่อ</th>
+    <th colspan="2" width="10%">คงที่</th>
+    <th colspan="2" width="10%">เลื่อนได้</th>
+    <th colspan="2" width="10%">เลื่อนเท่านั้น</th>
+    <th colspan="2" width="10%">สละสิทธิ์</th>
   </tr>
   {% for stat in pref_stat %}
     <tr class="{% cycle 'odd' 'even' %}">
       <td>{{ stat.major.number }}</td>
+      <td>{{ stat.major }}</td>
       {% for s in stat.pref_counts %}
-        <td>{{ s }}</td>
+        <td>{{ s.0 }}</td>
+        <td><b>{{ s.1 }}</b></td>
       {% endfor %}
     </tr>
   {% endfor %}
