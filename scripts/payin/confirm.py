@@ -44,8 +44,10 @@ for ln in lines:
                 error_count += 1
                 continue
 
-            if applicant.verification_number(settings.CONFIRMATION_HASH_MAGIC) != verification:
-                print "ERROR (verification):", applicant, national_id, applicant.verification_number(), verification
+            expected_verification = applicant.verification_number(settings.CONFIRMATION_HASH_MAGIC)
+
+            if expected_verification != verification:
+                print "ERROR (verification):", applicant, national_id, expected_verification, verification
                 error_count += 1
                 continue
 
@@ -62,6 +64,6 @@ for ln in lines:
             confirmation.save()
             updated_count += 1
         else:
-            print "ERROR: NAT ID NOT FOUND", national_id
+            print "ERROR: NAT ID NOT FOUND", national_id, ln
 
 print updated_count, 'updated, with ', error_count, 'errors'

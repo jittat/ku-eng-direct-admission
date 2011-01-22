@@ -18,21 +18,41 @@
     {% endfor %}
   {% endwith %}
   <hr/>
-  <b>ผลการคัดเลือก</b>
-  <ul>
-    {% for r in admission_results %}
-      <li>
-	รอบที่ {{ r.round_number }}:
-	{% if r.is_admitted %}
-	  ติดสาขา {{ r.admitted_major }}
-	{% else %}
-	  ไม่ผ่านการคัดเลือก
-	{% endif %}
-      </li>
-    {% empty %}
-      <li>ไม่ผ่านการคัดเลือก</li>
-    {% endfor %}
-  </ul>
+  <table>
+    <tr>
+      <td style="border-right: 1px solid gray; padding-right: 20px">
+	<b>ผลการคัดเลือก</b>
+	<ul>
+	  {% for r in admission_results %}
+ 	    <li>
+	      รอบที่ {{ r.round_number }}:
+	      {% if r.is_admitted %}
+	        ติดสาขา {{ r.admitted_major }}
+	      {% else %}
+	        ไม่ผ่านการคัดเลือก
+	      {% endif %}
+	    </li>
+	  {% empty %}
+	    <li>ไม่ผ่านการคัดเลือก</li>
+	  {% endfor %}
+	</ul>
+      </td>
+      <td>
+	<b>การยืนยันสิทธิ์</b>
+	<ul>
+	  {% for c in confirmations %}
+	    <li>
+	      รอบที่ {{ c.round_number }} 
+	      ชำระเงิน {{ c.paid_amount }} บาท 
+	      ได้รับข้อมูลวันที่ {{ c.confirmed_at|date:"d F"}}
+	    </li>
+          {% empty %}
+	    <li>ยังไม่เคยยืนยัน</li>
+	  {% endfor %}
+	</ul>
+      </td>
+    </tr>
+  </table>
   <hr/>
   {% include "application/status/include/exam_scores.html" %}
 {% endblock %}
