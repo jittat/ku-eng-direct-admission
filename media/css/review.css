@@ -36,6 +36,10 @@ table.applicants {
     background: white; }
   table.applicants tr.even {
     background: #e0e0e0; }
+  table.applicants tr.confirmed.odd {
+    background: #e0ffe0; }
+  table.applicants tr.confirmed.even {
+    background: #d0ffd0; }
   table.applicants td {
     border: 1px solid black;
     vertical-align: top; }

@@ -5,6 +5,12 @@ urlpatterns = patterns(
     'confirmation.views',
 
     url(r'^$', 'index', name='confirmation-index'),
+
+    url(r'^majors/(\d+)/$', 
+        'list_confirmed_applicants',
+        name='confirmation-list-applicants'),
+
+
     url(r'^stat/$', 'confirmation_stat', name='confirmation-stat'),
     url(r'^stat/download/$', 'confirmation_stat_download', name='confirmation-stat-download'),
     url(r'^stat/download-regis/$', 'confirmation_stat_download_for_registra', name='confirmation-stat-download-regis'),

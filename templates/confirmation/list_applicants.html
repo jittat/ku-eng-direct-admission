@@ -1,0 +1,41 @@
+{% extends "commons/regis-base.html" %}
+
+{% block extra-title-bar %}หน่วยทะเบียน | ระบบยืนยันสิทธิ์ {% endblock %}
+
+{% block regis-body %}
+
+{% if notice %}
+  <div class="notice-bar">
+    <span class="notice">{{ notice }}</span>
+  </div>
+{% endif %}
+
+<h2>ผลการยืนยันสิทธิ์สำหรับการคัดเลือกรอบ {{ admission_round.number }} สาขาวิชา {{ major.name }}</h2>
+
+{% for t, apps in confirmed_apps_groups %}
+  <h3>{{ forloop.counter }}. ประเภทการเลือก {{ t }}</h3>
+  <table class="applicants">
+    <tr>
+      <th>ลำดับที่</th><th>ชื่อ</th><th>การชำระเงินยืนยันสิทธิ์</th>
+    </tr>
+    {% for app in apps %}
+      <tr class="{% cycle 'odd' 'even' %}{% if app.has_confirmed %} confirmed{% endif %}">
+	<td>{{ forloop.counter }}</td>
+	<td><a href="{% url review-show-app app.id %}">{{ app }}</a></td>
+	{% if app.has_confirmed %}
+	  <td>ชำระเงินยืนยันสิทธิ์แล้ว</td>
+        {% else %}
+	  <td></td>
+	{% endif %}
+      </tr>
+    {% empty %}
+      <tr>
+	<td></td>
+	<td>ยังไม่มี</td>
+	<td></td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endfor %}
+
+{% endblock %}

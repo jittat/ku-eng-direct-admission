@@ -264,6 +264,67 @@ def index(request):
                                 'notice': notice })
 
 
+@login_required
+def list_confirmed_applicants(request, major_number):
+    major = Major.objects.get(number=major_number)
+    adm_round = AdmissionRound.get_recent()
+
+    results = (AdmissionResult.
+               objects.
+               filter(round_number=adm_round.number).
+               filter(admitted_major=major).
+               select_related(depth=1).
+               all())
+
+    applicants = [r.applicant for r in results]
+    app_dict = dict([(r.applicant_id,r.applicant) for r in results])
+
+    adm_major_pref = (AdmissionMajorPreference.
+                      objects.
+                      filter(round_number=adm_round.number).
+                      filter(applicant__in=applicants))
+
+    # confirmation statistics
+    confirmations = (AdmissionConfirmation.
+                     objects.
+                     filter(applicant__in=applicants))
+
+    for a in applicants:
+        a.confirmed_amount = 0
+    for c in confirmations:
+        if c.applicant_id in app_dict:
+            app_dict[c.applicant_id].confirmed_amount += c.paid_amount
+
+    for a in applicants:
+        a.has_confirmed = (a.confirmed_amount >= major.confirmation_amount)
+
+    confirmed_applicants = [[],[],[],[]]
+    for p in adm_major_pref:
+        t = p.get_pref_type().ptype - 1
+        confirmed_applicants[t].append(app_dict[p.applicant_id])
+
+    for t in range(4):
+        confirmed_applicants[t] = sorted(confirmed_applicants[t],
+                                         cmp=lambda x,y: cmp(-x.confirmed_amount, -y.confirmed_amount))
+        
+
+    titles = [u'ไม่ขอเลื่อนอันดับ',
+              u'ยืนยันสิทธิ์ ขอพิจารณาเลื่อนอันดับ ถ้าไม่ได้เลื่อนขอรักษาสิทธิ์',
+              u'ยืนยันสิทธิ์ ขอพิจารณาเลื่อนอันดับ ถ้าไม่ได้เลื่อนขอสละสิทธิ์',
+              u'สละสิทธิ์']
+
+    return render_to_response('confirmation/list_applicants.html',
+                              { 'admisison_round': adm_round,
+                                'major': major,
+                                'confirmed_apps_groups':
+                                    zip(titles, confirmed_applicants),
+                                'results': results })
+    
+
+
+##############################################
+
+
 def get_confirming_apps_with_majors():
     majors = Major.get_all_majors()
     confirmations = AdmissionConfirmation.objects.select_related(depth=1).all() 
