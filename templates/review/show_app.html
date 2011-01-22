@@ -6,7 +6,7 @@
 
 {% block regis-body %}
   <b>ผู้สมัคร:</b> {{ applicant.full_name }} | 
-  <b>หมายเลขประจำตัว:</b> {{ applicant.ticket_number }} | 
+  <b>หมายเลขประชาชน:</b> {{ applicant.national_id }} | 
   <b>ยื่นเมื่อ:</b> {{ submission_info.submitted_at|date }} |
   {% if submission_info.is_paid %}<b>ชำระเงินแล้ว</b>{% else %}<b>ยังไม่ได้ชำระเงิน</b>{% endif %}<br/>
 

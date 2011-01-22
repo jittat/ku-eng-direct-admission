@@ -24,7 +24,7 @@
   {% for stat in pref_stat %}
     <tr class="{% cycle 'odd' 'even' %}">
       <td>{{ stat.major.number }}</td>
-      <td>{{ stat.major }}</td>
+      <td>{{ stat.major.name }}</td>
       {% for s in stat.pref_counts %}
         <td>{{ s.0 }}</td>
         <td><b>{{ s.1 }}</b></td>
