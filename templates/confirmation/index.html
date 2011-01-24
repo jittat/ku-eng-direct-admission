@@ -20,6 +20,9 @@
     <th colspan="2" width="10%">เลื่อนได้</th>
     <th colspan="2" width="10%">เลื่อนเท่านั้น</th>
     <th colspan="2" width="10%">สละสิทธิ์</th>
+    <th></th>
+    <th># เรียก</th>
+    <th># เข้าระบบ</th>
   </tr>
   {% for stat in pref_stat %}
     <tr class="{% cycle 'odd' 'even' %}">
@@ -31,6 +34,13 @@
         <td>{{ s.0 }}</td>
         <td><b>{{ s.1 }}</b></td>
       {% endfor %}
+      <td></td>
+      <td>
+	{{ stat.total_counts.0 }}
+      </td>
+      <td>
+	{{ stat.total_counts.1 }}
+      </td>
     </tr>
   {% endfor %}
 </table>
