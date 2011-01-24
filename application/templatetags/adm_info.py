@@ -24,6 +24,14 @@ def adm_submission_deadline_warning():
                 (round2_time_left.seconds/3600, 
                  round2_time_left.seconds%3600/60))
 
+    from result.models import AdmissionRound
+
+    admission_major_pref_time_left = AdmissionRound.time_to_recent_round_deadline()
+    if (admission_major_pref_time_left > timedelta(0)) and (admission_major_pref_time_left < timedelta(hours=3)):
+        return ('<div class="deadline-bar"><span class="deadline">เหลือเวลาอีก %d ชั่วโมง %d นาที ก่อนหมดเวลายืนยันสิทธิ์</span></div>' %
+                (admission_major_pref_time_left.seconds/3600, 
+                 admission_major_pref_time_left.seconds%3600/60))
+
     return ''
 
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
+
 from django.db import models
 
 from application.fields import IntegerListField
@@ -107,6 +109,18 @@ class AdmissionRound(models.Model):
             return rounds[0]
         else:
             return None
+
+    @staticmethod
+    def time_to_recent_round_deadline(now=None):
+        adm_round = AdmissionRound.get_recent()
+        if adm_round:
+            if now==None:
+                now = datetime.now()
+            last = adm_round.last_date
+            deadline = datetime(last.year, last.month, last.day)
+            return deadline - now + timedelta(1)
+        else:
+            return timedelta.max
 
     def __unicode__(self):
         return "Round %d" % self.number
