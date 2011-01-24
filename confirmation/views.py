@@ -254,13 +254,24 @@ def build_pref_stat(adm_round):
                           'pref_counts': pref_tab[int(m.number)]})
     return pref_stat
 
-
+def build_total_stat(pref_stat):
+    total_stat = {'total_counts': [0,0],
+                  'pref_counts': [[0,0],[0,0],[0,0],[0,0]]}
+    
+    for p in pref_stat:
+        total_stat['total_counts'][0] += p['total_counts'][0]
+        total_stat['total_counts'][1] += p['total_counts'][1]
+        for i in range(4):
+            for j in range(2):
+                total_stat['pref_counts'][i][j] += p['pref_counts'][i][j]
+    return total_stat
 
 @login_required
 def index(request):
     adm_round = AdmissionRound.get_recent()
 
     pref_stat = build_pref_stat(adm_round)
+    total_pref_stat = build_total_stat(pref_stat)
 
     if 'notice' in request.session:
         notice = request.session['notice']
@@ -270,6 +281,7 @@ def index(request):
 
     return render_to_response('confirmation/index.html',
                               { 'pref_stat': pref_stat,
+                                'total_pref_stat': total_pref_stat,
                                 'admission_round': adm_round,
                                 'notice': notice })
 
