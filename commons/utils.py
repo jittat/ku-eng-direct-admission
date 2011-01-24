@@ -92,16 +92,9 @@ def round2_confirmation_deadline_passed():
 def admission_major_pref_deadline_passed():
     from result.models import AdmissionRound
 
-    current_round = AdmissionRound.get_recent()
-    if not current_round:
-        return False
-    
-    deadline = (datetime(current_round.last_date.year,
-                         current_round.last_date.month,
-                         current_round.last_date.day) +
-                timedelta(1))
+    time_to_deadline = AdmissionRound.time_to_recent_round_deadline()
 
-    return datetime.now() >= deadline
+    return time_to_deadline <= timedelta(0)
         
 
 def admin_email():

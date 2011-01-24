@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from random import randint
+from datetime import timedelta
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -97,6 +98,8 @@ def index(request):
     else:
         recent_confirmation = None
 
+    is_confirmation_time_left = (AdmissionRound.time_to_recent_round_deadline() > timedelta(0))
+
     return render_to_response("application/status/index.html",
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
@@ -110,6 +113,7 @@ def index(request):
                                 'additional_payment': additional_payment,
 
                                 'current_round': current_round,
+                                'is_confirmation_time_left': is_confirmation_time_left,
                                 'random_seed': random_seed,
                                 'notice': notice,
                                 'can_log_out': True })

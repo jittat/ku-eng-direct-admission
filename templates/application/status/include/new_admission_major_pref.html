@@ -11,11 +11,15 @@
 </p>
 
 <center>
-  <a href="{% url confirmation-pref %}">
-    <div class="button medium">
-      เข้าสู่ระบบยืนยันสิทธิ์ เพื่อเลือกสาขาที่เข้ารับพิจารณา
-    </div>
-  </a>
+  {% if is_confirmation_time_left %}
+    <a href="{% url confirmation-pref %}">
+      <div class="button medium">
+        เข้าสู่ระบบยืนยันสิทธิ์ เพื่อเลือกสาขาที่เข้ารับพิจารณา
+      </div>
+    </a>
+  {% else %}
+    <b>เวลายืนยันสิทธิ์ในรอบนี้หมดแล้ว</b>
+  {% endif %}
 </center>
 
 <p>

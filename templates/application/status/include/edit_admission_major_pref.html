@@ -39,14 +39,16 @@
   {% endif %}
 {% endif %}
 
-<p>
-  คุณสามารถเปลี่ยนการเลือกของคุณได้ในรอบนี้ได้ ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554
-</p>
+{% if is_confirmation_time_left %}
+  <p>
+    คุณสามารถเปลี่ยนการเลือกของคุณได้ในรอบนี้ได้ ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554
+  </p>
 
-<center>
-  <a href="{% url confirmation-pref %}">
-    <div class="button-blue medium">เปลี่ยนการเลือก</div>
-  </a>
-</center>
+  <center>
+    <a href="{% url confirmation-pref %}">
+      <div class="button-blue medium">เปลี่ยนการเลือก</div>
+    </a>
+  </center>
+{% endif %}
 
 </div>
