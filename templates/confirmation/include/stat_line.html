@@ -1,0 +1,20 @@
+{% if stat.major %}
+  <td>{{ stat.major.number }}</td>
+  <td>
+    <a href="{% url confirmation-list-applicants stat.major.number %}">{{ stat.major.name }}</a>
+  </td>
+{% else %}
+  <td></td>
+  <td><b>รวม</b></td>
+{% endif %}
+{% for s in stat.pref_counts %}
+  <td>{{ s.0 }}</td>
+  <td><b>{{ s.1 }}</b></td>
+{% endfor %}
+<td></td>
+<td>
+  {{ stat.total_counts.0 }}
+</td>
+<td>
+  {{ stat.total_counts.1 }}
+</td>

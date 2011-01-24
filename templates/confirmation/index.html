@@ -26,38 +26,12 @@
   </tr>
   {% for stat in pref_stat %}
     <tr class="{% cycle 'odd' 'even' %}">
-      <td>{{ stat.major.number }}</td>
-      <td>
-	<a href="{% url confirmation-list-applicants stat.major.number %}">{{ stat.major.name }}</a>
-      </td>
-      {% for s in stat.pref_counts %}
-        <td>{{ s.0 }}</td>
-        <td><b>{{ s.1 }}</b></td>
-      {% endfor %}
-      <td></td>
-      <td>
-	{{ stat.total_counts.0 }}
-      </td>
-      <td>
-	{{ stat.total_counts.1 }}
-      </td>
+      {% include "confirmation/include/stat_line.html" %}
     </tr>
   {% endfor %}
   <tr>
-    <td></td>
-    <td><b>รวม</b></td>
     {% with total_pref_stat as stat %}
-      {% for s in stat.pref_counts %}
-        <td>{{ s.0 }}</td>
-        <td><b>{{ s.1 }}</b></td>
-      {% endfor %}
-      <td></td>
-      <td>
-	{{ stat.total_counts.0 }}
-      </td>
-      <td>
-	{{ stat.total_counts.1 }}
-      </td>    
+      {% include "confirmation/include/stat_line.html" %}
     {% endwith %}
   </tr>
 </table>
