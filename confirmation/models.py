@@ -13,6 +13,9 @@ class AdmissionMajorPreference(models.Model):
 
     ptype = models.IntegerField(default=0)
 
+    class Meta:
+        ordering = ['-round_number']
+
     class PrefType():
         PREF_NO_MOVE = 1
         PREF_MOVE_UP_INCLUSIVE = 2
@@ -147,6 +150,9 @@ class AdmissionConfirmation(models.Model):
 
     class Meta:
         ordering = ['-confirmed_at']
+
+
+# -------------------- NOT USED ------------------------
 
 class Round2ApplicantConfirmation(models.Model):
     applicant = models.OneToOneField(Applicant, related_name='round2_confirmation')
