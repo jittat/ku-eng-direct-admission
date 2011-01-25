@@ -174,7 +174,7 @@ DEFAULT_RESULT_SET_NAME = 'eligible'
 SHOW_ADMISSION_RESULTS = False
 SHOW_FINAL_ADMISSION_RESULTS = False
 
-CONFIRMATION_HASH_MAGIC = 'confirm'
+CONFIRMATION_HASH_MAGIC = 'confr2'
 
 try:
     from settings_local import *

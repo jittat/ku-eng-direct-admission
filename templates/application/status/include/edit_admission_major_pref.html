@@ -2,6 +2,9 @@
 
 <div class="light-frame">
 <p>
+  {% if is_adm_major_pref_copied_from_prev_round %}
+    ระบบได้คัดลอกการเลือกสาขาวิชาที่ต้องการเข้ายืนยันสิทธิ์ในรอบก่อนที่คุณได้เลือกไว้<br/>
+  {% endif %}
   สำหรับการคัดเลือกในรอบที่ {{ current_round.number }} คุณได้เลือก: 
   <b>{{ admission_major_pref.get_display }}</b><br/>
 </p>
@@ -18,10 +21,10 @@
       <h2>การยืนยันสิทธิ์ของคุณยังไม่สมบูรณ์</h2>
 
       {% if recent_confirmation %}
-        <p>คุณได้ชำระเงินค่ายืนยันสิทธิ์สำหรับรอบ {{ recent_confirmation.round_number }} แล้ว และเราได้รับข้อมูลเมื่อวันที่ {{ recent_confirmation.confirmed_at|date:"d F" }} 2554 แล้ว อย่างไรก็ตาม สำหรับการเข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} คุณจะต้องชำระเงินเพิ่ม {{ additional_payment|intcomma }} บาท</p>
+        <p>คุณได้ชำระเงินค่ายืนยันสิทธิ์สำหรับรอบ {{ recent_confirmation.round_number }} แล้ว และเราได้รับข้อมูลเมื่อวันที่ {{ recent_confirmation.confirmed_at|date:"d F" }} 2554 แล้ว อย่างไรก็ตาม <b>สำหรับการเข้าศึกษาต่อในสาขา {{ admission_result.admitted_major.name }} คุณจะต้องชำระเงินเพิ่ม {{ additional_payment|intcomma }} บาท</b></p>
       {% endif %}
 
-      การยืนยันสิทธิ์จะยังไม่สมบูรณ์จนกว่าคุณจะได้ไปชำระเงินค่ายืนยันสิทธิ์สำหรับสาขา {{ admission_result.admitted_major.name }} เป็นเงินทั้งสิ้น {{ admission_result.admitted_major.confirmation_amount|intcomma }} บาท ที่ธนาคารไทยพาณิชย์ <b>ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554</b>  ถ้าคุณไม่ได้ไปชำระเงินภายในวันดังกล่าว จะถือว่าคุณสละสิทธิ์ &nbsp;&nbsp; <b>เมื่อคุณยืนยันสิทธิ์แล้ว ทางคณะจะส่งรายชื่อไปยัง สกอ. เพื่อตัดสิทธิ์การสอบระบบกลางต่อไป</b> (อ่านรายละเอียดด้านล่าง)
+      การยืนยันสิทธิ์จะยังไม่สมบูรณ์จนกว่าคุณจะได้ไปชำระเงินค่ายืนยันสิทธิ์สำหรับสาขา {{ admission_result.admitted_major.name }} เป็นเงินรวมทั้งสิ้น {{ admission_result.admitted_major.confirmation_amount|intcomma }} บาท ที่ธนาคารไทยพาณิชย์ <b>ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554</b>  ถ้าคุณไม่ได้ไปชำระเงินภายในวันดังกล่าว จะถือว่าคุณสละสิทธิ์ &nbsp;&nbsp; <b>เมื่อคุณยืนยันสิทธิ์แล้ว ทางคณะจะส่งรายชื่อไปยัง สกอ. เพื่อตัดสิทธิ์การสอบระบบกลางต่อไป</b> (อ่านรายละเอียดด้านล่าง)
     </p>
     <center>
       <a href="{% url status-confirm-ticket %}?{{ random_seed }}">

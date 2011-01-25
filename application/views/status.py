@@ -25,7 +25,7 @@ from application.forms import StatusRequestForm
 
 from review.models import ReviewFieldResult
 from result.models import AdmissionResult, AdmissionRound
-from confirmation.models import Round2ApplicantConfirmation
+from confirmation.models import Round2ApplicantConfirmation, AdmissionMajorPreference
 
 def prepare_exam_scores(applicant):
     try:
@@ -55,6 +55,17 @@ def prepare_exam_scores(applicant):
              'final_score': final_score }
         
 
+def copy_previous_adm_major_pref(prev_pref,
+                                 applicant,
+                                 admitted_major,
+                                 round_number):
+    new_pref = AdmissionMajorPreference.new_for_applicant(applicant, 
+                                                          prev_pref.is_accepted_list)
+    new_pref.round_number = round_number
+    new_pref.set_ptype_cache(save=False)
+    return new_pref
+
+
 @submitted_applicant_required
 def index(request):
     notice = ''
@@ -67,18 +78,41 @@ def index(request):
 
     applicant = request.applicant
 
+    admission_result = None
+    admission_major_pref = None
+    admitted_major = None
+    latest_admission_major_pref = None
+    latest_admission_result = None
+    is_adm_major_pref_copied_from_prev_round = False
+
     current_round = AdmissionRound.get_recent()
     if current_round:
         admission_result = applicant.get_latest_admission_result()
         admission_major_pref = applicant.get_admission_major_preference(current_round.number)
+
+        if not admission_major_pref:
+            all_major_prefs = list(applicant.admission_major_preferences.all())
+            if len(all_major_prefs)>0:
+                latest_admission_major_pref = all_major_prefs[0]
+
+                if admission_result:
+                    # accepted, copy previous pref
+                    admission_major_pref = copy_previous_adm_major_pref(
+                        latest_admission_major_pref, 
+                        applicant,
+                        admitted_major,
+                        current_round.number)
+                    admission_major_pref.save()
+                    is_adm_major_pref_copied_from_prev_round = True
+
         if admission_result:
             admitted_major = admission_result.admitted_major
-        else:
-            admitted_major = None
-    else:
-        admission_result = None
-        admission_major_pref = None
-        admitted_major = None
+        
+
+        if not admission_result:
+            results = applicant.admission_results.all()
+            if len(results)>0:
+                latest_admission_result = results[len(results)-1]
 
     confirmations = applicant.admission_confirmations.all()
     total_amount_confirmed = sum([c.paid_amount for c in confirmations])
@@ -104,7 +138,13 @@ def index(request):
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
                                 'admission_result': admission_result,
+                                'latest_admission_result':
+                                    latest_admission_result,
                                 'admission_major_pref': admission_major_pref,
+                                'latest_admission_major_pref':
+                                    latest_admission_major_pref,
+                                'is_adm_major_pref_copied_from_prev_round':
+                                    is_adm_major_pref_copied_from_prev_round,
 
                                 'confirmation_complete': confirmation_complete,
                                 'recent_confirmation': recent_confirmation,
@@ -189,6 +229,14 @@ def show_ticket(request):
                                 'form_step_info': form_step_info })
 
 
+AMOUNT_STRINGS = {0: u'ศูนย์บาทถ้วน',
+                  16000: u'หนึ่งหมื่นหกพันบาทถ้วน',
+                  20700: u'สองหมื่นเจ็ดร้อยบาทถ้วน',
+                  24000: u'สองหมื่นสี่พันบาทถ้วน',
+                  36700: u'สามหมื่นหกพันเจ็ดร้อยบาทถ้วน',
+                  44700: u'สี่หมื่นสี่พันเจ็ดร้อยบาทถ้วน',
+                  60700: u'หกหมื่นเจ็ดร้อยบาทถ้วน'}
+
 @submitted_applicant_required
 def confirmation_ticket(request):
     applicant = request.applicant
@@ -208,10 +256,17 @@ def confirmation_ticket(request):
     if not admission_pref:
         raise Http404
 
-    amount = admission_result.admitted_major.confirmation_amount
-    amount_str = {16000: u'หนึ่งหมื่นหกพันบาทถ้วน',
-                  36700: u'สามหมื่นหกพันเจ็ดร้อยบาทถ้วน',
-                  60700: u'หกหมื่นเจ็ดร้อยบาทถ้วน'}[amount]
+    confirmations = applicant.admission_confirmations.all()
+    total_amount_confirmed = sum([c.paid_amount for c in confirmations])
+
+    amount = admission_result.admitted_major.confirmation_amount - total_amount_confirmed
+    if amount < 0:
+        amount = 0
+
+    if amount in AMOUNT_STRINGS:
+        amount_str = AMOUNT_STRINGS[amount]
+    else:
+        amount_str = str(amount)
 
     deadline = current_round.last_date
     msg = u'ยืนยันสิทธิ์การเข้าศึกษาต่อในสาขา' + admission_result.admitted_major.name

@@ -55,7 +55,7 @@ class AdmissionMajorPreference(models.Model):
                       4: PrefType.WITHDRAWN }
 
     @staticmethod
-    def new_for_applicant(applicant):
+    def new_for_applicant(applicant, prev_accepted_list=None):
         pref = AdmissionMajorPreference()
         pref.applicant = applicant
         admission_result = applicant.get_latest_admission_result()
@@ -70,7 +70,10 @@ class AdmissionMajorPreference(models.Model):
         alist = [0] * mcount
         i = 0
         while (i < mcount) and (majors[i].id != admitted_major.id):
-            alist[i] = 1
+            if prev_accepted_list!=None:
+                alist[i] = prev_accepted_list[i]
+            else:
+                alist[i] = 1
             i += 1
         if i < mcount:   # for admitted major
             alist[i] = 1
