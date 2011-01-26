@@ -23,7 +23,11 @@ urlpatterns = patterns(
     url(r'^confirm-second-round/$', 'show_confirmation_second_round', name='confirmation-second'),
     url(r'^confirm-second-round-admin/(\d+)/$', 'admin_show_confirmation_second_round', name='confirmation-second-admin'),
 
+
     url(r'^pref/$', 'pref', name='confirmation-pref'),
+    url(r'^registration/$', 'student_registration', name='confirmation-student-registration'),
+
+
     url(r'^info/(\d+)/$', 'interview_info', name='confirmation-info'),
 
     url(r'^list/(.*?)/?$', confirmation_resource),

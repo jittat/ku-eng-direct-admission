@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect, Htt
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from commons.decorators import submitted_applicant_required
 from commons.utils import admission_major_pref_deadline_passed, round2_confirmation_deadline_passed
@@ -11,7 +11,7 @@ from commons.models import Log
 from application.models import Applicant, SubmissionInfo, Major, Education, PersonalInfo
 from result.models import NIETSScores, AdmissionResult, AdmissionRound
 
-from models import AdmissionMajorPreference, AdmissionConfirmation, Round2ApplicantConfirmation
+from models import AdmissionMajorPreference, AdmissionConfirmation, Round2ApplicantConfirmation, StudentRegistration
 
 from django import forms
 from django.forms import ModelForm
@@ -147,6 +147,38 @@ def pref(request):
                                 'admission_pref': admission_pref,
                                 'pref_type': pref_type,
                                 'form_check_message': form_check_message })
+
+
+class StudentRegistrationForm(ModelForm):
+    class Meta:
+        model = StudentRegistration
+        exclude = ('applicant')
+
+@submitted_applicant_required
+def student_registration(request):
+    applicant = request.applicant
+    admitted = applicant.is_admitted()
+
+    if not admitted:
+        raise Http404
+
+    registration = applicant.get_student_registration()
+
+    if request.method=='POST':
+        form = StudentRegistrationForm(request.POST,
+                                       instance=registration)
+        if form.is_valid():
+            registration = form.save(commit=False)
+            registration.applicant = applicant
+            registration.save()
+            return redirect('status-index')
+    else:
+        form = StudentRegistrationForm(instance=registration)
+
+    return render_to_response('confirmation/student_registration.html',
+                              { 'applicant': applicant,
+                                'form': form })
+
 
 def get_best_scores(applicant):
     try:

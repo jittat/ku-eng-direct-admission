@@ -231,6 +231,15 @@ class Applicant(models.Model):
         else:
             return None
     
+    def get_student_registration(self):
+        from confirmation.models import StudentRegistration
+        try:
+            reg = self.student_registration
+            return reg
+        except StudentRegistration.DoesNotExist:
+            return None
+            
+
     def get_applicant_docs_or_none(self):
         result = self.check_related_model('appdocs')
         if (result!=None) and (result==0):

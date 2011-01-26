@@ -1,0 +1,66 @@
+{% extends "commons/base.html" %}
+
+{% load adm_info %}
+
+{% block title %}ข้อมูลเพื่อการลงทะเบียนเป็นนิสิต{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" type="text/css" href="{% load adm_media %}{% media_url %}/css/front.css" />
+<script type="text/javascript" src="{% media_url %}/js/jquery.js"></script>
+{% endblock %}
+
+{% block body %}
+  {% load adm_steps %}{% step_bar "กรอกข้อมูลเพื่อการขึ้นทะเบียนเป็นนิสิตใหม่" %}
+
+  <div class="normal-msg" style="margin-top:2px">
+    <small>
+      กรุณากรอกข้อมูลด้านล่างให้ครบถ้วน 
+      ข้อมูลดังกล่าวจะถูกส่งให้กับหน่วยทะเบียนและประมวลผล มหาวิทยาลัยเกษตรศาสตร์ 
+      เพื่อขึ้นทะเบียนเป็นนิสิตใหม่
+    </small>
+  </div>
+  <form class="light-frame" action="" method="post">
+    <p>
+      <b>ข้อมูลส่วนตัว:</b>
+      {{ form.english_first_name.label }}: {{ form.english_first_name }}
+      {{ form.english_first_name.errors }}
+      {{ form.english_last_name.label }}:  {{ form.english_last_name }}
+      {{ form.english_last_name.errors }}<br/>
+      เลข Passport (ถ้ามี): {{ form.passport_number }}
+      {{ form.passport_number.errors }}
+    </p>
+    <p>
+      {{ form.religion.label }}: {{ form.religion }} 
+      {{ form.religion.errors }}
+    </p>
+    <p>
+      {{ form.birth_place.label }}: {{ form.birth_place }} 
+      {{ form.birth_place.errors }}<br/>
+      {{ form.home_phone_number.label }}: {{ form.home_phone_number }}
+      {{ form.home_phone_number.errors }}
+      {{ form.cell_phone_number.label }}: {{ form.cell_phone_number }}
+      {{ form.cell_phone_number.errors }}
+    </p>
+    <p>
+      <b>ข้อมูลบิดา:</b>
+      คำนำหน้า {{ form.father_title }} 
+      ชื่อ: {{ form.father_first_name }} {{ form.father_first_name.errors }}
+      นามสกุล: {{ form.father_last_name }} {{ form.father_last_name.errors }}<br/>
+      หมายเลขบัตรประจำตัวประชาชนบิดา: {{ form.father_national_id }} 
+      {{ form.father_national_id.errors }}
+    </p>
+    <p>
+      <b>ข้อมูลมารดา:</b>
+      คำนำหน้า {{ form.mother_title }} 
+      ชื่อ: {{ form.mother_first_name }} {{ form.mother_first_name.errors }}
+      นามสกุล: {{ form.mother_last_name }} {{ form.mother_last_name.errors }}<br/>
+      หมายเลขบัตรประจำตัวประชาชนมารดา: {{ form.mother_national_id }} 
+      {{ form.mother_national_id.errors }}
+    </p>
+    <div class="submission-bar">
+      <input type="submit" name="submit" value="เก็บข้อมูล"/>
+      <input type="submit" name="cancel" value="ยกเลิก"/>
+    </div>
+
+  </form>
+{% endblock %}

@@ -157,6 +157,55 @@ class AdmissionConfirmation(models.Model):
     class Meta:
         ordering = ['-confirmed_at']
 
+TITLE_CHOICES = [
+    ('','--'),
+    (u'นาย', u'นาย'),
+    (u'น.ส.', u'น.ส.'),
+    (u'นาง', u'นาง'),
+    ]
+
+class StudentRegistration(models.Model):
+    applicant = models.OneToOneField(Applicant,
+                                    related_name='student_registration')
+
+    passport_number = models.CharField(max_length=40,
+                                       verbose_name=u'เลข Passport',
+                                       blank=True)
+    english_first_name = models.CharField(max_length=200,
+                                          verbose_name=u'ชื่อ (ภาษาอังกฤษ)')
+    english_last_name = models.CharField(max_length=300,
+                                         verbose_name=u'นามสกุล (ภาษาอังกฤษ)')
+    religion = models.CharField(max_length=50,
+                                verbose_name=u'ศาสนา')
+    birth_place = models.CharField(max_length=100,
+                                   verbose_name=u'ภูมิลำเนาเกิด')
+    home_phone_number = models.CharField(max_length=50,
+                                         verbose_name=u'เบอร์โทรศัพท์บ้าน',
+                                         blank=True)
+    cell_phone_number = models.CharField(max_length=50,
+                                         verbose_name=u'เบอร์โทรศัพท์มือถือ',
+                                         blank=True)
+    father_title = models.CharField(max_length=10,
+                                    choices=TITLE_CHOICES,
+                                    verbose_name="คำนำหน้าชื่อบิดา")
+    father_first_name = models.CharField(max_length=200,
+                                         verbose_name=u'ชื่อบิดา')
+    father_last_name = models.CharField(max_length=300,
+                                        verbose_name=u'นามสกุลบิดา')
+    father_national_id = models.CharField(max_length=20,
+                                          verbose_name=u'เลขบัตรประชาชนบิดา')
+
+    mother_title = models.CharField(max_length=10,
+                                    choices=TITLE_CHOICES,
+                                    verbose_name="คำนำหน้าชื่อมารดา")
+    mother_first_name = models.CharField(max_length=200,
+                                         verbose_name=u'ชื่อมารดา')
+    mother_last_name = models.CharField(max_length=300,
+                                        verbose_name=u'นามสกุลมารดา')
+    mother_national_id = models.CharField(max_length=20,
+                                          verbose_name=u'เลขบัตรประชาชนมารดา')
+
+
 
 # -------------------- NOT USED ------------------------
 

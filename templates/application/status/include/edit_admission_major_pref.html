@@ -42,6 +42,8 @@
   {% endif %}
 {% endif %}
 
+{% include "application/status/include/student_registration_link.html" %}
+
 {% if is_confirmation_time_left %}
   <p>
     คุณสามารถเปลี่ยนการเลือกของคุณได้ในรอบนี้ได้ ภายในวันที่ {{ current_round.last_date|date:"d F" }} 2554

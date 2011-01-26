@@ -84,6 +84,7 @@ def index(request):
     latest_admission_major_pref = None
     latest_admission_result = None
     is_adm_major_pref_copied_from_prev_round = False
+    student_registration = None
 
     current_round = AdmissionRound.get_recent()
     if current_round:
@@ -107,10 +108,10 @@ def index(request):
 
         if admission_result:
             admitted_major = admission_result.admitted_major
-        
+            student_registration = applicant.get_student_registration()
 
         if not admission_result:
-            results = applicant.admission_results.all()
+            results = applicant.admission_results.filter(round_number__lte=current_round.number).all()
             if len(results)>0:
                 latest_admission_result = results[len(results)-1]
 
@@ -151,6 +152,9 @@ def index(request):
                                 'confirmations': confirmations,
                                 'total_amount_confirmed': total_amount_confirmed,
                                 'additional_payment': additional_payment,
+
+                                'student_registration':
+                                    student_registration,
 
                                 'current_round': current_round,
                                 'is_confirmation_time_left': is_confirmation_time_left,
