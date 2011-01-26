@@ -86,9 +86,14 @@ def index(request):
     is_adm_major_pref_copied_from_prev_round = False
     student_registration = None
 
+    first_admission = False
+
     current_round = AdmissionRound.get_recent()
     if current_round:
         admission_result = applicant.get_latest_admission_result()
+
+        first_admission = (applicant.admission_results.count() == 1)
+
         admission_major_pref = applicant.get_admission_major_preference(current_round.number)
 
         if not admission_major_pref:
@@ -104,7 +109,6 @@ def index(request):
                         admitted_major,
                         current_round.number)
                     admission_major_pref.save()
-                    is_adm_major_pref_copied_from_prev_round = True
 
         if admission_result:
             admitted_major = admission_result.admitted_major
@@ -139,6 +143,7 @@ def index(request):
                               { 'applicant': request.applicant,
                                 'submission_info': submission_info,
                                 'admission_result': admission_result,
+                                'first_admission': first_admission,
                                 'latest_admission_result':
                                     latest_admission_result,
                                 'admission_major_pref': admission_major_pref,

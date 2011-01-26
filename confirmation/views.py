@@ -70,6 +70,10 @@ def pref(request):
     if not admitted:
         raise Http404
 
+    first_admission = (applicant.admission_results.count() == 1)
+    if not first_admission:
+        raise Http404
+
     # check for deadline
     if admission_major_pref_deadline_passed():
         return render_to_response('confirmation/pref_deadline_passed.html')
