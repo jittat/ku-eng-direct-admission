@@ -5,8 +5,8 @@
 {% else %}
   {% if recent_confirmation and latest_admission_major_pref.get_pref_type.is_move_up_strict %}
     คุณไม่ผ่านการคัดเลือกในรอบที่ {{ current_round.number }} 
-    อย่างไรก็ตาม เนื่องจากคุณได้ยืนยันสิทธิ์ไว้ในรอบการคัดเลือกก่อน คุณจึงยังมีสิทธิ์เข้ารับการพิจารณาในรอบถัด ๆ ไป กรุณากลับมาตรวจสอบผลในรอบต่อไปเพื่อรักษาสิทธิ์การเข้าศึกษาต่อของคุณ
-  <a href="http://admission.eng.ku.ac.th/information/2554/direct/how-to-not-accepted">อ่านรายละเอียดเกี่ยวกับรอบการประกาศผลเพิ่มเติมที่นี่</a>
+    อย่างไรก็ตาม เนื่องจากคุณได้ยืนยันสิทธิ์ไว้ในรอบการคัดเลือกก่อน <b>คุณจึงยังมีสิทธิ์เข้ารับการพิจารณาในรอบถัด ๆ ไป</b> กรุณากลับมาตรวจสอบผลในรอบต่อไปเพื่อรักษาสิทธิ์การเข้าศึกษาต่อของคุณ
+  <a href="http://admission.eng.ku.ac.th/information/2554/direct/how-to-strict-choice">อ่านรายละเอียดเกี่ยวกับรอบการประกาศผลเพิ่มเติมที่นี่</a>
   {% else %}
     {% if latest_admission_major_pref.get_pref_type.is_withdrawn %}
       คุณได้สละสิทธิ์การเข้าศึกษาต่อผ่านทางโครงการรับตรง ในการคัดเลือกรอบที่ {{ latest_admission_major_pref.round_number }} แล้ว
