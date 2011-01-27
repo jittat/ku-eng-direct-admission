@@ -2,11 +2,18 @@
 
 <div class="light-frame">
 <p>
-  {% if is_adm_major_pref_copied_from_prev_round %}
+  {% if not first_admission %}
     ระบบได้คัดลอกการเลือกสาขาวิชาที่ต้องการเข้ายืนยันสิทธิ์ในรอบก่อนที่คุณได้เลือกไว้<br/>
   {% endif %}
   สำหรับการคัดเลือกในรอบที่ {{ current_round.number }} คุณได้เลือก: 
   <b>{{ admission_major_pref.get_display }}</b><br/>
+  {% if admission_major_pref.get_pref_type.is_move_up_inclusive or admission_major_pref.get_pref_type.is_move_up_strict %}
+    โดยสาขาที่คุณขอเข้ารับการพิจารณาคือ:
+    {% for m in accepting_majors %}
+      {% if forloop.last %}และ{% endif %}
+      {{ m.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  {% endif %}
 </p>
 
 {% if not admission_major_pref.is_withdrawn %}

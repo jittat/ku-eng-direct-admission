@@ -90,8 +90,8 @@ class AdmissionMajorPreference(models.Model):
         return (admission_result) and (admission_result.is_admitted)
 
 
-    def get_accepted_majors(self):
-        if not self.is_applicant_admitted():
+    def get_accepted_majors(self,check_admitted=True):
+        if check_admitted and (not self.is_applicant_admitted()):
             return []
         majors = self.applicant.preference.get_major_list()
         accepted_majors = [m 
