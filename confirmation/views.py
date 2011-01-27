@@ -252,6 +252,7 @@ def build_pref_stat(adm_round):
 
     majors = Major.objects.all()
 
+    major_dict = dict([(m.id,m) for m in majors])
     major_number_dict = dict([(m.id,int(m.number)) for m in majors])
 
     pref_tab = {} #dict([(int(m.number),[]) for m in majors])
@@ -262,10 +263,18 @@ def build_pref_stat(adm_round):
         for i in range(4):
             pref_tab[int(m.number)].append([0,0])
 
-    confirmed_app = set([c.applicant_id 
-                         for c in
-                         AdmissionConfirmation.objects.filter(round_number=adm_round.number).all()])
+    confirm_amount = {}
+    for c in AdmissionConfirmation.objects.all():
+        if c.applicant_id not in confirm_amount:
+            confirm_amount[c.applicant_id] = 0
+        confirm_amount[c.applicant_id] += c.paid_amount
 
+    confirmed_app = set()
+
+    for app_id, r in app_results.items():
+        m = major_dict[r.admitted_major_id]
+        if (app_id in confirm_amount) and (confirm_amount[app_id] >= m.confirmation_amount):
+            confirmed_app.add(app_id)
 
     for p in adm_major_prefs:
         app_id = p.applicant_id
