@@ -11,6 +11,8 @@ class AdmissionMajorPreference(models.Model):
     round_number = models.IntegerField(default=0)
     is_accepted_list = IntegerListField()
 
+    is_nomove_request = models.BooleanField(default=False)
+
     ptype = models.IntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)

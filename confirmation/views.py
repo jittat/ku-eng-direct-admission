@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
@@ -63,16 +63,47 @@ def update_admission_major_preference(pref, applicant,
     return pref
 
 @submitted_applicant_required
+def request_nomove(request, is_nomove):
+    applicant = request.applicant
+    admitted = applicant.is_admitted()
+
+    if not admitted:
+        return HttpResponseForbidden()
+
+    first_admission = (applicant.admission_results.count() == 1)
+    if first_admission:
+        return HttpResponseForbidden()
+    
+    if request.method != 'POST':
+        return HttpResponseForbidden()
+
+    # check for deadline
+    if admission_major_pref_deadline_passed():
+        return render_to_response('confirmation/pref_deadline_passed.html')
+
+    current_round = AdmissionRound.get_recent()
+    round_number = current_round.number
+    admission_pref = applicant.get_admission_major_preference(round_number)
+
+    if not admission_pref:
+        return HttpResponseForbidden()
+
+    admission_pref.is_nomove_request = is_nomove
+    admission_pref.save()
+    return redirect('status-index')
+    
+
+@submitted_applicant_required
 def pref(request):
     applicant = request.applicant
     admitted = applicant.is_admitted()
 
     if not admitted:
-        raise Http404
+        return HttpResponseForbidden()
 
     first_admission = (applicant.admission_results.count() == 1)
     if not first_admission:
-        raise Http404
+        return HttpResponseForbidden()
 
     # check for deadline
     if admission_major_pref_deadline_passed():

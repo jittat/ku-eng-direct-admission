@@ -25,6 +25,13 @@ urlpatterns = patterns(
 
 
     url(r'^pref/$', 'pref', name='confirmation-pref'),
+    url(r'^pref-nomove/$', 'request_nomove', 
+        {'is_nomove': True },
+        name='confirmation-nomove-request'),
+    url(r'^pref-nomove-cancel/$', 'request_nomove', 
+        {'is_nomove': False },
+        name='confirmation-nomove-cancel'),
+
     url(r'^registration/$', 'student_registration', name='confirmation-student-registration'),
 
 
