@@ -32,7 +32,11 @@ def main():
         print "NAT NOT FOUND"
         quit()
 
-    result = applicant.get_latest_admission_result()
+    results = applicant.admission_results.filter(round_number=round_number).all()
+    if len(results)!=0:
+        result = results[0]
+    else:
+        result = None
     if result == None:
         print "ERROR (no admission result):", applicant, national_id
         quit()
