@@ -38,7 +38,7 @@ for applicantion_id in sorted(applicants.keys()):
     admission_major_prefs = AdmissionMajorPreference.objects.filter(applicant=applicant).all()
     if len(admission_major_prefs)!=0:
         a_mj_pref = admission_major_prefs[0]
-        majors = [int(m.number) for m in a_mj_pref.get_accepted_majors()]
+        majors = [int(m.number) for m in a_mj_pref.get_accepted_majors(check_admitted=False)]
     else:
         majors = applicant.preference.majors
 

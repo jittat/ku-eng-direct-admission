@@ -95,6 +95,8 @@ class AdmissionMajorPreference(models.Model):
     def get_accepted_majors(self,check_admitted=True):
         if check_admitted and (not self.is_applicant_admitted()):
             return []
+        if self.is_nomove_request:
+            return [self.applicant.get_latest_admission_result().admitted_major]
         majors = self.applicant.preference.get_major_list()
         accepted_majors = [m 
                            for a, m
