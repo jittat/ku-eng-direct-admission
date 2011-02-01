@@ -35,6 +35,14 @@ def main():
                     a,
                     latest_admission_major_pref.is_accepted_list))
             admission_major_pref.round_number = next_round
+
+            if latest_admission_major_pref.is_nomove_request:
+                majors = [m.id for m in a.preference.get_major_list()]
+                admitted_major = a.get_latest_admission_result().admitted_major
+                alist = [0] * len(majors)
+                alist[majors.index(admitted_major.id)] = 1
+                admission_major_pref.is_accepted_list = alist
+
             admission_major_pref.set_ptype_cache()
             print a.national_id, 'copied'
 

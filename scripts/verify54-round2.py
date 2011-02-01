@@ -1,8 +1,8 @@
 
-result_filename = '../data/assignment-round2.csv'
+result_filename = '../data/assignment-round3.csv'
 score_filename = '../data/query/all_scores/all-05jan.csv'
-pref_filename = '../data/major_pref_round1.csv'
-confirmation_filename = '../data/results_after_round1.csv'
+pref_filename = '../data/major_pref_round2-new.csv'
+confirmation_filename = '../data/combined_results.csv'
 
 def read_scores():
     scores = {}
