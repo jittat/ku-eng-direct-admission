@@ -29,11 +29,13 @@ def main():
 
         all_major_prefs = list(a.admission_major_preferences.all())
         if len(all_major_prefs)>0:
+            print a.national_id, 'copied'
             latest_admission_major_pref = all_major_prefs[0]
             admission_major_pref = (
                 AdmissionMajorPreference.new_for_applicant(
                     a,
-                    latest_admission_major_pref.is_accepted_list))
+                    latest_admission_major_pref.is_accepted_list,
+                    admission_result=r))
             admission_major_pref.round_number = next_round
 
             if latest_admission_major_pref.is_nomove_request:
@@ -44,7 +46,6 @@ def main():
                 admission_major_pref.is_accepted_list = alist
 
             admission_major_pref.set_ptype_cache()
-            print a.national_id, 'copied'
 
 if __name__ == '__main__':
     main()

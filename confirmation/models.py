@@ -57,10 +57,14 @@ class AdmissionMajorPreference(models.Model):
                       4: PrefType.WITHDRAWN }
 
     @staticmethod
-    def new_for_applicant(applicant, prev_accepted_list=None):
+    def new_for_applicant(applicant, 
+                          prev_accepted_list=None, 
+                          admission_result=None):
         pref = AdmissionMajorPreference()
         pref.applicant = applicant
-        admission_result = applicant.get_latest_admission_result()
+        if not admission_result:
+            admission_result = applicant.get_latest_admission_result()
+
         if ((not admission_result) or
             (not admission_result.is_admitted)):
             pref.is_accepted_list = []
