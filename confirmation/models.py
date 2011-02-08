@@ -165,6 +165,15 @@ class AdmissionConfirmation(models.Model):
     class Meta:
         ordering = ['-confirmed_at']
 
+
+class AdmissionWaiver(models.Model):
+    applicant = models.OneToOneField(Applicant,
+                                     related_name='admission_waiver')
+    is_waiver = models.BooleanField(default=False)
+    waived_at = models.DateTimeField(auto_now_add=True)
+    editted_at = models.DateTimeField(auto_now=True)
+
+
 TITLE_CHOICES = [
     ('','--'),
     (u'นาย', u'นาย'),
