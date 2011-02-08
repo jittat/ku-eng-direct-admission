@@ -1,4 +1,4 @@
-rounds = 2
+rounds = 3
 
 base_filename = '../data/results_after_round%d.csv'
 

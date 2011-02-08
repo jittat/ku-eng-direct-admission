@@ -279,7 +279,21 @@ def build_pref_stat(adm_round):
                all())
     app_results = dict([(r.applicant_id,r) for r in results])
     
-    adm_major_prefs = AdmissionMajorPreference.objects.filter(round_number=adm_round.number).all()
+    #adm_major_prefs = AdmissionMajorPreference.objects.filter(round_number=adm_round.number).all()
+
+    prefs_by_round = {}
+    for aa in AdmissionMajorPreference.objects.all():
+        if aa.round_number not in prefs_by_round:
+            prefs_by_round[aa.round_number] = []
+        prefs_by_round[aa.round_number].append(aa)
+
+    pref_dict = {}
+    for round_number in sorted(prefs_by_round.keys()):
+        all_prefs = prefs_by_round[round_number]
+        for p in all_prefs:
+            pref_dict[p.applicant_id] = p
+
+    adm_major_prefs = pref_dict.values()
 
     majors = Major.objects.all()
 
@@ -310,6 +324,7 @@ def build_pref_stat(adm_round):
     for p in adm_major_prefs:
         app_id = p.applicant_id
         t = p.get_pref_type().ptype
+
         if app_id in app_results:
             major_number = major_number_dict[app_results[app_id].admitted_major_id]
 
