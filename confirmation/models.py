@@ -173,6 +173,14 @@ class AdmissionWaiver(models.Model):
     waived_at = models.DateTimeField(auto_now_add=True)
     editted_at = models.DateTimeField(auto_now=True)
 
+    @staticmethod
+    def is_waived(applicant):
+        try:
+            w = applicant.admission_waiver
+            return w.is_waiver
+        except:
+            return False
+
 
 TITLE_CHOICES = [
     ('','--'),
