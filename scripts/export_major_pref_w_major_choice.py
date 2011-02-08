@@ -12,7 +12,7 @@ from django_bootstrap import bootstrap
 bootstrap(__file__)
 
 from application.models import SubmissionInfo, Applicant, Major, MajorPreference, PersonalInfo
-from confirmation.models import AdmissionMajorPreference
+from confirmation.models import AdmissionMajorPreference, AdmissionWaiver
 
 from utils import get_submitted_applicant_dict
 
@@ -35,12 +35,15 @@ for applicantion_id in sorted(applicants.keys()):
     #if not applicant.submission_info.doc_reviewed_complete:
     #    continue
 
-    admission_major_prefs = AdmissionMajorPreference.objects.filter(applicant=applicant).all()
-    if len(admission_major_prefs)!=0:
-        a_mj_pref = admission_major_prefs[0]
-        majors = [int(m.number) for m in a_mj_pref.get_accepted_majors(check_admitted=False)]
+    if AdmissionWaiver.is_waived(applicant):
+        majors = []
     else:
-        majors = applicant.preference.majors
+        admission_major_prefs = AdmissionMajorPreference.objects.filter(applicant=applicant).all()
+        if len(admission_major_prefs)!=0:
+            a_mj_pref = admission_major_prefs[0]
+            majors = [int(m.number) for m in a_mj_pref.get_accepted_majors(check_admitted=False)]
+        else:
+            majors = applicant.preference.majors
 
     majors_str = ",".join([str(m) for m in majors])
     nat_id = applicant.personal_info.national_id
