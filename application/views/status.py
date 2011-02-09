@@ -91,6 +91,9 @@ def index(request):
     first_admission = False
 
     current_round = AdmissionRound.get_recent()
+
+    is_last_round = True
+
     if current_round:
         admission_result = applicant.get_latest_admission_result()
 
@@ -172,6 +175,7 @@ def index(request):
                                     student_registration,
 
                                 'current_round': current_round,
+                                'is_last_round': is_last_round,
                                 'is_confirmation_time_left': is_confirmation_time_left,
                                 'random_seed': random_seed,
                                 'notice': notice,

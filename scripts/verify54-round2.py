@@ -1,8 +1,8 @@
 
-result_filename = '../data/assignment-round3.csv'
+result_filename = '../data/assignment-round4.csv'
 score_filename = '../data/query/all_scores/all-05jan.csv'
-pref_filename = '../data/major_pref_round2-new.csv'
-confirmation_filename = '../data/combined_results.csv'
+pref_filename = '../data/major_pref_round3.csv'
+confirmation_filename = '../data/combined_results_after_round3.csv'
 
 def read_scores():
     scores = {}
@@ -51,8 +51,12 @@ def validate(n,maj,confirmation):
     if n in confirmation and (not confirmation[n]):
         return
     if n not in results:
-        if maj in prefs[n]:
-            print 'BAD1', n
+        if n not in prefs:
+            #print 'waived: ', n
+            pass
+        else:
+            if maj in prefs[n]:
+                print 'BAD1', n
     else:
         r = results[n]
         if r==maj:

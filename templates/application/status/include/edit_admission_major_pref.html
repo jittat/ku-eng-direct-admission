@@ -2,27 +2,31 @@
 
 <div class="light-frame">
 <p>
-  {% if not first_admission %}
-    เนื่องจากคุณได้ยืนยันสิทธิ์ในรอบก่อนแล้ว ระบบจึงคัดลอกการเลือกสาขาวิชาที่ต้องการเข้ายืนยันสิทธิ์ในรอบก่อนที่คุณได้เลือกไว้<br/>
-    {% if admission_major_pref.get_pref_type.is_move_up_inclusive or admission_major_pref.get_pref_type.is_move_up_strict %}
-      {% if admission_major_pref.is_nomove_request %}
-        อย่างไรก็ตาม สำหรับในรอบนี้ คุณได้ขอเลือกเข้าศึกษาต่อในสาขาที่รับคัดเลือกในรอบนี้ <b>โดยไม่ขอพิจารณาสาขาอันดับที่สูงขึ้นไปในรอบถัดไปแล้ว</b><br/>
-        <form class="light-frame" action="{% url confirmation-nomove-cancel %}" method="post" style="font-size: 90%;">
-          คุณสามารถเลือกที่จะกลับไปเข้ารับการพิจารณาเลื่อนสาขาตามที่คุณเคยเลือกไว้ก่อนหน้านี้ได้<br/>
-	  ถ้าต้องการและแน่ใจ กรุณากด <input type="submit" value="ข้าพเจ้าขอกลับเข้ารับการพิจารณาเลื่อนสาขาเป็นสาขาในอันดับที่สูงขึ้นตามที่ข้าพเจ้าเคยเลือกไว้"/>
-	</form>
+  {% if is_last_round %}
+    เนื่องจากรอบนี้เป็นการคัดเลือกในรอบสุดท้ายแล้ว จะไม่มีการเลื่อนอันดับอีก
+  {% else %}
+    {% if not first_admission %}
+      เนื่องจากคุณได้ยืนยันสิทธิ์ในรอบก่อนแล้ว ระบบจึงคัดลอกการเลือกสาขาวิชาที่ต้องการเข้ายืนยันสิทธิ์ในรอบก่อนที่คุณได้เลือกไว้<br/>
+      {% if admission_major_pref.get_pref_type.is_move_up_inclusive or admission_major_pref.get_pref_type.is_move_up_strict %}
+        {% if admission_major_pref.is_nomove_request %}
+          อย่างไรก็ตาม สำหรับในรอบนี้ คุณได้ขอเลือกเข้าศึกษาต่อในสาขาที่รับคัดเลือกในรอบนี้ <b>โดยไม่ขอพิจารณาสาขาอันดับที่สูงขึ้นไปในรอบถัดไปแล้ว</b><br/>
+          <form class="light-frame" action="{% url confirmation-nomove-cancel %}" method="post" style="font-size: 90%;">
+            คุณสามารถเลือกที่จะกลับไปเข้ารับการพิจารณาเลื่อนสาขาตามที่คุณเคยเลือกไว้ก่อนหน้านี้ได้<br/>
+  	    ถ้าต้องการและแน่ใจ กรุณากด <input type="submit" value="ข้าพเจ้าขอกลับเข้ารับการพิจารณาเลื่อนสาขาเป็นสาขาในอันดับที่สูงขึ้นตามที่ข้าพเจ้าเคยเลือกไว้"/>
+  	  </form>
+        {% else %}
+          {% include "application/status/include/show_adm_major_pref.html" %}<br/>
+          <form class="light-frame" action="{% url confirmation-nomove-request %}" method="post" style="font-size: 90%;">
+            อย่างไรก็ตาม คุณสามารถเลือกที่จะขอคงสาขาที่ได้รับการพิจารณาเป็นสาขา {{ admission_result.admitted_major.name }} โดยไม่ต้องการเข้ารับการพิจารณาเลื่อนเป็นอันดับอื่น ๆ อีกได้<br/>
+  	    ถ้าแน่ใจ กรุณากด <input type="submit" value="ขอให้คงสาขาที่ข้าพเจ้าได้รับคัดเลือกเป็นสาขาที่ข้าพเจ้าได้รับในรอบนี้"/>
+	  </form>
+        {% endif %}
       {% else %}
-        {% include "application/status/include/show_adm_major_pref.html" %}<br/>
-        <form class="light-frame" action="{% url confirmation-nomove-request %}" method="post" style="font-size: 90%;">
-          อย่างไรก็ตาม คุณสามารถเลือกที่จะขอคงสาขาที่ได้รับการพิจารณาเป็นสาขา {{ admission_result.admitted_major.name }} โดยไม่ต้องการเข้ารับการพิจารณาเลื่อนเป็นอันดับอื่น ๆ อีกได้<br/>
-	  ถ้าแน่ใจ กรุณากด <input type="submit" value="ขอให้คงสาขาที่ข้าพเจ้าได้รับคัดเลือกเป็นสาขาที่ข้าพเจ้าได้รับในรอบนี้"/>
-	</form>
+        {% include "application/status/include/show_adm_major_pref.html" %}
       {% endif %}
     {% else %}
       {% include "application/status/include/show_adm_major_pref.html" %}
     {% endif %}
-  {% else %}
-    {% include "application/status/include/show_adm_major_pref.html" %}
   {% endif %}
 </p>
 

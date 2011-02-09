@@ -273,6 +273,42 @@ def interview_info(request, applicant_id):
         return render_unconfirmed_applicant(applicant)
 
 def build_pref_stat(adm_round):
+
+    id_str = """1100800808522
+1100800827233
+1100800852858
+1100800897428
+1101800547339
+1102001806491
+1102001807055
+1102001844783
+1102001932062
+1103700912088
+1103700922717
+1103701090341
+1103701156244
+1189900158803
+1200600199742
+1240500043805
+1249900291782
+1250200155373
+1320200149381
+1439900175675
+1450500138391
+1509901204368
+1659900523582
+1709900764473
+1709900814667
+1739900385634
+1800100201289
+1839900270160
+1840100409238
+1909800679472
+2840100024881
+2840100026035"""
+
+    id_set = set(id_str.split())
+
     results = (AdmissionResult.
                objects.
                filter(round_number=adm_round.number).
@@ -334,9 +370,19 @@ def build_pref_stat(adm_round):
             if app_id in confirmed_app:
                 pref_tab[major_number][t-1][1] += 1
 
+                if app_results[app_id].admitted_major_id == 6:
+                    nat_id = app_results[app_id].applicant.national_id
+                    if nat_id in id_set:
+                        id_set.remove(nat_id)
+                    else:
+                        print 'not found:', nat_id
+
+    print id_set
+
     for res in app_results.values():
         major_number = major_number_dict[res.admitted_major_id]
         total_counts[major_number][0] += 1
+
 
     pref_stat = []
     for m in majors:
