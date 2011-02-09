@@ -111,13 +111,14 @@ def pref(request):
 
     current_round = AdmissionRound.get_recent()
     round_number = current_round.number
+    is_last_round = True
+
     admission_result = applicant.get_latest_admission_result()
 
     preferred_majors = applicant.preference.get_major_list()
     higher_majors = get_higher_ranked_majors(preferred_majors, 
                                              admission_result.admitted_major)
 
-    
     admission_pref = applicant.get_admission_major_preference(round_number)
 
     if admission_pref:
@@ -146,6 +147,12 @@ def pref(request):
                     round_number,
                     request.POST)
                 admission_pref.set_ptype_cache(save=False)
+
+                if is_last_round and (
+                    admission_pref.get_pref_type().is_move_up_inclusive() or
+                    admission_pref.get_pref_type().is_move_up_strict()):
+                    return HttpResponseForbidden()
+
                 admission_pref.save()
                 request.session['notice'] = 'เก็บข้อมูลการยืนยันอันดับการเลือกสาขาวิชาแล้ว'
 
@@ -176,6 +183,7 @@ def pref(request):
                               { 'applicant': applicant,
                                 'admission_result': admission_result,
                                 'current_round': current_round,
+                                'is_last_round': is_last_round,
                                 'higher_majors': higher_majors,
                                 'majors_with_is_accepted':
                                     zip(higher_majors, is_accepted_list),
