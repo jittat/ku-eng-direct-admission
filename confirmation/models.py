@@ -230,7 +230,12 @@ class StudentRegistration(models.Model):
     mother_national_id = models.CharField(max_length=20,
                                           verbose_name=u'เลขบัตรประชาชนมารดา')
 
-
+    def validate(self):
+        return ((self.mother_national_id != '') and
+                (self.father_national_id != '') and
+                (self.birth_place != '') and
+                (self.home_phone_number != '') and
+                (self.cell_phone_number != ''))
 
 # -------------------- NOT USED ------------------------
 
