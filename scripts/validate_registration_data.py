@@ -48,7 +48,7 @@ def send_reminder(email):
 
 def main():
     round_number = sys.argv[1]
-    is_send_email = (len(sys.argv)!=3) and (sys.argv[2]=='--email')
+    is_send_email = (len(sys.argv)==3) and (sys.argv[2]=='--email')
     counter = 0
     for res in AdmissionResult.objects.filter(round_number=round_number).all():
         a = res.applicant
