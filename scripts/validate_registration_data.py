@@ -2,8 +2,8 @@
 import sys
 import codecs
 
-if len(sys.argv)!=2:
-    print "Usage: validate.py [round_number_for_result]"
+if len(sys.argv)<2:
+    print "Usage: validate.py [round_number_for_result] [--email]"
     quit()
 
 from django.conf import settings
@@ -48,6 +48,7 @@ def send_reminder(email):
 
 def main():
     round_number = sys.argv[1]
+    is_send_email = (len(sys.argv)!=3) and (sys.argv[2]=='--email')
     counter = 0
     for res in AdmissionResult.objects.filter(round_number=round_number).all():
         a = res.applicant
@@ -57,7 +58,10 @@ def main():
 
         if confirmed:
             if not validate(a):
-                send_reminder(a.email)
+
+                if is_send_email:
+                    send_reminder(a.email)
+
                 counter += 1
 
     print "Total:", counter
