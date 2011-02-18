@@ -230,12 +230,17 @@ class StudentRegistration(models.Model):
     mother_national_id = models.CharField(max_length=20,
                                           verbose_name=u'เลขบัตรประชาชนมารดา')
 
-    def validate(self):
-        return ((self.mother_national_id != '') and
-                (self.father_national_id != '') and
-                (self.birth_place != '') and
-                (self.home_phone_number != '') and
-                (self.cell_phone_number != ''))
+    def validate(self, errors=None):
+        if errors==None:
+            errors = []
+        if (self.mother_national_id == '') and (self.father_national_id ==''):
+            errors.append(u'ไม่มีรหัสประชาชนทั้งบิดาและมารดา')
+        if self.birth_place == '':
+            errors.append(u'ไม่มีสถานที่เกิด')
+        if (self.home_phone_number == '') and (self.cell_phone_number == ''):
+            errors.append(u'ไม่มีหมายเลขโทรศัพท์ทั้งบ้านและมือถือ')
+
+        return len(errors)==0
 
 # -------------------- NOT USED ------------------------
 

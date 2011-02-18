@@ -21,15 +21,20 @@ def validate(applicant):
     except StudentRegistration.DoesNotExist:
         reg = None
 
-    if reg==None:
-        print applicant.national_id,'not_found'
-        return False
-    else:
-        if not reg.validate():
-            print applicant.national_id,'incomplete'
-            return False
 
-    return True
+    msg = ''
+    if reg==None:
+        msg = u'ไม่ได้กรอกข้อมูล'
+    else:
+        errors = []
+        if not reg.validate(errors):
+            msg = u'ข้อมูลไม่ครบ: ' + ' '.join(errors)
+
+    if msg != '':
+        print u'"%s","%s","%s"' % (applicant.national_id,
+                                   applicant.personal_info.phone_number,
+                                   msg)
+    return msg == ''
 
 
 def send_reminder(email):
