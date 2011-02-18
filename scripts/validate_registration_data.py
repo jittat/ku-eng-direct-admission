@@ -31,7 +31,8 @@ def validate(applicant):
             msg = u'ข้อมูลไม่ครบ: ' + ' '.join(errors)
 
     if msg != '':
-        print u'"%s","%s","%s"' % (applicant.national_id,
+        print u'"%s","%s","%s","%s"' % (applicant.national_id,
+                                   applicant.full_name(),
                                    applicant.personal_info.phone_number,
                                    msg)
     return msg == ''
