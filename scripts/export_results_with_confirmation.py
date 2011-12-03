@@ -13,6 +13,8 @@ from result.models import AdmissionResult
 from confirmation.models import AdmissionConfirmation
 from application.models import Applicant
 
+from application.views.status import prepare_exam_scores
+
 def main():
     round_number = int(sys.argv[1])
     if len(sys.argv)>2:
@@ -29,12 +31,15 @@ def main():
 
     for r in results:
         app = r.applicant
+        exam_scores = prepare_exam_scores(app)
         paid_total = sum([c.paid_amount for c in app.admission_confirmations.all()])
         confirmed = paid_total >= r.admitted_major.confirmation_amount
+        prefix = app.title
+        name = app.first_name + ' ' + app.last_name
         if not fp:
-            print "%s,%d,%s" % (app.national_id, int(r.admitted_major.number), str(confirmed))
+            print "%s,%d,%s,%.5f,%s,%s" % (app.national_id, int(r.admitted_major.number), str(confirmed), exam_scores['final_score'], prefix, name)
         else:
-            print >>fp, u"%s,%s,%d,%s" % (app.national_id, app.full_name(), int(r.admitted_major.number), str(confirmed))
+            print >>fp, u"%s,%d,%s,%.5f,%s,%s" % (app.national_id, int(r.admitted_major.number), str(confirmed), exam_scores['final_score'], prefix, name)
             
 
 
